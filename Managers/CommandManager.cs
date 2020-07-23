@@ -22,9 +22,7 @@ namespace RPGGame
         }
 
         public static void Empty()
-        {
-            WriteLine("");
-        }
+        {}
 
         public static void Move(MoveCommand direction)
         {
