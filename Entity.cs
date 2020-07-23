@@ -46,7 +46,7 @@ namespace RPGGame
             this.name = name;
             this.position = position;
             this.inventory = inventory;
-            this.drawPriority = 0;
+            this.drawPriority = 1;
             this.icon = icon;
             if (inventory != null)
                 if (!Inventories.Contains(inventory))

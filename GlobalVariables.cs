@@ -17,7 +17,19 @@ namespace RPGGame
         public const int viewDistanceWidth = 5;
         public const int viewDistanceHeight = 5;
         public const string UNDERLINE = "\x1B[4m";                                                                  
-        public const string RESET = "\x1B[0m";                                                                      
+        public const string RESET = "\x1B[0m";
+        public const char Ver = (char)9474;
+        public const char Hor = (char)9472;
+        public const char TopL = (char)9484;
+        public const char TopR = (char)9488;
+        public const char BotL = (char)9492;
+        public const char BotR = (char)9496;
+        public const char TeeL = (char)9508;
+        public const char TeeR = (char)9500;
+        public const char TeeU = (char)9524;
+        public const char TeeD = (char)9516;
+        public const char Cross = (char)9532;
+
 
         private static Entity player;
         private static GameBoard mainBoard;
@@ -69,13 +81,13 @@ namespace RPGGame
 
         static List<string> types = new List<String>()                                                       
             {
-                "\\bWEAPON\\b",
-                "\\bPOTION\\b",
-                "\\bGOLD\\b",
-                "\\bAMMUNITION\\b",
-                "\\bARMOUR\\b",
-                "\\bRING\\b",
-                "\\bMISCELLANEOUS\\b",
+                "WEAPON",
+                "POTION",
+                "GOLD",
+                "AMMUNITION",
+                "ARMOUR",
+                "RING",
+                "MISCELLANEOUS",
             };
 
         private static MoveCommand NORTH = new MoveCommand(0, -1);

@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using static RPGGame.GlobalVariables;
 using static RPGGame.TextTool;
 using static RPGGame.InventoryManager;
+using static RPGGame.ParseTool;
 
 namespace RPGGame
 {
@@ -38,7 +39,7 @@ namespace RPGGame
         }
         public static void Buy()                                                                                   
         {
-            if (Trade(ParseTool.GetTarget(), Player))                                                       
+            if (Trade(GetTarget(), Player))                                                       
                 WriteLine("Item bought!");
             else
                 WriteLine("Purchase failed!");
@@ -46,14 +47,14 @@ namespace RPGGame
 
         public static void Sell()                                                                                  
         {
-            if (Trade(Player, ParseTool.GetTarget()))                                                      
+            if (Trade(Player, GetTarget()))                                                      
                 WriteLine("Item sold!");
             else
                 WriteLine("Sale failed!");
         }
         public static void Look()                                                                                  
         {
-            Target = ParseTool.GetTarget();
+            Target = GetTarget();
             if (!InventoryIsAccessible(Target))
             {
                 WriteLine("Target inventory is not visible.");
@@ -81,15 +82,15 @@ namespace RPGGame
 
         public static void Examine()                                                                               
         {
-            String data = ParseTool.Strip(Input);                                                                     
+            String data = Strip(Input);                                                                     
             Boolean found = false;                                                                          
 
             foreach (Item item in GetCurrentInventoryList())                                                      
             {
-                if (data.ToUpper() == item.itemData["name"].ToUpper())                                        
+                if (data == item.Name)                                        
                 {
                     item.Examine();                                                                         
-                    found = true;                                                                           
+                    found = true;                                                                          
                 }
             }
             if (!found)
@@ -98,20 +99,19 @@ namespace RPGGame
 
         public static void Rename()                                                                                
         {
-            Target = ParseTool.GetTarget();                                                                           
-            String data = ParseTool.Strip(Input);                                                                     
+            Target = GetTarget();                                                                           
+            String data = Strip(Input);                                                                     
             Boolean found = false;                                                                          
 
             foreach (Item item in GetCurrentInventoryList())                                                      
             {
-                if (data.Contains(item.itemData["name"]) && !found)                                          
+                if (data.Contains(item.Name))                                          
                 {
-                    data = data.Replace(item.itemData["name"], "");                                          
-                    data = Regex.Replace(data, "^[\\s]+|[\\s]+$", "");                                       
-                    item.itemData.Remove("name");
-                    item.itemData.Add("name", data);                                                        
-                    item.name = data;                                                                       
-                    found = true;                                                                           
+                    data = data.Replace(item.Name+" ", "");                                          
+                    data = Regex.Replace(data, "^[\\s]+|[\\s]+$", "");                                                                                             
+                    item.Name = data;                                                                       
+                    found = true;
+                    break;
                 }
             }
             if (!found)
@@ -131,8 +131,8 @@ namespace RPGGame
         {
             if (SuperStatus)                                                                                      
             {
-                Target = ParseTool.GetTarget();                                                                       
-                Item newItem = ParseTool.ItemMake();                                                                  
+                Target = GetTarget();                                                                       
+                Item newItem = ItemMake();                                                                  
                 if (newItem != null)                                                                        
                 {
                     GetCurrentInventoryList().Add(newItem);                                                       
@@ -149,7 +149,7 @@ namespace RPGGame
         public static Item Remove()
         {
             Item temp = RemoveNoLog();
-            WriteLine(temp.itemData["name"] + " removed!");
+            WriteLine(temp.Name + " removed!");
             return temp;
         }
 
@@ -171,7 +171,7 @@ namespace RPGGame
                 WriteLine(Input);                                                          
                 ConsoleHelper.Redraw(); ;
                 System.Threading.Thread.Sleep(500);                                               
-                String testCommand = ParseTool.ProcessInput(test);                                           
+                String testCommand = ProcessInput(test);                                           
 
                 WriteLine("");
                 Commands[testCommand]();                                                           

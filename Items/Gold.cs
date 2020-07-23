@@ -10,15 +10,11 @@ namespace RPGGame
     {
         public int amount = 0;                                                  
         public Gold(string inputData) : base(inputData)                         
-        {
-            if (itemData.ContainsKey("name"))                                   
-                itemData.Remove("name");
-
-            itemData.Add("name", "Gold");                                       
-            name = "Gold";                                                      
+        {                                     
+            Name = "Gold";                                                      
 
             amount = Int32.Parse(itemData["amount"]);                           
-            value = amount;                                                     
+            Value = amount;                                                     
         }
 
         public Gold(int inputData) : base(inputData)                            
@@ -27,13 +23,13 @@ namespace RPGGame
                 itemData.Remove("name");
 
             itemData.Add("name", "Gold");                                       
-            name = "Gold";                                                      
+            Name = "Gold";                                                      
 
             itemData.Add("amount", inputData.ToString());                       
             amount = inputData;                                                 
 
             itemData.Add("value", inputData.ToString());                        
-            value = inputData;                                                  
+            Value = inputData;                                                  
 
             if (itemData.ContainsKey("type"))                                   
                 itemData.Remove("type");

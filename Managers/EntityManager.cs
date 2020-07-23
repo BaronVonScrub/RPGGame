@@ -8,7 +8,7 @@ namespace RPGGame
 {
     static class EntityManager
     {
-        public static Entity merchant;
+        public static Human merchant;
         public static Entity dummy;
 
         public static void Initialize()
@@ -25,7 +25,7 @@ namespace RPGGame
             MainBoard.AddToBoard(dummy);
 
             Random r = new Random();
-            foreach (int i in Enumerable.Range(0, 10))
+            for (int i= 0;i<10;i++)
             {
                 MainBoard.AddToBoard(
                     new Entity(

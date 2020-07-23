@@ -3,32 +3,33 @@ using System.Collections.Generic;
 using static RPGGame.GlobalVariables;
 using System.Text;
 using static RPGGame.TextTool;
+using static RPGGame.ImportExportTool;
+using static RPGGame.ParseTool;
 
 namespace RPGGame
 {
     static class InventoryManager
     {
-        
-
         public static void Initialize()
         {
             foreach (string inventoryName in ImportExportTool.GetInventoryList())                                    
             {
-                ImportExportTool.importInventory(inventoryName);                                                     
+                ImportExportTool.ImportInventory(inventoryName);                                                     
             }
         }
         public static Item RemoveNoLog()                                                                                
         {
             if (SuperStatus)                                                                                      
             {
-                Target = ParseTool.GetTarget();                                                                       
-                String data = ParseTool.Strip(Input);                                                                 
+                Target = GetTarget();                                                                       
+                String data = Strip(Input);                                                                 
                 Item remove = null;                                                                         
 
                 foreach (Item item in GetCurrentInventoryList())                                                  
-                    if (data.ToUpper() == item.itemData["name"].ToUpper() && remove == null)                
+                    if (data.ToUpper() == item.Name.ToUpper())                
                     {
-                        remove = item;                                                                      
+                        remove = item;
+                        break;
                     }
 
                 if (remove != null)                                                                         
@@ -36,6 +37,7 @@ namespace RPGGame
                     GetCurrentInventoryList().Remove(remove);                                                     
                     return remove;                                                                          
                 }
+
                 else
                 {
                     WriteLine("Item not found!");
@@ -130,7 +132,7 @@ namespace RPGGame
 
         public static int AlphabeticalByName(Item a, Item b)
         {
-            return a.name.CompareTo(b.name);
+            return a.Name.CompareTo(b.Name);
         }
 
         public static List<Item> GetCurrentInventoryList()

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using static RPGGame.GlobalVariables;
 using static RPGGame.InventoryManager;
+using static RPGGame.ParseTool;
 
 namespace RPGGame
 {
@@ -20,7 +21,7 @@ namespace RPGGame
             return nameClean2;
         }
 
-        public static void importInventory(string inventoryName)                                                    
+        public static void ImportInventory(string inventoryName)                                                    
         {
             #region Set paths
             string currDir = Directory.GetCurrentDirectory();
@@ -37,7 +38,7 @@ namespace RPGGame
             #region Read File
             Inventory inv = GetInventory(inventoryName);
             foreach (string item in File.ReadLines(inventFile))                                              
-                inv.inventData.Add(ParseTool.ItemMake(item));                                                         
+                inv.inventData.Add(ItemMake(item));                                                         
             Inventories.Add(inv);
 
             #endregion
@@ -53,18 +54,16 @@ namespace RPGGame
             #endregion
 
             #region Output to file
-            File.WriteAllText(inventFile, "");                                                               
-            using (StreamWriter sw = File.CreateText(inventFile))
+            File.WriteAllText(inventFile, "");
+            using StreamWriter sw = File.CreateText(inventFile);
+            foreach (Item item in inventory.inventData)
             {
-                foreach (Item item in inventory.inventData)
-                {                                                     
-                    sw.Write(item.itemData["type"].ToUpper());                                               
-                    foreach (KeyValuePair<String, String> att in item.itemData)                              
-                    {
-                        sw.Write(" " + att.Key + ":" + att.Value);
-                    }
-                    sw.Write(System.Environment.NewLine);                                                    
+                sw.Write(item.itemData["type"].ToUpper());
+                foreach (KeyValuePair<String, String> att in item.itemData)
+                {
+                    sw.Write(" " + att.Key + ":" + att.Value);
                 }
+                sw.Write(System.Environment.NewLine);
             }
 
 

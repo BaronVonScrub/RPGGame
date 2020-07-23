@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
 using static RPGGame.GlobalVariables;
-using static RPGGame.InventoryManager;
 
 namespace RPGGame
 {
@@ -47,10 +45,9 @@ namespace RPGGame
 
             foreach (String type in Types)                                                                  
             {
-                if (Regex.Match(Input, type).Success)
+                if (Regex.Match(Input, "\\b"+ type + "\\b").Success)
                 {
-                    tempType = StripRegex(type);
-                    return tempType;                                                                        
+                    return type;                                                                    
                 }
             }
             return tempType;                                                                                
@@ -62,10 +59,9 @@ namespace RPGGame
 
             foreach (String type in Types)                                                                  
             {
-                if (Regex.Match(indata, type).Success)
+                if (Regex.Match(indata, "\\b" + type + "\\b").Success)
                 {
-                    tempType = StripRegex(type);
-                    return tempType;                                                                        
+                    return type;                                                                    
                 }
             }
             return tempType;                                                                                
@@ -86,7 +82,7 @@ namespace RPGGame
                 KeyList += itemType + "|";
             foreach (Inventory inventory in Inventories)
                 KeyList += inventory.name + "|";
-            KeyList = KeyList.Substring(0, KeyList.Length - 1);
+            KeyList = KeyList[0..^1];
         }
 
         public static Item ItemMake()                                                                              
@@ -126,10 +122,5 @@ namespace RPGGame
             else
                 return null;                                                                                
         }
-
-        public static String StripRegex(String inp)
-        {
-            return inp.Replace("\\b", "");
-        } 
     }
 }

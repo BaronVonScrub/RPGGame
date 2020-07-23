@@ -2,7 +2,7 @@
 {
     class Game
     {
-        static void Main(string[] args)
+        static void Main()
         {
             ConsoleHelper.Initialize();
             TextTool.Initialize();

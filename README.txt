@@ -39,7 +39,7 @@ FILE MANIFEST:
 	Tools
 		ConsoleHelper.cs
 		ImportExportTool.cs
-		ParseTool.cs
+		cs
 		TestTool.cs
 		cs
 	Entity.cs

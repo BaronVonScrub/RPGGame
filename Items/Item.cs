@@ -9,18 +9,43 @@ namespace RPGGame
 {
     abstract class Item                                                                                 
     {
-        Boolean equipped = false;
-        public int value;                                                                               
-        public string name = "Unnamed item";                                                            
+        private Boolean equipped = false;
+        private int val;
+        private string name = "Unnamed item";
         public SortedDictionary<String, String> itemData = new SortedDictionary<String, String>();      
+        
         public Boolean Equipped {
-            get
-            {
-                return equipped;
-            }
+            get => equipped;
             set
             {
-                itemData["equipped"] = value.ToString();
+                equipped = value;
+                if (itemData.ContainsKey("equipped"))
+                    itemData.Remove("equipped");
+                itemData.Add("equipped", value.ToString());
+            }
+        }
+
+        public string Name
+        {
+            get => name;
+            set
+            {
+                name = value;
+                if (itemData.ContainsKey("name"))
+                    itemData.Remove("name");
+                itemData.Add("name", value);
+            }
+        }
+
+        public int Value
+        {
+            get => val;
+            set
+            {
+                val = value;
+                if (itemData.ContainsKey("value"))
+                    itemData.Remove("value");
+                itemData.Add("value", value.ToString());
             }
         }
 
@@ -33,14 +58,14 @@ namespace RPGGame
                 }
 
             if (!itemData.ContainsKey("name"))                                                          
-                itemData.Add("name", name);
+                itemData.Add("name", Name);
             else
-                name = itemData["name"];
+                Name = itemData["name"];
 
             if (itemData.ContainsKey("value"))                                                          
-                value = Int32.Parse(itemData["value"]);
+                Value = Int32.Parse(itemData["value"]);
             else
-                itemData.Add("value", value.ToString());
+                itemData.Add("value", Value.ToString());
 
             if (itemData.ContainsKey("equipped"))                                                          
                 equipped = Convert.ToBoolean(itemData["equipped"]);
@@ -61,13 +86,12 @@ namespace RPGGame
 
         virtual public String Look()
         {
-            return name;                                                                       
+            return Name;                                                                       
         }
 
         public void Examine()                                                                           
-        {
-            if (itemData.ContainsKey("name"))                                                           
-                WriteLine(itemData["name"]);
+        {                                                      
+            WriteLine(Name);
             if (itemData.ContainsKey("type"))                                                           
                 WriteLine("Type : "+itemData["type"]);
             if (itemData.ContainsKey("amount"))
