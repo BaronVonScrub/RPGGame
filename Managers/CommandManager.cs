@@ -38,22 +38,22 @@ namespace RPGGame
                         WriteLine("You see "+ent.name);
 
         }
-        public static void Buy()                                                                                   //Buy an item
+        public static void Buy()                                                                                   
         {
-            if (Trade(ParseTool.GetTarget(), "INVENTORY"))                                                       //Attempt trade from InputTarget to inventory
+            if (Trade(ParseTool.GetTarget(), Player))                                                       
                 WriteLine("Item bought!");
             else
                 WriteLine("Purchase failed!");
         }
 
-        public static void Sell()                                                                                  //Sell an item
+        public static void Sell()                                                                                  
         {
-            if (Trade("INVENTORY", ParseTool.GetTarget()))                                                      //Attempt trade from inventory to InputTarget
+            if (Trade(Player, ParseTool.GetTarget()))                                                      
                 WriteLine("Item sold!");
             else
                 WriteLine("Sale failed!");
         }
-        public static void Look()                                                                                  //Look at the focused inventory
+        public static void Look()                                                                                  
         {
             Target = ParseTool.GetTarget();
             if (!InventoryIsAccessible(Target))
@@ -67,53 +67,53 @@ namespace RPGGame
             GoldDisplay();
 
             foreach (Item item in GetCurrentInventoryList())
-            {                                                    //For all items
-                if (item.GetType().Name != "Gold")                                                          //That aren't gold
+            {                                                    
+                if (item.GetType().Name != "Gold")                                                          
                 {
-                    if (item.itemData.ContainsKey("amount"))                                                //If they have an "amount" attribute
+                    if (item.itemData.ContainsKey("amount"))                                                
                     {
-                        WriteLine(item.itemData["amount"] + " "+item.Look());                                               //Write it
+                        WriteLine(item.itemData["amount"] + " "+item.Look());                                               
                     }
                     else
-                        WriteLine(item.Look());                                                                            //Write the item title
+                        WriteLine(item.Look());                                                                            
                 }
             }
             WriteLine(UNDERLINE + "______________________________________________________" + RESET);
         }
 
-        public static void Examine()                                                                               //View an item's information
+        public static void Examine()                                                                               
         {
-            String data = ParseTool.Strip(Input);                                                                     //Clean the Input
-            Boolean found = false;                                                                          //Has the item been found?
+            String data = ParseTool.Strip(Input);                                                                     
+            Boolean found = false;                                                                          
 
-            foreach (Item item in GetCurrentInventoryList())                                                      //For each item in the inventory
+            foreach (Item item in GetCurrentInventoryList())                                                      
             {
-                if (data.ToUpper() == item.itemData["name"].ToUpper())                                        //If it is there
+                if (data.ToUpper() == item.itemData["name"].ToUpper())                                        
                 {
-                    item.Examine();                                                                         //Examine it
-                    found = true;                                                                           //Note that it was found
+                    item.Examine();                                                                         
+                    found = true;                                                                           
                 }
             }
             if (!found)
                 WriteLine("Item not found!");
         }
 
-        public static void Rename()                                                                                //Rename an item in Inputinventory
+        public static void Rename()                                                                                
         {
-            Target = ParseTool.GetTarget();                                                                           //Set inventory focus from Input
-            String data = ParseTool.Strip(Input);                                                                     //Clean the Input
-            Boolean found = false;                                                                          //Has it been found?
+            Target = ParseTool.GetTarget();                                                                           
+            String data = ParseTool.Strip(Input);                                                                     
+            Boolean found = false;                                                                          
 
-            foreach (Item item in GetCurrentInventoryList())                                                      //For each item in the focused inventory
+            foreach (Item item in GetCurrentInventoryList())                                                      
             {
-                if (data.Contains(item.itemData["name"]) && !found)                                          //If it has a name and hasn't already been found
+                if (data.Contains(item.itemData["name"]) && !found)                                          
                 {
-                    data = data.Replace(item.itemData["name"], "");                                          //Remove the original name from data
-                    data = Regex.Replace(data, "^[\\s]+|[\\s]+$", "");                                       //Remove preceding and trailing whitespace from data
+                    data = data.Replace(item.itemData["name"], "");                                          
+                    data = Regex.Replace(data, "^[\\s]+|[\\s]+$", "");                                       
                     item.itemData.Remove("name");
-                    item.itemData.Add("name", data);                                                        //Replace the "name" attribute with the new name
-                    item.name = data;                                                                       //Replace the item name
-                    found = true;                                                                           //Note that it was found
+                    item.itemData.Add("name", data);                                                        
+                    item.name = data;                                                                       
+                    found = true;                                                                           
                 }
             }
             if (!found)
@@ -122,22 +122,22 @@ namespace RPGGame
                 WriteLine("Item renamed!");
         }
 
-        public static void GrantSuper()                                                                                 //Grant super access
+        public static void GrantSuper()                                                                                 
         {
             SuperStatus = true;
             WriteLine("SuperStatus access granted!");
             WriteLine("The SuperStatus commands are ADD and REMOVE");
         }
 
-        public static void Add()                                                                                   //Add a new item to the focused inventory
+        public static void Add()                                                                                   
         {
-            if (SuperStatus)                                                                                      //If you have super access
+            if (SuperStatus)                                                                                      
             {
-                Target = ParseTool.GetTarget();                                                                       //Set the inventory focus to the Input
-                Item newItem = ParseTool.ItemMake();                                                                  //Try to create a new item from Inputdata
-                if (newItem != null)                                                                        //If a new item was made
+                Target = ParseTool.GetTarget();                                                                       
+                Item newItem = ParseTool.ItemMake();                                                                  
+                if (newItem != null)                                                                        
                 {
-                    GetCurrentInventoryList().Add(newItem);                                                       //Add it to the Target inventory                                                                       //Perform a gold merge (in case new item is gold)
+                    GetCurrentInventoryList().Add(newItem);                                                       
                     WriteLine("Item added!");
                 }
                 else
@@ -155,7 +155,7 @@ namespace RPGGame
             return temp;
         }
 
-        public static void Help()                                                                                  //Print help text
+        public static void Help()                                                                                  
         {
             WriteLine("The commands available to you are LOOK, EXAMINE, BUY,");
             WriteLine(" GO NORTH, GO SOUTH, GO EAST, GO WEST, SELL, RENAME,");
@@ -163,32 +163,32 @@ namespace RPGGame
 
         }
 
-        public static void Test()                                                                                  //Demos all functionality                                    
+        public static void Test()                                                                                  
         {
-            System.Threading.Thread.Sleep(1000);                                                   //Waits 1s
+            System.Threading.Thread.Sleep(1000);                                                   
             ConsoleHelper.Redraw();
-            foreach (String test in TestCommandList)                                                      //For each command in the test list
+            foreach (String test in TestCommandList)                                                      
             {
-                Input = test;                                                                      //Set Inputto new command
-                WriteLine(Input);                                                          //Manually display Input
+                Input = test;                                                                      
+                WriteLine(Input);                                                          
                 ConsoleHelper.Redraw(); ;
-                System.Threading.Thread.Sleep(500);                                               //Wait to display to user
-                String testCommand = ParseTool.ProcessInput(test);                                           //Extract command
+                System.Threading.Thread.Sleep(500);                                               
+                String testCommand = ParseTool.ProcessInput(test);                                           
 
                 WriteLine("");
-                Commands[testCommand]();                                                           //Execute command
+                Commands[testCommand]();                                                           
                 WriteLine("");
                 ConsoleHelper.Redraw();
-                System.Threading.Thread.Sleep(2000);                                               //Wait to display to user
+                System.Threading.Thread.Sleep(2000);                                               
 
             }
         }
 
-        public static void Quit()                                                                                  //Saves Inventories and quits
+        public static void Quit()                                                                                  
         {
             foreach (Inventory inventory in Inventories)
-            {                            //For each inventory
-                ImportExportTool.ExportInventory(inventory);                                                                 //Export it
+            {                            
+                ImportExportTool.ExportInventory(inventory);                                                                 
             }
         }
     }

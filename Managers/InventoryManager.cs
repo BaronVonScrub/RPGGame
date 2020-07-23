@@ -12,29 +12,29 @@ namespace RPGGame
 
         public static void Initialize()
         {
-            foreach (string inventoryName in ImportExportTool.GetInventoryList())                                    //For each inventory
+            foreach (string inventoryName in ImportExportTool.GetInventoryList())                                    
             {
-                ImportExportTool.importInventory(inventoryName);                                                     //Import the inventory
+                ImportExportTool.importInventory(inventoryName);                                                     
             }
         }
-        public static Item RemoveNoLog()                                                                                //Remove and return the item specified in Inputfrom the Target inventory
+        public static Item RemoveNoLog()                                                                                
         {
-            if (SuperStatus)                                                                                      //If you have super access
+            if (SuperStatus)                                                                                      
             {
-                Target = ParseTool.GetTarget();                                                                       //Set the inventory focus to the Input
-                String data = ParseTool.Strip(Input);                                                                 //Clean the Inputdata
-                Item remove = null;                                                                         //Placehold the item to be removed
+                Target = ParseTool.GetTarget();                                                                       
+                String data = ParseTool.Strip(Input);                                                                 
+                Item remove = null;                                                                         
 
-                foreach (Item item in GetCurrentInventoryList())                                                  //For each item in the focused inventory
-                    if (data.ToUpper() == item.itemData["name"].ToUpper() && remove == null)                //If the item is there
+                foreach (Item item in GetCurrentInventoryList())                                                  
+                    if (data.ToUpper() == item.itemData["name"].ToUpper() && remove == null)                
                     {
-                        remove = item;                                                                      //Capture the item
+                        remove = item;                                                                      
                     }
 
-                if (remove != null)                                                                         //If an item was caught
+                if (remove != null)                                                                         
                 {
-                    GetCurrentInventoryList().Remove(remove);                                                     //Remove the item
-                    return remove;                                                                          //Return the item caught
+                    GetCurrentInventoryList().Remove(remove);                                                     
+                    return remove;                                                                          
                 }
                 else
                 {
@@ -51,7 +51,7 @@ namespace RPGGame
 
         }
 
-        public static Boolean Trade(string from, string to)                                                        //Shift item from inventory to inventory for gold
+        public static Boolean Trade(Entity from, Entity to)                                                        
         {
             if (!(InventoryIsAccessible(to)&&InventoryIsAccessible(from)))
             {
@@ -65,56 +65,56 @@ namespace RPGGame
                 return false;
             }
 
-            if (to == from)                                                                                 //Refuse to trade from inventory to itself
+            if (to == from)                                                                                 
             {
                 WriteLine("Cannot trade with yourself!");
                 return false;
             }
 
-            Boolean wasSuperStatus = false;                                                                       //MERCHANT SuperStatus state
-            if (SuperStatus) wasSuperStatus = true;                                                                     //Grant SuperStatus access temporarily
+            Boolean wasSuperStatus = false;                                                                       
+            if (SuperStatus) wasSuperStatus = true;                                                                     
             SuperStatus = true;
 
-            Target = from;                                                                                  //Shift inventory focus to the seller
-            Item moveItem = RemoveNoLog();                                                                       //Grab item
+            Target = from;                                                                                  
+            Item moveItem = RemoveNoLog();                                                                       
 
-            if (moveItem == null)                                                                           //If the item wasn't found
+            if (moveItem == null)                                                                           
             {
-                if (!wasSuperStatus)                                                                              //Revoke SuperStatus access if barred
+                if (!wasSuperStatus)                                                                              
                     SuperStatus = false;
-                return false;                                                                               //Return failed trade
+                return false;                                                                               
             }
 
             int value = Int32.Parse(moveItem.itemData["value"]);
 
-            if (moveItem.GetType().Name == "Gold")                                                          //If you attempted to trade gold
+            if (moveItem.GetType().Name == "Gold")                                                          
             {
                 WriteLine("Can't trade gold!");
-                GetCurrentInventoryList().Add(moveItem);                                                          //Return item
-                if (!wasSuperStatus)                                                                              //Revoke SuperStatus access if barred
+                GetCurrentInventoryList().Add(moveItem);                                                          
+                if (!wasSuperStatus)                                                                              
                     SuperStatus = false;
-                return false;                                                                               //Return failed trade
+                return false;                                                                               
             }
 
-            if (GetGold(to) < value)                                                                       //If you don't have enough gold
+            if (GetGold(to) < value)                                                                       
             {
                 WriteLine("Not enough gold!");
-                GetCurrentInventoryList().Add(moveItem);                                                          //Return item
-                if (!wasSuperStatus)                                                                              //Revoke SuperStatus access if barred
+                GetCurrentInventoryList().Add(moveItem);                                                          
+                if (!wasSuperStatus)                                                                              
                     SuperStatus = false;
-                return false;                                                                               //Return failed trade
+                return false;                                                                               
             }
 
-            GetCurrentInventoryList().Add(new Gold(value));                                                       //Add the gold to the seller
-            Target = to;                                                                                    //Shift inventory focus to buyer
-            GetCurrentInventoryList().Add(moveItem);                                                              //Add the item to buyer inventory
-            GetCurrentInventoryList().Add(new Gold(-1 * value));                                                  //Add a negative number of gold
+            GetCurrentInventoryList().Add(new Gold(value));                                                       
+            Target = to;                                                                                    
+            GetCurrentInventoryList().Add(moveItem);                                                              
+            GetCurrentInventoryList().Add(new Gold(-1 * value));                                                  
 
             if (!wasSuperStatus)
-                SuperStatus = false;                                                                              //Revoke SuperStatus access if barred
+                SuperStatus = false;                                                                              
 
-            Target = from;                                                                                  //Return inventory focus to seller
-            return true;                                                                                    //Return successful trade
+            Target = from;                                                                                  
+            return true;                                                                                    
         }
 
         public static List<Inventory> GetInventories(List<Entity> entList)
@@ -138,36 +138,36 @@ namespace RPGGame
             return GetInventory(Target).inventData;
         }
 
-        public static void GoldMerge(string invent)                                                                             //Merges all gold items in an inventory 
+        public static void GoldMerge(Entity ent)                                                                             
         {
-            Queue<Gold> goldQueue = new Queue<Gold>();                                                      //A queue for each item to be processed, as removing them during the foreach breaks it
-            int amount = 0;                                                                                 //Total value storage
+            Queue<Gold> goldQueue = new Queue<Gold>();                                                      
+            int amount = 0;                                                                                 
             
-            foreach (Item item in GetInventory(invent).inventData)                                                      //For each item in the inventory
+            foreach (Item item in GetInventory(ent).inventData)                                                      
             {
-                if (item.GetType().Name == "Gold")                                                          //If it is gold
+                if (item.GetType().Name == "Gold")                                                          
                 {
-                    goldQueue.Enqueue(item as Gold);                                                        //Add it to the processing queue
-                    amount += (item as Gold).amount;                                                        //Add its value to the total
+                    goldQueue.Enqueue(item as Gold);                                                        
+                    amount += (item as Gold).amount;                                                        
                 }
             }
             if (goldQueue.Count!=0)
                 do
                 {
-                    GetInventory(Target).inventData.Remove(goldQueue.Dequeue());                                            //Remove all golds from the inventory
+                    GetInventory(Target).inventData.Remove(goldQueue.Dequeue());                                            
                 }
                 while (goldQueue.Count != 0);
-            GetInventory(Target).inventData.Add(new Gold(amount));                                                      //Create a new gold with the total value (integer constructor)
+            GetInventory(Target).inventData.Add(new Gold(amount));                                                      
 
         }
 
-        public static int GetGold(string invent)                                                                   //Returns the amount of gold in a given inventory
+        public static int GetGold(Entity ent)                                                                   
         {
-            GoldMerge(invent);
-            foreach (Item item in GetInventory(invent).inventData)                                                      //For each item
-                if (item.GetType().Name == "Gold")                                                  //If it is gold
-                    return (item as Gold).amount;                                            //Return the amount
-            return 0;                                                                                       //Return zero if no gold is found
+            GoldMerge(ent);
+            foreach (Item item in GetInventory(ent).inventData)                                                      
+                if (item.GetType().Name == "Gold")                                                  
+                    return (item as Gold).amount;                                            
+            return 0;                                                                                       
         }
 
         public static Inventory GetInventory(string invName)
@@ -177,11 +177,22 @@ namespace RPGGame
                     return inv;
             return new Inventory(invName);
         }
-
-        public static Boolean InventoryIsAccessible(string invName)
+        public static Inventory GetInventory(Entity ent)
         {
+            if (ent != null)
+                foreach (Inventory inv in Inventories)
+                    if (inv.name == ent.inventory.name)
+                        return inv;
+            return new Inventory(ent.name);
+        }
+
+
+        public static Boolean InventoryIsAccessible(Entity ent)
+        {
+            if (ent == null)
+                return false;
             foreach (Inventory inv in GetLocalInventories())
-                if (inv.name == invName)
+                if (inv.name == ent.inventory.name)
                 return true;
             return false;
         }

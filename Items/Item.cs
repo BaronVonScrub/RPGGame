@@ -7,12 +7,12 @@ using System.Text;
 
 namespace RPGGame
 {
-    abstract class Item                                                                                 //Parent item
+    abstract class Item                                                                                 
     {
         Boolean equipped = false;
-        public int value;                                                                               //The value of the item
-        public string name = "Unnamed item";                                                            //The name of the item
-        public SortedDictionary<String, String> itemData = new SortedDictionary<String, String>();      //The list of attributes of the item
+        public int value;                                                                               
+        public string name = "Unnamed item";                                                            
+        public SortedDictionary<String, String> itemData = new SortedDictionary<String, String>();      
         public Boolean Equipped {
             get
             {
@@ -24,30 +24,30 @@ namespace RPGGame
             }
         }
 
-        protected Item(string inputData)                                                                //Base constructor
+        protected Item(string inputData)                                                                
         {
-            foreach (Match match in Regex.Matches(inputData, AttFinder))                                //For each attribute found in inputData
+            foreach (Match match in Regex.Matches(inputData, AttFinder))                                
                 {
-                String[] attData = match.Value.Split(":");                                              //Split it
-                itemData.Add(attData[0],attData[1]);                                                    //Add the key and value to the attribute list
+                String[] attData = match.Value.Split(":");                                              
+                itemData.Add(attData[0],attData[1]);                                                    
                 }
 
-            if (!itemData.ContainsKey("name"))                                                          //Must have name, or will be assigned "Unnamed Item"
+            if (!itemData.ContainsKey("name"))                                                          
                 itemData.Add("name", name);
             else
                 name = itemData["name"];
 
-            if (itemData.ContainsKey("value"))                                                          //Must have value, or it will be assigned "0"      
+            if (itemData.ContainsKey("value"))                                                          
                 value = Int32.Parse(itemData["value"]);
             else
                 itemData.Add("value", value.ToString());
 
-            if (itemData.ContainsKey("equipped"))                                                          //Must have value, or it will be assigned "0"      
+            if (itemData.ContainsKey("equipped"))                                                          
                 equipped = Convert.ToBoolean(itemData["equipped"]);
             else
                 itemData.Add("equipped", "false");
 
-            if (!itemData.ContainsKey("type"))                                                          //Type is locked in                     
+            if (!itemData.ContainsKey("type"))                                                          
                 itemData.Add("type",this.GetType().Name);
             else
             {
@@ -61,23 +61,23 @@ namespace RPGGame
 
         virtual public String Look()
         {
-            return name;                                                                       //Write the name of the item
+            return name;                                                                       
         }
 
-        public void Examine()                                                                           //Lists the item information
+        public void Examine()                                                                           
         {
-            if (itemData.ContainsKey("name"))                                                           //Name first
+            if (itemData.ContainsKey("name"))                                                           
                 WriteLine(itemData["name"]);
-            if (itemData.ContainsKey("type"))                                                           //Type second
+            if (itemData.ContainsKey("type"))                                                           
                 WriteLine("Type : "+itemData["type"]);
             if (itemData.ContainsKey("amount"))
-                WriteLine("Amount : " + itemData["amount"]);                                       //Amount third
+                WriteLine("Amount : " + itemData["amount"]);                                       
             if (itemData.ContainsKey("value"))
-                WriteLine("value : " + itemData["value"]);                                         //Value fourth
-            foreach (KeyValuePair<String,String> dat in itemData)                                       //For each attribute
+                WriteLine("value : " + itemData["value"]);                                         
+            foreach (KeyValuePair<String,String> dat in itemData)                                       
             {
-                if (dat.Key!="name"&&dat.Key!="type"&&dat.Key!="amount"&&dat.Key!="value")              //If it isn't one of those already listed
-                    WriteLine(dat.Key + " : " + dat.Value);                                        //List it
+                if (dat.Key!="name"&&dat.Key!="type"&&dat.Key!="amount"&&dat.Key!="value")              
+                    WriteLine(dat.Key + " : " + dat.Value);                                        
             }
         }
 

@@ -9,13 +9,12 @@ namespace RPGGame
     {
          public static void Initialize()
         {
-            TextQueue = new Queue<Line>();
             WriteLine("                        Welcome!");
             WriteLine("            Type HELP for a list of commands!");
             WriteLine("");
         }
 
-        public static void WriteLine(String inp)                                                          //Outputs a line in green
+        public static void WriteLine(String inp)                                                          
         {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(inp);
@@ -25,7 +24,7 @@ namespace RPGGame
                 TextQueue.Dequeue();
         }
 
-        public static String ReadLine()                                                          //Outputs a line in green
+        public static String ReadLine()                                                          
         {
             Console.ForegroundColor = ConsoleColor.White;
             String line = Console.ReadLine();
@@ -46,7 +45,7 @@ namespace RPGGame
             }
         }
 
-        public static void Write(String inp)                                                              //Outputs in green
+        public static void Write(String inp)                                                              
         {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write(inp);
@@ -55,8 +54,8 @@ namespace RPGGame
         
         public static void GoldDisplay()
         {
-            WriteLine(UNDERLINE + Target.Replace("\\b", "").ToUpper() + RESET);                             //Write inventory title
-            WriteLine("GOLD : " + GetGold(Target));                                                         //Write inventory gold 
+            WriteLine(UNDERLINE + Target.inventory.name.ToUpper() + RESET);                             
+            WriteLine("GOLD : " + GetGold(Target));                                                         
             WriteLine(UNDERLINE + "______________________________________________________" + RESET);
         }
     }

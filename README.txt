@@ -52,7 +52,7 @@ FILE MANIFEST:
 
 
 LICENSING: GNU General Public License
-https://www.gnu.org/licenses/gpl-3.0.en.html
+https:
 
 REQUIREMENTS: Windows 10 (insider) build 1826 or higher
 Support not guaranteed on other platforms or earlier builds

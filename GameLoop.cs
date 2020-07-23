@@ -16,8 +16,8 @@ namespace RPGGame
             {
                 Redraw();
 
-                Input = ReadLine();                                                   //Get console Input
-                CurrentCommand = ProcessInput(Input);                                           //Check for valid commands                           //Record current command
+                Input = ReadLine();                                                   
+                CurrentCommand = ProcessInput(Input);                                           
 
                 if (CurrentCommand == "")
                 {
@@ -28,12 +28,12 @@ namespace RPGGame
                 else
                 {
                     WriteLine("");
-                    Commands[CurrentCommand]();                                                         //Execute current command
+                    Commands[CurrentCommand]();                                                         
                     WriteLine("");
                 }
 
             }
-            while (CurrentCommand != "^QUIT$" && CurrentCommand != "^TEST$");                                                     //Continue loop until command is Quit
+            while (CurrentCommand != "^QUIT$" && CurrentCommand != "^TEST$");                                                     
             WriteLine("Game saved! Press any key to continue...");
             Redraw();
             Console.ReadKey();

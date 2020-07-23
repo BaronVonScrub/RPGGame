@@ -16,6 +16,7 @@ namespace RPGGame
             MainBoard = new GameBoard();
 
             Player = new Human("Player", new Coordinate(0, 0), (char)9787, 100, GetInventory("INVENTORY"));
+            Target = Player;
             merchant = new Human("Merchant",new Coordinate(3, 0), (char)9786, 99, GetInventory("MERCHANT"));
             dummy = new Entity("Dummy", new Coordinate(5, 0), (char)9786, 99,null);
 

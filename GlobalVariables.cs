@@ -16,19 +16,19 @@ namespace RPGGame
         public const char RightBottomCornerBorder = (char)9565;
         public const int viewDistanceWidth = 5;
         public const int viewDistanceHeight = 5;
-        public const string UNDERLINE = "\x1B[4m";                                                                  //The ANSI escape character for underline
-        public const string RESET = "\x1B[0m";                                                                      //The ANSI escape character to end the underline
+        public const string UNDERLINE = "\x1B[4m";                                                                  
+        public const string RESET = "\x1B[0m";                                                                      
 
         private static Entity player;
         private static GameBoard mainBoard;
         private static int inventNum;
         private static String input = "";
-        private static readonly String attFinder = "(\\S+:[\\w\\s]+)(?=\\s|$)";                                          //The Regex format to parse attributes
+        private static readonly String attFinder = "(\\S+:[\\w\\s]+)(?=\\s|$)";                                          
         private static bool superStatus = false;
-        private static String target = "INVENTORY";
+        private static Entity target = Player;
         private static List<Inventory> inventories = new List<Inventory>();
-        private static Queue<Line> textQueue;
-        private static String keyList = "";                                                                   //Used for a regex to find all keywords
+        private static Queue<Line> textQueue = new Queue<Line>();
+        private static String keyList = "";                                                                   
 
         public static int InventNum { get => inventNum; set => inventNum = value; }
         internal static Entity Player { get => player; set => player = value; }
@@ -36,16 +36,16 @@ namespace RPGGame
         public static Dictionary<string, Action> Commands { get => commands; set => commands = value; }
         public static string Input { get => input; set => input = value; }
         public static List<string> Types { get => types; set => types = value; }
-        public static String CurrentCommand { get; set; }                                                                        //Current valid command
+        public static String CurrentCommand { get; set; }                                                                        
         public static string AttFinder => attFinder;
         public static bool SuperStatus { get => superStatus; set => superStatus = value; }
-        public static string Target { get => target; set => target = value; }
+        public static Entity Target { get => target; set => target = value; }
         internal static List<Inventory> Inventories { get => inventories; set => inventories = value; }
         public static string KeyList { get => keyList; set => keyList = value; }
         internal static Queue<Line> TextQueue { get => textQueue; set => textQueue = value; }
         public static List<string> TestCommandList { get => testCommandList; set => testCommandList = value; }
 
-        private static Dictionary<String, Action> commands = new Dictionary<String, Action>()                        //Associates all commands with methods
+        private static Dictionary<String, Action> commands = new Dictionary<String, Action>()                        
                 {
                     { "^$", () => Empty() },
                     { "\\bBUY\\b", () => Buy() },
@@ -67,7 +67,7 @@ namespace RPGGame
                     { "^TEST$", () => Test() }
                 };
 
-        static List<string> types = new List<String>()                                                       //Lists possible types
+        static List<string> types = new List<String>()                                                       
             {
                 "\\bWEAPON\\b",
                 "\\bPOTION\\b",
@@ -83,29 +83,32 @@ namespace RPGGame
         private static MoveCommand EAST = new MoveCommand(1, 0);
         private static MoveCommand WEST = new MoveCommand(-1, 0);
 
-        private static List<string> testCommandList = new List<string>                                                        //List of test commands
+        private static List<string> testCommandList = new List<string>                                                        
             {
             "HELP",
-            "LOOK INVENTORY",
-            "LOOK MERCHANT",
+            "LOOK Player",
+            "GO EAST",
+            "GO EAST",
+            "E",
+            "LOOK Merchant",
             "EXAMINE Axe",
             "BUY Axe",
-            "LOOK INVENTORY",
-            "LOOK MERCHANT",
+            "LOOK Player",
+            "LOOK Merchant",
             "SELL Axe",
-            "LOOK INVENTORY",
-            "LOOK MERCHANT",
-            "RENAME INVENTORY Bow Longbow",
-            "LOOK INVENTORY",
+            "LOOK Player",
+            "LOOK Merchant",
+            "RENAME Player Bow Longbow",
+            "LOOK Player",
             "EXAMINE Longbow",
             "EXAMINE Bow",
-            "EXAMINE MERCHANT Axe",
+            "EXAMINE Player Axe",
             "GIVE ME GOOD GRADES",
-            "ADD MERCHANT WEAPON name:Rapier attackModifier:5 value:35",
-            "LOOK MERCHANT",
+            "ADD Merchant WEAPON name:Rapier attackModifier:5 value:35",
+            "LOOK Merchant",
             "EXAMINE Rapier",
             "REMOVE Rapier",
-            "LOOK MERCHANT",
+            "LOOK Merchant",
             "QUIT"
             };
     }

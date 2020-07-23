@@ -5,9 +5,9 @@ using static RPGGame.TextTool;
 namespace RPGGame
 {
     public static class ConsoleHelper
-    //This code is primarily adapated from user Jaykul from StackOverflow
-    //https://stackoverflow.com/questions/52356843/setcurrentconsolefontex-isnt-working-for-long-font-names
-    //However, it only affects the console aesthetics, and doesn't relate to anything assessment related.
+    
+    
+    
     {
         private const int FixedWidthTrueType = 54;
         private const int StandardOutputHandle = -11;
@@ -55,9 +55,9 @@ namespace RPGGame
 
         public static void Initialize()
         {
-            SetUpConsole();                                                                //ConsoleHelper is mostly code adapted from online
-            SetCurrentFont("Courier New", 25);                                             //Sets the font
-            MoveWindow(ConsoleHelper.GetConsoleWindow(), 300, 20, 800, 800, true);         //Sets window position and size
+            SetUpConsole();                                                                
+            SetCurrentFont("Courier New", 25);                                             
+            MoveWindow(ConsoleHelper.GetConsoleWindow(), 300, 20, 800, 800, true);         
             Console.SetBufferSize(57, 30);
             Console.Title = "RPG GAME";
 
@@ -111,7 +111,7 @@ namespace RPGGame
             public int FontFamily;
             public int FontWeight;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-            //[MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.wc, SizeConst = 32)]
+            
             public string FontName;
         }
 
@@ -139,7 +139,7 @@ namespace RPGGame
                     FontSize = fontSize > 0 ? fontSize : before.FontSize
                 };
 
-                // Get some settings from current font.
+                
                 if (!SetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref set))
                 {
                     var ex = Marshal.GetLastWin32Error();

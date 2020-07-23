@@ -14,68 +14,68 @@ namespace RPGGame
             KeyListCreate();
         }
 
-        public static String ProcessInput(string inp)                                                            //Extract commands from input 
+        public static String ProcessInput(string inp)                                                            
         {
-            Target = GetTarget();                                                                            //Change inventory focus based on input
+            Target = GetTarget();                                                                            
             foreach (KeyValuePair<String, Action> command in Commands)
-            {                                      //Check input against each command
+            {                                      
                 Match match = Regex.Match(inp, command.Key);
                 if (match.Success)
-                    return command.Key;                                                                      //Breaks loop - note that earliest command in array prioritised
+                    return command.Key;                                                                      
             }
-            return "";                                                                                       //Return empty if no command found
+            return "";                                                                                       
         }
 
-        public static String GetTarget()                                                                           //Get focused inventory from input 
+        public static Entity GetTarget()                                                                           
         {
-            String tempTarget = Target;                                                                              //Default to Inventory if no previous focus                                                                      //Else default to preveious
+            Entity tempTarget = Target;
 
-            foreach (Inventory inventory in GetLocalInventories())                             //For each inventory
+            foreach (Entity ent in MainBoard.GetFromBoard(Player.position))                             
             {
-                if (Regex.Match(Input, "\\b"+inventory.name+"\\b").Success)                                              //If one is found
+                if (Regex.Match(Input, "\\b"+ent.name+"\\b").Success)                                              
                 {
-                    tempTarget = inventory.name;
-                    return tempTarget;                                                                      //return it
+                    tempTarget = ent;
+                    return tempTarget;                                                                      
                 }
             }
-            return tempTarget;                                                                              //Otherwise return the default
+            return tempTarget;                                                                              
         }
 
-        public static String GetItemType()                                                                             //Get type from input 
+        public static String GetItemType()                                                                             
         {
-            String tempType = null;                                                                          //Default to null
+            String tempType = null;                                                                          
 
-            foreach (String type in Types)                                                                  //For each possible type
+            foreach (String type in Types)                                                                  
             {
                 if (Regex.Match(Input, type).Success)
                 {
                     tempType = StripRegex(type);
-                    return tempType;                                                                        //Return it if found
+                    return tempType;                                                                        
                 }
             }
-            return tempType;                                                                                //Else return default (Null)
+            return tempType;                                                                                
         }
 
-        public static String GetItemType(String indata)                                                                             //Get type from input 
+        public static String GetItemType(String indata)                                                                             
         {
-            String tempType = null;                                                                          //Default to null
+            String tempType = null;                                                                          
 
-            foreach (String type in Types)                                                                  //For each possible type
+            foreach (String type in Types)                                                                  
             {
                 if (Regex.Match(indata, type).Success)
                 {
                     tempType = StripRegex(type);
-                    return tempType;                                                                        //Return it if found
+                    return tempType;                                                                        
                 }
             }
-            return tempType;                                                                                //Else return default (Null)
+            return tempType;                                                                                
         }
 
-        public static String Strip(string indata)                                                                  //Cleans non-keyword data in input 
+        public static String Strip(string indata)                                                                  
         {
-            String data = Regex.Replace(indata, KeyList, "");                                                //Remove all keywords
-            data = Regex.Replace(data, "^\\s*|\\s*$", "");                                                  //Remove preceding and trailing whitespace
-            return data;                                                                                    //Return what is left
+            String data = Regex.Replace(indata, KeyList, "");                                                
+            data = Regex.Replace(data, "^\\s*|\\s*$", "");                                                  
+            return data;                                                                                    
         }
 
         public static void KeyListCreate()
@@ -89,12 +89,12 @@ namespace RPGGame
             KeyList = KeyList.Substring(0, KeyList.Length - 1);
         }
 
-        public static Item ItemMake()                                                                              //Create item from input
+        public static Item ItemMake()                                                                              
         {
-            string type = GetItemType();                                                                        //Get the item 
-            String data = Strip(Input);                                                                //Clean the input
-            if (data != "")                                                                                   //If any data remains
-                return type switch                                                                          //Create an item based on type
+            string type = GetItemType();                                                                        
+            String data = Strip(Input);                                                                
+            if (data != "")                                                                                   
+                return type switch                                                                          
                 {
                     "WEAPON" => new Weapon(data),
                     "POTION" => new Potion(data),
@@ -105,15 +105,15 @@ namespace RPGGame
                     _ => new Miscellaneous(data)
                 };
             else
-                return null;                                                                                //Return null if no data
+                return null;                                                                                
         }
 
-        public static Item ItemMake(String indata)                                                                              //Create item from input
+        public static Item ItemMake(String indata)                                                                              
         {
-            string type = GetItemType(indata);                                                                        //Get the item type
-            String data = Strip(indata);                                                                     //Clean the input
-            if (data != "")                                                                                   //If any data remains
-                return type switch                                                                          //Create an item based on type
+            string type = GetItemType(indata);                                                                        
+            String data = Strip(indata);                                                                     
+            if (data != "")                                                                                   
+                return type switch                                                                          
                 {
                     "WEAPON" => new Weapon(data),
                     "POTION" => new Potion(data),
@@ -124,7 +124,7 @@ namespace RPGGame
                     _ => new Miscellaneous(data)
                 };
             else
-                return null;                                                                                //Return null if no data
+                return null;                                                                                
         }
 
         public static String StripRegex(String inp)

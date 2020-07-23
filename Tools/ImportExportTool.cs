@@ -9,7 +9,7 @@ namespace RPGGame
 {
     class ImportExportTool
     {
-        public static string[] GetInventoryList()                                                        //Gets a list of all Inventories from an index file
+        public static string[] GetInventoryList()                                                        
         {
             string currDir = Directory.GetCurrentDirectory();
             string storageDir = currDir + "\\Inventories";
@@ -20,7 +20,7 @@ namespace RPGGame
             return nameClean2;
         }
 
-        public static void importInventory(string inventoryName)                                                    //Imports an inventory from file
+        public static void importInventory(string inventoryName)                                                    
         {
             #region Set paths
             string currDir = Directory.GetCurrentDirectory();
@@ -36,34 +36,34 @@ namespace RPGGame
 
             #region Read File
             Inventory inv = GetInventory(inventoryName);
-            foreach (string item in File.ReadLines(inventFile))                                              //For each line(item) in the inventory                                                                                           //Get the inventory name from the file name
-                inv.inventData.Add(ParseTool.ItemMake(item));                                                         //Uses the add command to create each loaded file in inventory
+            foreach (string item in File.ReadLines(inventFile))                                              
+                inv.inventData.Add(ParseTool.ItemMake(item));                                                         
             Inventories.Add(inv);
 
             #endregion
         }
 
-        public static void ExportInventory(Inventory inventory)                              //Exports an inventory to file 
+        public static void ExportInventory(Inventory inventory)                              
         {
             #region Set paths
             string currDir = Directory.GetCurrentDirectory();
             string storageDir = currDir + "\\Inventories";
-            string inventName = inventory.name;
-            string inventFile = storageDir + "\\" + inventName + ".dat";
+            string invent = inventory.name;
+            string inventFile = storageDir + "\\" + invent + ".dat";
             #endregion
 
             #region Output to file
-            File.WriteAllText(inventFile, "");                                                               //Blank out file
+            File.WriteAllText(inventFile, "");                                                               
             using (StreamWriter sw = File.CreateText(inventFile))
             {
                 foreach (Item item in inventory.inventData)
-                {                                                     //For each item in the inventory
-                    sw.Write(item.itemData["type"].ToUpper());                                               //MERCHANT its type first as a command, for import processing purposes
-                    foreach (KeyValuePair<String, String> att in item.itemData)                              //MERCHANT all of its data in the proper format
+                {                                                     
+                    sw.Write(item.itemData["type"].ToUpper());                                               
+                    foreach (KeyValuePair<String, String> att in item.itemData)                              
                     {
                         sw.Write(" " + att.Key + ":" + att.Value);
                     }
-                    sw.Write(System.Environment.NewLine);                                                    //Next line + item
+                    sw.Write(System.Environment.NewLine);                                                    
                 }
             }
 
