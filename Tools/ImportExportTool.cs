@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using static RPGGame.GlobalVariables;
+using static RPGGame.InventoryManager;
 
 namespace RPGGame
 {
     class ImportExportTool
     {
-        public static string[] GetInventoryList()                                                        //Gets a list of all InventoryManager.inventories from an index file
+        public static string[] GetInventoryList()                                                        //Gets a list of all Inventories from an index file
         {
             string currDir = Directory.GetCurrentDirectory();
             string storageDir = currDir + "\\Inventories";
@@ -33,10 +35,10 @@ namespace RPGGame
             #endregion
 
             #region Read File
-            Inventory inv = InventoryManager.GetInventory(inventoryName);
+            Inventory inv = GetInventory(inventoryName);
             foreach (string item in File.ReadLines(inventFile))                                              //For each line(item) in the inventory                                                                                           //Get the inventory name from the file name
                 inv.inventData.Add(ParseTool.ItemMake(item));                                                         //Uses the add command to create each loaded file in inventory
-            InventoryManager.inventories.Add(inv);
+            Inventories.Add(inv);
 
             #endregion
         }

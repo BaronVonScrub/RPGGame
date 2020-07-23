@@ -1,31 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using static RPGGame.GlobalVariables;
+using static RPGGame.TextTool;
 
 namespace RPGGame
 {
     class GameBoard
     {
-        public Dictionary<Coordinate, List<Entity>> entityPos = new Dictionary<Coordinate, List<Entity>>();
-        public static int padding = 15;
-
-        private char LeftTopCornerBorder = (char)9556;
-        private char HorizontalBorder = (char)9552;
-        private char RightTopCornerBorder = (char)9559;
-        private char VerticalBorder = (char)9553;
-        private char LeftBottomCornerBorder = (char)9562;
-        private char RightBottomCornerBorder = (char)9565;
-
         View currentView;
-
-        public static int viewDistanceWidth = 5;
-        public static int viewDistanceHeight = 5;
+        public Dictionary<Coordinate, List<Entity>> entityPos = new Dictionary<Coordinate, List<Entity>>();
 
         public GameBoard() { }
 
         public void RenderBoard()
         {
-            currentView = EntityManager.player.GetView();
+            currentView = Player.GetView();
 
             #region Draw top border
             Pad();
@@ -77,7 +66,7 @@ namespace RPGGame
 
         private void Draw(char ch)
         {
-            TextTool.Write(ch+"");
+            Write(ch+"");
         }
 
         public void AddToBoard(Entity toAdd) {
@@ -106,17 +95,5 @@ namespace RPGGame
                     }
             return ic;
         }
-    }
-}
-
-struct Coordinate
-{
-    public int x;
-    public int y;
-
-    public Coordinate(int x, int y)
-    {
-        this.x = x;
-        this.y = y;
     }
 }

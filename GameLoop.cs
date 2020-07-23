@@ -1,4 +1,8 @@
 ﻿using System;
+using static RPGGame.GlobalVariables;
+using static RPGGame.TextTool;
+using static RPGGame.ConsoleHelper;
+using static RPGGame.ParseTool;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,28 +14,28 @@ namespace RPGGame
         {
             do
             {
-                ConsoleHelper.Redraw();
+                Redraw();
 
-                TextTool.input = TextTool.ReadLine();                                                   //Get console TextTool.input
-                TextTool.currentCommand = ParseTool.ProcessInput(TextTool.input);                                           //Check for valid commands                           //Record current command
+                Input = ReadLine();                                                   //Get console Input
+                CurrentCommand = ProcessInput(Input);                                           //Check for valid commands                           //Record current command
 
-                if (TextTool.currentCommand == "")
+                if (CurrentCommand == "")
                 {
-                    TextTool.WriteLine("");
-                    TextTool.WriteLine("Invalid Command!");
-                    TextTool.WriteLine("");
+                    WriteLine("");
+                    WriteLine("Invalid Command!");
+                    WriteLine("");
                 }
                 else
                 {
-                    TextTool.WriteLine("");
-                    ParseTool.commands[TextTool.currentCommand]();                                                         //Execute current command
-                    TextTool.WriteLine("");
+                    WriteLine("");
+                    Commands[CurrentCommand]();                                                         //Execute current command
+                    WriteLine("");
                 }
 
             }
-            while (TextTool.currentCommand != "^QUIT$" && TextTool.currentCommand != "^TEST$");                                                     //Continue loop until command is Quit
-            TextTool.WriteLine("Game saved! Press any key to continue...");
-            ConsoleHelper.Redraw();
+            while (CurrentCommand != "^QUIT$" && CurrentCommand != "^TEST$");                                                     //Continue loop until command is Quit
+            WriteLine("Game saved! Press any key to continue...");
+            Redraw();
             Console.ReadKey();
         }
     }

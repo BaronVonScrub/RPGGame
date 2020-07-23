@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using static RPGGame.GlobalVariables;
 using System.Text;
+using static RPGGame.TextTool;
 
 namespace RPGGame
 {
     static class InventoryManager
     {
-        public static List<Inventory> inventories = new List<Inventory>();     //List of the inventories   
-        public static String target = "INVENTORY";
+        
 
         public static void Initialize()
         {
@@ -16,15 +17,15 @@ namespace RPGGame
                 ImportExportTool.importInventory(inventoryName);                                                     //Import the inventory
             }
         }
-        public static Item RemoveNoLog()                                                                                //Remove and return the item specified in TextTool.TextTool.inputfrom the InventoryManager.target inventory
+        public static Item RemoveNoLog()                                                                                //Remove and return the item specified in Inputfrom the Target inventory
         {
-            if (CommandManager.super)                                                                                      //If you have super access
+            if (SuperStatus)                                                                                      //If you have super access
             {
-                InventoryManager.target = ParseTool.GetTarget();                                                                       //Set the inventory focus to the TextTool.input
-                String data = ParseTool.Strip(TextTool.input);                                                                 //Clean the TextTool.TextTool.inputdata
+                Target = ParseTool.GetTarget();                                                                       //Set the inventory focus to the Input
+                String data = ParseTool.Strip(Input);                                                                 //Clean the Inputdata
                 Item remove = null;                                                                         //Placehold the item to be removed
 
-                foreach (Item item in InventoryManager.GetCurrentInventoryList())                                                  //For each item in the focused inventory
+                foreach (Item item in GetCurrentInventoryList())                                                  //For each item in the focused inventory
                     if (data.ToUpper() == item.itemData["name"].ToUpper() && remove == null)                //If the item is there
                     {
                         remove = item;                                                                      //Capture the item
@@ -32,19 +33,19 @@ namespace RPGGame
 
                 if (remove != null)                                                                         //If an item was caught
                 {
-                    InventoryManager.GetCurrentInventoryList().Remove(remove);                                                     //Remove the item
+                    GetCurrentInventoryList().Remove(remove);                                                     //Remove the item
                     return remove;                                                                          //Return the item caught
                 }
                 else
                 {
-                    TextTool.WriteLine("Item not found!");
+                    WriteLine("Item not found!");
                     return null;
                 }
 
             }
             else
             {
-                TextTool.WriteLine("You do not have super access!");
+                WriteLine("You do not have super access!");
                 return null;
             }
 
@@ -54,33 +55,33 @@ namespace RPGGame
         {
             if (!(InventoryIsAccessible(to)&&InventoryIsAccessible(from)))
             {
-                TextTool.WriteLine("Other inventory is not accessible.");
+                WriteLine("Other inventory is not accessible.");
                 return false;
             }
 
             if (to==null ||from ==null)
             {
-                TextTool.WriteLine("Cannot trade with a null inventory!");
+                WriteLine("Cannot trade with a null inventory!");
                 return false;
             }
 
             if (to == from)                                                                                 //Refuse to trade from inventory to itself
             {
-                TextTool.WriteLine("Cannot trade with yourself!");
+                WriteLine("Cannot trade with yourself!");
                 return false;
             }
 
-            Boolean wasSuper = false;                                                                       //MERCHANT CommandManager.super state
-            if (CommandManager.super) wasSuper = true;                                                                     //Grant CommandManager.super access temporarily
-            CommandManager.super = true;
+            Boolean wasSuperStatus = false;                                                                       //MERCHANT SuperStatus state
+            if (SuperStatus) wasSuperStatus = true;                                                                     //Grant SuperStatus access temporarily
+            SuperStatus = true;
 
-            InventoryManager.target = from;                                                                                  //Shift inventory focus to the seller
+            Target = from;                                                                                  //Shift inventory focus to the seller
             Item moveItem = RemoveNoLog();                                                                       //Grab item
 
             if (moveItem == null)                                                                           //If the item wasn't found
             {
-                if (!wasSuper)                                                                              //Revoke CommandManager.super access if barred
-                    CommandManager.super = false;
+                if (!wasSuperStatus)                                                                              //Revoke SuperStatus access if barred
+                    SuperStatus = false;
                 return false;                                                                               //Return failed trade
             }
 
@@ -88,31 +89,31 @@ namespace RPGGame
 
             if (moveItem.GetType().Name == "Gold")                                                          //If you attempted to trade gold
             {
-                TextTool.WriteLine("Can't trade gold!");
-                InventoryManager.GetCurrentInventoryList().Add(moveItem);                                                          //Return item
-                if (!wasSuper)                                                                              //Revoke CommandManager.super access if barred
-                    CommandManager.super = false;
+                WriteLine("Can't trade gold!");
+                GetCurrentInventoryList().Add(moveItem);                                                          //Return item
+                if (!wasSuperStatus)                                                                              //Revoke SuperStatus access if barred
+                    SuperStatus = false;
                 return false;                                                                               //Return failed trade
             }
 
-            if (InventoryManager.GetGold(to) < value)                                                                       //If you don't have enough gold
+            if (GetGold(to) < value)                                                                       //If you don't have enough gold
             {
-                TextTool.WriteLine("Not enough gold!");
-                InventoryManager.GetCurrentInventoryList().Add(moveItem);                                                          //Return item
-                if (!wasSuper)                                                                              //Revoke CommandManager.super access if barred
-                    CommandManager.super = false;
+                WriteLine("Not enough gold!");
+                GetCurrentInventoryList().Add(moveItem);                                                          //Return item
+                if (!wasSuperStatus)                                                                              //Revoke SuperStatus access if barred
+                    SuperStatus = false;
                 return false;                                                                               //Return failed trade
             }
 
-            InventoryManager.GetCurrentInventoryList().Add(new Gold(value));                                                       //Add the gold to the seller
-            InventoryManager.target = to;                                                                                    //Shift inventory focus to buyer
-            InventoryManager.GetCurrentInventoryList().Add(moveItem);                                                              //Add the item to buyer inventory
-            InventoryManager.GetCurrentInventoryList().Add(new Gold(-1 * value));                                                  //Add a negative number of gold
+            GetCurrentInventoryList().Add(new Gold(value));                                                       //Add the gold to the seller
+            Target = to;                                                                                    //Shift inventory focus to buyer
+            GetCurrentInventoryList().Add(moveItem);                                                              //Add the item to buyer inventory
+            GetCurrentInventoryList().Add(new Gold(-1 * value));                                                  //Add a negative number of gold
 
-            if (!wasSuper)
-                CommandManager.super = false;                                                                              //Revoke CommandManager.super access if barred
+            if (!wasSuperStatus)
+                SuperStatus = false;                                                                              //Revoke SuperStatus access if barred
 
-            InventoryManager.target = from;                                                                                  //Return inventory focus to seller
+            Target = from;                                                                                  //Return inventory focus to seller
             return true;                                                                                    //Return successful trade
         }
 
@@ -134,7 +135,7 @@ namespace RPGGame
 
         public static List<Item> GetCurrentInventoryList()
         {
-            return GetInventory(target).inventData;
+            return GetInventory(Target).inventData;
         }
 
         public static void GoldMerge(string invent)                                                                             //Merges all gold items in an inventory 
@@ -153,10 +154,10 @@ namespace RPGGame
             if (goldQueue.Count!=0)
                 do
                 {
-                    GetInventory(target).inventData.Remove(goldQueue.Dequeue());                                            //Remove all golds from the inventory
+                    GetInventory(Target).inventData.Remove(goldQueue.Dequeue());                                            //Remove all golds from the inventory
                 }
                 while (goldQueue.Count != 0);
-            InventoryManager.GetInventory(target).inventData.Add(new Gold(amount));                                                      //Create a new gold with the total value (integer constructor)
+            GetInventory(Target).inventData.Add(new Gold(amount));                                                      //Create a new gold with the total value (integer constructor)
 
         }
 
@@ -171,7 +172,7 @@ namespace RPGGame
 
         public static Inventory GetInventory(string invName)
         {
-            foreach (Inventory inv in inventories)
+            foreach (Inventory inv in Inventories)
                 if (inv.name == invName)
                     return inv;
             return new Inventory(invName);
@@ -187,7 +188,7 @@ namespace RPGGame
 
         public static List<Inventory> GetLocalInventories()
         {
-            return GetInventories(EntityManager.mainBoard.GetFromBoard(EntityManager.player.position));
+            return GetInventories(MainBoard.GetFromBoard(Player.position));
         }
     }
 }

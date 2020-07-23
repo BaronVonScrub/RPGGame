@@ -35,13 +35,13 @@ FILE MANIFEST:
 	Managers
 		CommandManager.cs
 		EntityManager.cs
-		InventoryManager.cs
+		cs
 	Tools
 		ConsoleHelper.cs
 		ImportExportTool.cs
 		ParseTool.cs
 		TestTool.cs
-		TextTool.cs
+		cs
 	Entity.cs
 	Game.cs
 	GameBoard.cs

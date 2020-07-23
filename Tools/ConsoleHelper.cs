@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using static RPGGame.GlobalVariables;
+using static RPGGame.TextTool;
 namespace RPGGame
 {
     public static class ConsoleHelper
@@ -76,8 +78,8 @@ namespace RPGGame
         public static void Redraw()
         {
             Console.Clear();
-            EntityManager.mainBoard.RenderBoard();
-            TextTool.RenderText();
+            MainBoard.RenderBoard();
+            RenderText();
         }
 
         internal static void SetUpConsole()

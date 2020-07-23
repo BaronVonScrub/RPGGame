@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using static RPGGame.GlobalVariables;
 
 namespace RPGGame
 {
@@ -12,8 +12,11 @@ namespace RPGGame
         public char icon = (char)32;
         public int drawPriority = 0;
         public string name;
+        protected Dictionary<String, Item[]> equiptory = new Dictionary<string, Item[]>();
 
         #region Constructors
+        public Entity() { }
+
         public Entity(String name, Coordinate position, char icon, int drawPriority, Inventory inventory)
         {
             this.name = name;
@@ -22,8 +25,8 @@ namespace RPGGame
             this.icon = icon;
             this.drawPriority = drawPriority;
             if (inventory != null)
-                if (!InventoryManager.inventories.Contains(inventory))
-                    InventoryManager.inventories.Add(inventory);
+                if (!Inventories.Contains(inventory))
+                    Inventories.Add(inventory);
         }
 
         public Entity(String name, Coordinate position, char icon, int drawPriority)
@@ -34,8 +37,8 @@ namespace RPGGame
             this.drawPriority = drawPriority;
             this.inventory = new Inventory(name);
             if (inventory != null)
-                if (!InventoryManager.inventories.Contains(inventory))
-                    InventoryManager.inventories.Add(inventory);
+                if (!Inventories.Contains(inventory))
+                    Inventories.Add(inventory);
         }
 
         public Entity(String name, Coordinate position, char icon, Inventory inventory)
@@ -45,9 +48,9 @@ namespace RPGGame
             this.inventory = inventory;
             this.drawPriority = 0;
             this.icon = icon;
-            if (inventory!=null)
-                if (!InventoryManager.inventories.Contains(inventory))
-                    InventoryManager.inventories.Add(inventory);
+            if (inventory != null)
+                if (!Inventories.Contains(inventory))
+                    Inventories.Add(inventory);
         }
 
         public Entity(String name, Coordinate position, char icon)
@@ -58,8 +61,8 @@ namespace RPGGame
             this.drawPriority = 0;
             this.inventory = new Inventory(name);
             if (inventory != null)
-                if (!InventoryManager.inventories.Contains(inventory))
-                    InventoryManager.inventories.Add(inventory);
+                if (!Inventories.Contains(inventory))
+                    Inventories.Add(inventory);
         }
         #endregion
 
@@ -67,14 +70,57 @@ namespace RPGGame
         {
             return new View(
                 new Coordinate(
-                    position.x - GameBoard.viewDistanceWidth,
-                    position.y - GameBoard.viewDistanceHeight
+                    position.x - viewDistanceWidth,
+                    position.y - viewDistanceHeight
                     ),
                 new Coordinate(
-                    position.x + GameBoard.viewDistanceWidth,
-                    position.y + GameBoard.viewDistanceHeight
+                    position.x + viewDistanceWidth,
+                    position.y + viewDistanceHeight
                     )
                 );
+        }
+
+        public void EquipUpdate()
+        {
+            foreach (Item item in inventory.inventData)
+            {
+                Boolean done = false;
+                if (item.itemData["equipped"] == "true")
+                {
+                    item.Equipped = true;
+                    for (int i = 0; i < equiptory[item.GetType().Name].Length; i++)
+                        if (equiptory[item.GetType().Name][i] == null)
+                        {
+                            equiptory[item.GetType().Name][i] = item;
+                            done = true;
+                            break;
+                        }
+                }
+                if (!done)
+                    item.Equipped = false;
+            }
+        }
+
+        public Boolean Equip(Item item)
+        {
+            Boolean done = false;
+            if (item.itemData["equipped"] == "true")
+            {
+                item.Equipped = true;
+                for (int i = 0; i < equiptory[item.GetType().Name].Length; i++)
+                    if (equiptory[item.GetType().Name][i] == null)
+                    {
+                        equiptory[item.GetType().Name][i] = item;
+                        done = true;
+                        break;
+                    }
+            }
+            if (!done)
+            {
+                item.Equipped = false;
+                return false;
+            }
+            return true;
         }
     }
 
