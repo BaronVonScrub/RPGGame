@@ -6,4 +6,8 @@ GOLD amount:30 equipped:False name:Gold type:Gold value:30
 MERCHANT
 WEAPON attackModifier:5 equipped:False name:Axe type:Weapon value:15
 GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+CHEST
+WEAPON attackModifier:2 equipped:False name:Dagger type:Weapon value:5
+GOLD amount:10 equipped:False name:Gold type:Gold value:10
 ENDFILE

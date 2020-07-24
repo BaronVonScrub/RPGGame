@@ -12,9 +12,11 @@ namespace RPGGame
         public char icon = (char)32;
         public int drawPriority = 0;
         private string name;
+        private Boolean passive;
         protected Dictionary<String, Item[]> equiptory = new Dictionary<string, Item[]>();
 
         public string Name { get => name; set => name = value; }
+        public bool Passive { get => passive; set => passive = value; }
 
         #region Constructors
         public Entity() { }
@@ -26,9 +28,11 @@ namespace RPGGame
             this.inventory = inventory;
             this.icon = icon;
             this.drawPriority = drawPriority;
+            Passive = true;
             if (inventory != null)
                 if (!Inventories.Contains(inventory))
                     Inventories.Add(inventory);
+            EquipUpdate();
         }
 
         public Entity(String name, Coordinate position, char icon, int drawPriority)
@@ -38,9 +42,11 @@ namespace RPGGame
             this.icon = icon;
             this.drawPriority = drawPriority;
             this.inventory = new Inventory(name);
+            Passive = true;
             if (inventory != null)
                 if (!Inventories.Contains(inventory))
                     Inventories.Add(inventory);
+            EquipUpdate();
         }
 
         public Entity(String name, Coordinate position, char icon, Inventory inventory)
@@ -50,9 +56,11 @@ namespace RPGGame
             this.inventory = inventory;
             this.drawPriority = 1;
             this.icon = icon;
+            Passive = true;
             if (inventory != null)
                 if (!Inventories.Contains(inventory))
                     Inventories.Add(inventory);
+            EquipUpdate();
         }
 
         public Entity(String name, Coordinate position, char icon)
@@ -62,9 +70,11 @@ namespace RPGGame
             this.icon = icon;
             this.drawPriority = 0;
             this.inventory = new Inventory(name);
+            Passive = true;
             if (inventory != null)
                 if (!Inventories.Contains(inventory))
                     Inventories.Add(inventory);
+            EquipUpdate();
         }
         #endregion
 
@@ -84,6 +94,8 @@ namespace RPGGame
 
         public void EquipUpdate()
         {
+            if (inventory == null)
+                return;
             foreach (Item item in inventory.inventData.FindAll(x => x.Equipped = true))
             {
                 Boolean done = false;

@@ -25,11 +25,11 @@ namespace RPGGame
                     lineNum += 1;
                     inv.inventData.Add(ItemMake(lines[lineNum]));
                 }
-                while (lines[lineNum+1] != "" && lines[lineNum + 1] != "ENDFILE");
+                while (lines[lineNum + 1] != "" && lines[lineNum + 1] != "ENDFILE");
                 lineNum += 1;
                 Inventories.Add(inv);
             }
-            while (lineNum != lines.Length - 1);
+            while (lines[lineNum] != "ENDFILE");
         }
 
         public static void ExportInventories()                              
@@ -62,7 +62,8 @@ namespace RPGGame
 
             for (int lineNum=0; lineNum<lines.Length-1;lineNum+=7)
             {
-                String[] entData = { lines[lineNum], lines[lineNum + 1], lines[lineNum + 2], lines[lineNum + 3], lines[lineNum + 4], lines[lineNum + 5] };
+                string[] entData = new string[6];
+                Array.Copy(lines, lineNum, entData, 0, 6);
                 MainBoard.AddToBoard(EntityFactory(entData));
             }
         }

@@ -4,6 +4,7 @@ using System.Linq;
 using static RPGGame.GlobalVariables;
 using static RPGGame.InventoryManager;
 using static RPGGame.ImportExportTool;
+using System.Reflection;
 
 namespace RPGGame
 {
@@ -31,6 +32,12 @@ namespace RPGGame
         public static List<Entity> GetLocalEntities()
         {
             return MainBoard.GetFromBoard(Player.position);
+        }
+
+        public static dynamic EntityFactoryReflection(string entType, string name, Coordinate position, Char icon, int drawPriority, Inventory inventory) {
+            Assembly currentAssembly = Assembly.GetExecutingAssembly();
+            var currentType = currentAssembly.GetTypes().SingleOrDefault(t => t.Name == entType);
+            return Activator.CreateInstance(currentType,name,position,icon,drawPriority,inventory);
         }
     }
 }

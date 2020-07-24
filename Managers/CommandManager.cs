@@ -104,6 +104,25 @@ namespace RPGGame
                 
         }
 
+        public static void Take()
+        {
+            Target = GetTarget();
+
+            if (Target.Passive == false)
+            {
+                WriteLine("They won't let you just take it!");
+                return;
+            }
+
+            String data = Strip(Input);
+            Item moveItem = Grab(Target, Player);
+
+            if (moveItem == null)
+                return;
+            Player.inventory.inventData.Add(moveItem);
+
+        }
+
         public static void GrantSuper()                                                                                 
         {
             SuperStatus = true;
@@ -132,7 +151,7 @@ namespace RPGGame
 
         public static Item Remove()
         {
-            Item temp = RemoveNoLog();
+            Item temp = RemoveNoLog(false);
             WriteLine(temp.Name + " removed!");
             return temp;
         }

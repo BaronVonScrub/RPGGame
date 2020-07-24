@@ -67,6 +67,7 @@ namespace RPGGame
                     { "\\bRENAME\\b", () => Rename() },
                     { "\\bEQUIP\\b", () => Equip() },
                     { "\\bUNEQUIP\\b", () => Unequip() },
+                    { "\\bTAKE\\b", () => Take() },
                     { "^GO NORTH$|^[nN]$" , () => Move(NORTH) },
                     { "^GO SOUTH$|^[sS]$" , () => Move(SOUTH) },
                     { "^GO EAST$|^[eE]$" , () => Move(EAST) },

@@ -4,6 +4,8 @@ using System.Text.RegularExpressions;
 using System.Linq;
 using static RPGGame.InventoryManager;
 using static RPGGame.GlobalVariables;
+using static RPGGame.EntityManager;
+using System.Reflection;
 
 namespace RPGGame
 {
@@ -53,6 +55,17 @@ namespace RPGGame
             return data;                                                                                    
         }
 
+        static string FirstUpperOnly(string s)
+        {
+            // Check for empty string.
+            if (string.IsNullOrEmpty(s))
+            {
+                return string.Empty;
+            }
+            // Return char and concat substring.
+            return char.ToUpper(s[0]) + s.Substring(1).ToLower();
+        }
+
         public static void KeyListCreate()
         {
             foreach (KeyValuePair<String, Action> command in Commands)
@@ -70,50 +83,29 @@ namespace RPGGame
             if (entData[5] != "Null")
                 inv = GetInventory(entData[5]);
 
-            return entData[1] switch
-            {
-                "Human" => new Human(entData[0],new Coordinate(entData[4].Split(" ")),(char)Int32.Parse(entData[2]),Int32.Parse(entData[3]),inv),
-                "Entity" => new Entity(entData[0], new Coordinate(entData[4].Split(" ")), (char)Int32.Parse(entData[2]), Int32.Parse(entData[3]), inv),
-                _ => new Entity()
-            };
+            return EntityFactoryReflection(entData[1], entData[0], new Coordinate(entData[4].Split(" ")), (char)Int32.Parse(entData[2]), Int32.Parse(entData[3]), inv);
         }
 
         public static Item ItemMake()                                                                              
         {
-            string type = GetItemType();                                                                        
-            String data = Strip(Input);                                                                
-            if (data != "")                                                                                   
-                return type switch                                                                          
-                {
-                    "WEAPON" => new Weapon(data),
-                    "POTION" => new Potion(data),
-                    "GOLD" => new Gold(data),
-                    "AMMUNITION" => new Ammunition(data),
-                    "RING" => new Ring(data),
-                    "ARMOUR" => new Armour(data),
-                    _ => new Miscellaneous(data)
-                };
-            else
-                return null;                                                                                
+            return ItemMake(Input);                                                                             
         }
 
         public static Item ItemMake(String indata)                                                                              
         {
-            string type = GetItemType(indata);                                                                        
-            String data = Strip(indata);                                                                     
-            if (data != "")                                                                                   
-                return type switch                                                                          
-                {
-                    "WEAPON" => new Weapon(data),
-                    "POTION" => new Potion(data),
-                    "GOLD" => new Gold(data),
-                    "AMMUNITION" => new Ammunition(data),
-                    "RING" => new Ring(data),
-                    "ARMOUR" => new Armour(data),
-                    _ => new Miscellaneous(data)
-                };
+            string type = FirstUpperOnly(GetItemType(indata));                                                                        
+            String data = Strip(indata);
+            if (data != "")
+                return ItemFactoryReflection(type, indata);
             else
                 return null;                                                                                
+        }
+
+        public static dynamic ItemFactoryReflection(string entType, string indata)
+        {
+            Assembly currentAssembly = Assembly.GetExecutingAssembly();
+            var currentType = currentAssembly.GetTypes().SingleOrDefault(t => t.Name == entType);
+            return Activator.CreateInstance(currentType, indata);
         }
     }
 }

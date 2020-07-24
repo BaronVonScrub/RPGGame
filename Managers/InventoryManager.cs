@@ -14,9 +14,9 @@ namespace RPGGame
         {
             ImportInventories();                                                     
         }
-        public static Item RemoveNoLog()                                                                                
+        public static Item RemoveNoLog(Boolean bypass)                                                                                
         {
-            if (!SuperStatus)
+            if (!SuperStatus&&bypass==false)
             {
                 WriteLine("You do not have super access!");
                 return null;
@@ -37,67 +37,68 @@ namespace RPGGame
             return null;
         }
 
-        public static Boolean Trade(Entity from, Entity to)                                                        
-        {
-            if (!(InventoryIsAccessible(to)&&InventoryIsAccessible(from)))
+        public static Item Grab(Entity from, Entity to) {
+
+            if (!(InventoryIsAccessible(to) && InventoryIsAccessible(from)))
             {
                 WriteLine("Other inventory is not accessible.");
-                return false;
+                return null;
             }
 
-            if (to==null ||from ==null)
+            if (to == null || from == null)
             {
                 WriteLine("Cannot trade with a null inventory!");
-                return false;
+                return null;
             }
 
-            if (to == from)                                                                                 
+            if (to == from)
             {
                 WriteLine("Cannot trade with yourself!");
+                return null;
+            }
+
+            Target = from;
+            Item moveItem = RemoveNoLog(true);
+
+            if (moveItem == null)
+                return null;
+
+            return moveItem;
+        }
+
+        public static Boolean Trade(Entity from, Entity to)                                                        
+        {
+            int value = 0;
+            Item moveItem = Grab(from, to);
+
+            if (moveItem == null)
+            {
                 return false;
             }
 
-            Boolean wasSuperStatus = false;                                                                       
-            if (SuperStatus) wasSuperStatus = true;                                                                     
-            SuperStatus = true;
+            value = moveItem.Value;
 
-            Target = from;                                                                                  
-            Item moveItem = RemoveNoLog();                                                                       
-
-            if (moveItem == null)                                                                           
-            {
-                if (!wasSuperStatus)                                                                              
-                    SuperStatus = false;
-                return false;                                                                               
-            }
-
-            int value = Int32.Parse(moveItem.itemData["value"]);
-
-            if (moveItem.GetType().Name == "Gold")                                                          
+            if (moveItem.GetType().Name == "Gold")
             {
                 WriteLine("Can't trade gold!");
-                GetCurrentInventoryList().Add(moveItem);                                                          
-                if (!wasSuperStatus)                                                                              
-                    SuperStatus = false;
-                return false;                                                                               
+                from.inventory.inventData.Add(moveItem);
+                return false;
             }
 
             if (GetGold(to) < value)                                                                       
             {
                 WriteLine("Not enough gold!");
-                GetCurrentInventoryList().Add(moveItem);                                                          
-                if (!wasSuperStatus)                                                                              
-                    SuperStatus = false;
+                from.inventory.inventData.Add(moveItem);                                                          
                 return false;                                                                              
             }
+
             from.inventory.inventData.Add(new Gold(value));
             GoldMerge(from);
+
             to.inventory.inventData.Add(moveItem);
             to.inventory.inventData.Add(new Gold(-1 * value));
             GoldMerge(to);
-
-            if (!wasSuperStatus)
-                SuperStatus = false;                                                                                                                                                          
+                                                                                                                                                        
             return true;                                                                                    
         }
 
