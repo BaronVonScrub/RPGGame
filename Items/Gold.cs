@@ -25,7 +25,7 @@ namespace RPGGame
             ForceSet("name", "Gold");
             ForceSet("value", inputData.ToString());
             ForceSet("amount", inputData.ToString());
-            ForceSet("equipped", "false");
+            ForceSet("equipped", equipped.ToString());
             ForceSet("type", this.GetType().Name);
             amount = inputData;
         }
