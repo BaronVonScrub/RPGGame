@@ -9,9 +9,9 @@ namespace RPGGame
 {
     abstract class Item                                                                                 
     {
-        private Boolean equipped = false;
-        private int val;
-        private string name = "Unnamed item";
+        protected Boolean equipped = false;
+        protected int val;
+        protected string name = "Unnamed item";
         public SortedDictionary<String, String> itemData = new SortedDictionary<String, String>();      
         
         public Boolean Equipped {
@@ -49,37 +49,20 @@ namespace RPGGame
             }
         }
 
+        protected Item() { }
+
         protected Item(string inputData)                                                                
         {
             foreach (Match match in Regex.Matches(inputData, AttFinder))                                
-                {
+            {
                 String[] attData = match.Value.Split(":");                                              
                 itemData.Add(attData[0],attData[1]);                                                    
-                }
-
-            if (!itemData.ContainsKey("name"))                                                          
-                itemData.Add("name", Name);
-            else
-                Name = itemData["name"];
-
-            if (itemData.ContainsKey("value"))                                                          
-                Value = Int32.Parse(itemData["value"]);
-            else
-                itemData.Add("value", Value.ToString());
-
-            if (itemData.ContainsKey("equipped"))                                                          
-                equipped = Convert.ToBoolean(itemData["equipped"]);
-            else
-                itemData.Add("equipped", "false");
-
-            if (!itemData.ContainsKey("type"))                                                          
-                itemData.Add("type",this.GetType().Name);
-            else
-            {
-                itemData.Remove("type");
-                itemData.Add("type", this.GetType().Name);
             }
 
+            AttributeSet("name",ref name);
+            AttributeSet("value", ref val);
+            AttributeSet("equipped", ref equipped);
+            ForceSet("type", this.GetType().Name);
         }
 
         protected Item(int inputData) { }
@@ -87,6 +70,36 @@ namespace RPGGame
         virtual public String Look()
         {
             return Name;                                                                       
+        }
+
+        protected void ForceSet(String key, String value)
+        {
+            if (itemData.ContainsKey(key))
+                itemData.Remove(key);
+            itemData.Add(key, value);
+        }
+
+        protected void AttributeSet(String key, ref String refVal) {
+            if (itemData.ContainsKey(key))
+                refVal = itemData[key];
+            else
+                itemData[key] = refVal;
+        }
+
+        protected void AttributeSet(String key, ref Boolean refVal)
+        {
+            if (itemData.ContainsKey(key))
+                refVal = Boolean.Parse(itemData[key]);
+            else
+                itemData[key] = refVal.ToString();
+        }
+
+        protected void AttributeSet(String key, ref int refVal)
+        {
+            if (itemData.ContainsKey(key))
+                refVal = Int32.Parse(itemData[key]);
+            else
+                itemData[key] = refVal.ToString();
         }
 
         public void Examine()                                                                           

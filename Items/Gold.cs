@@ -8,32 +8,26 @@ namespace RPGGame
 {
     class Gold : Item
     {
-        public int amount = 0;                                                  
-        public Gold(string inputData) : base(inputData)                         
-        {                                     
-            Name = "Gold";                                                      
+        private int amount = 0;
+        new readonly Boolean equipped = false;
 
-            amount = Int32.Parse(itemData["amount"]);                           
-            Value = amount;                                                     
+        public int Amount { get => amount; set => amount = value; }
+
+        public Gold(string inputData) : base(inputData)                         
+        {   
+            Name = "Gold";                                                      
+            Amount = Int32.Parse(itemData["amount"]);                           
+            Value = Amount;
         }
 
-        public Gold(int inputData) : base(inputData)                            
+        public Gold(int inputData) : base()                            
         {
-            if (itemData.ContainsKey("name"))                                   
-                itemData.Remove("name");
-
-            itemData.Add("name", "Gold");                                       
-            Name = "Gold";                                                      
-
-            itemData.Add("amount", inputData.ToString());                       
-            amount = inputData;                                                 
-
-            itemData.Add("value", inputData.ToString());                        
-            Value = inputData;                                                  
-
-            if (itemData.ContainsKey("type"))                                   
-                itemData.Remove("type");
-            itemData.Add("type", GetType().Name);                               
+            ForceSet("name", "Gold");
+            ForceSet("value", inputData.ToString());
+            ForceSet("amount", inputData.ToString());
+            ForceSet("equipped", "false");
+            ForceSet("type", this.GetType().Name);
+            amount = inputData;
         }
     }
 }

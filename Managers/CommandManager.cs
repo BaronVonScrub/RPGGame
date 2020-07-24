@@ -32,9 +32,9 @@ namespace RPGGame
             Player.position.y += direction.y;
             MainBoard.AddToBoard(Player);
        
-                foreach (Entity ent in EntityManager.GetLocalEntities())
-                    if (ent.name!="Player")
-                        WriteLine("You see "+ent.name);
+                
+            foreach (Entity ent in EntityManager.GetLocalEntities().FindAll(x => (x.name!="Player")))
+                WriteLine("You see "+ent.name);
 
         }
         public static void Buy()                                                                                   
@@ -65,35 +65,23 @@ namespace RPGGame
 
             GoldDisplay();
 
-            foreach (Item item in GetCurrentInventoryList())
-            {                                                    
-                if (item.GetType().Name != "Gold")                                                          
+            foreach (Item item in GetCurrentInventoryList().FindAll(x => (x.GetType().Name != "Gold")))                                                 
+                if (item.itemData.ContainsKey("amount"))                                                
                 {
-                    if (item.itemData.ContainsKey("amount"))                                                
-                    {
-                        WriteLine(item.itemData["amount"] + " "+item.Look());                                               
-                    }
-                    else
-                        WriteLine(item.Look());                                                                            
+                    WriteLine(item.itemData["amount"] + " "+item.Look());                                               
                 }
-            }
+                else
+                    WriteLine(item.Look());                                                                            
             WriteLine(UNDERLINE + "______________________________________________________" + RESET);
         }
 
         public static void Examine()                                                                               
         {
-            String data = Strip(Input);                                                                     
-            Boolean found = false;                                                                          
-
-            foreach (Item item in GetCurrentInventoryList())                                                      
-            {
-                if (data == item.Name)                                        
-                {
-                    item.Examine();                                                                         
-                    found = true;                                                                          
-                }
-            }
-            if (!found)
+            String data = Strip(Input);      
+            Item item = GetCurrentInventoryList().Find(x => (data == x.Name));
+            if (item != null)
+                item.Examine();
+            else
                 WriteLine("Item not found!");
         }
 
@@ -101,23 +89,18 @@ namespace RPGGame
         {
             Target = GetTarget();                                                                           
             String data = Strip(Input);                                                                     
-            Boolean found = false;                                                                          
 
-            foreach (Item item in GetCurrentInventoryList())                                                      
+            Item item = GetCurrentInventoryList().Find(x => data.Contains(x.Name));
+            if (item != null)
             {
-                if (data.Contains(item.Name))                                          
-                {
-                    data = data.Replace(item.Name+" ", "");                                          
-                    data = Regex.Replace(data, "^[\\s]+|[\\s]+$", "");                                                                                             
-                    item.Name = data;                                                                       
-                    found = true;
-                    break;
-                }
-            }
-            if (!found)
-                WriteLine("Item not found!");
-            else
+                data = data.Replace(item.Name + " ", "");
+                data = Regex.Replace(data, "^[\\s]+|[\\s]+$", "");
+                item.Name = data;
                 WriteLine("Item renamed!");
+            }
+            else
+                WriteLine("Item not found!");
+                
         }
 
         public static void GrantSuper()                                                                                 

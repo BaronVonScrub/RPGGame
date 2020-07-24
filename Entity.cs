@@ -82,21 +82,19 @@ namespace RPGGame
 
         public void EquipUpdate()
         {
-            foreach (Item item in inventory.inventData)
+            foreach (Item item in inventory.inventData.FindAll(x => x.Equipped = true))
             {
                 Boolean done = false;
-                if (item.itemData["equipped"] == "true")
-                {
-                    item.Equipped = true;
-                    if (equiptory.ContainsKey(item.GetType().Name))
-                        for (int i = 0; i < equiptory[item.GetType().Name].Length; i++)
-                            if (equiptory[item.GetType().Name][i] == null)
-                            {
-                                equiptory[item.GetType().Name][i] = item;
-                                done = true;
-                                break;
-                            }
-                }
+                item.Equipped = true;
+
+                if (equiptory.ContainsKey(item.GetType().Name))
+                    for (int i = 0; i < equiptory[item.GetType().Name].Length; i++)
+                        if (equiptory[item.GetType().Name][i] == null)
+                        {
+                            equiptory[item.GetType().Name][i] = item;
+                            done = true;
+                            break;
+                        }
                 if (!done)
                     item.Equipped = false;
             }

@@ -37,7 +37,7 @@ namespace RPGGame
         private static String input = "";
         private static readonly String attFinder = "(\\S+:[\\w\\s]+)(?=\\s|$)";                                          
         private static bool superStatus = false;
-        private static Entity target = Player;
+        private static Entity target;
         private static List<Inventory> inventories = new List<Inventory>();
         private static Queue<Line> textQueue = new Queue<Line>();
         private static String keyList = "";                                                                   

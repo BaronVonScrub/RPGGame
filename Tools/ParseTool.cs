@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Linq;
 using static RPGGame.GlobalVariables;
 
 namespace RPGGame
@@ -14,56 +15,33 @@ namespace RPGGame
 
         public static String ProcessInput(string inp)                                                            
         {
-            Target = GetTarget();                                                                            
-            foreach (KeyValuePair<String, Action> command in Commands)
-            {                                      
-                Match match = Regex.Match(inp, command.Key);
-                if (match.Success)
-                    return command.Key;                                                                      
-            }
-            return "";                                                                                       
+            Target = GetTarget();
+
+            String command = Commands.Keys.ToList().Find(x => Regex.Match(inp, x).Success);
+            if (command == null)
+                return "";
+            return command;                                                                                       
         }
 
         public static Entity GetTarget()                                                                           
         {
-            Entity tempTarget = Target;
-
-            foreach (Entity ent in MainBoard.GetFromBoard(Player.position))                             
-            {
-                if (Regex.Match(Input, "\\b"+ent.name+"\\b").Success)                                              
-                {
-                    tempTarget = ent;
-                    return tempTarget;                                                                      
-                }
-            }
+            Entity tempTarget = MainBoard.GetFromBoard(Player.position).Find(x => Regex.Match(Input, "\\b" + x.name + "\\b").Success);
+            if (tempTarget == null)
+                return Target;
             return tempTarget;                                                                              
         }
 
         public static String GetItemType()                                                                             
         {
-            String tempType = null;                                                                          
-
-            foreach (String type in Types)                                                                  
-            {
-                if (Regex.Match(Input, "\\b"+ type + "\\b").Success)
-                {
-                    return type;                                                                    
-                }
-            }
+            String tempType = null;
+            tempType = Types.Find(x => Regex.Match(Input, "\\b" + x + "\\b").Success);
             return tempType;                                                                                
         }
 
         public static String GetItemType(String indata)                                                                             
         {
-            String tempType = null;                                                                          
-
-            foreach (String type in Types)                                                                  
-            {
-                if (Regex.Match(indata, "\\b" + type + "\\b").Success)
-                {
-                    return type;                                                                    
-                }
-            }
+            String tempType = null;
+            tempType = Types.Find(x => Regex.Match(indata, "\\b" + x + "\\b").Success);
             return tempType;                                                                                
         }
 

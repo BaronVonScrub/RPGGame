@@ -19,38 +19,25 @@ namespace RPGGame
         }
         public static Item RemoveNoLog()                                                                                
         {
-            if (SuperStatus)                                                                                      
-            {
-                Target = GetTarget();                                                                       
-                String data = Strip(Input);                                                                 
-                Item remove = null;                                                                         
-
-                foreach (Item item in GetCurrentInventoryList())                                                  
-                    if (data.ToUpper() == item.Name.ToUpper())                
-                    {
-                        remove = item;
-                        break;
-                    }
-
-                if (remove != null)                                                                         
-                {
-                    GetCurrentInventoryList().Remove(remove);                                                     
-                    return remove;                                                                          
-                }
-
-                else
-                {
-                    WriteLine("Item not found!");
-                    return null;
-                }
-
-            }
-            else
+            if (!SuperStatus)
             {
                 WriteLine("You do not have super access!");
                 return null;
             }
 
+            Target = GetTarget();                                                                       
+            String data = Strip(Input);
+
+            Item remove = GetCurrentInventoryList().Find(x => data.ToUpper() == x.Name.ToUpper());
+
+            if (remove != null)                                                                         
+            {
+                GetCurrentInventoryList().Remove(remove);                                                     
+                return remove;                                                                          
+            }
+            else
+                WriteLine("Item not found!");
+            return null;
         }
 
         public static Boolean Trade(Entity from, Entity to)                                                        
@@ -104,28 +91,23 @@ namespace RPGGame
                 GetCurrentInventoryList().Add(moveItem);                                                          
                 if (!wasSuperStatus)                                                                              
                     SuperStatus = false;
-                return false;                                                                               
+                return false;                                                                              
             }
-
-            GetCurrentInventoryList().Add(new Gold(value));                                                       
-            Target = to;                                                                                    
-            GetCurrentInventoryList().Add(moveItem);                                                              
-            GetCurrentInventoryList().Add(new Gold(-1 * value));                                                  
+            from.inventory.inventData.Add(new Gold(value));                                                                                  
+            to.inventory.inventData.Add(moveItem);
+            to.inventory.inventData.Add(new Gold(-1 * value));
 
             if (!wasSuperStatus)
-                SuperStatus = false;                                                                              
-
-            Target = from;                                                                                  
+                SuperStatus = false;                                                                                                                                                          
             return true;                                                                                    
         }
 
         public static List<Inventory> GetInventories(List<Entity> entList)
         {
             List<Inventory> invList = new List<Inventory>();
-            foreach(Entity ent in entList)
+            foreach(Entity ent in entList.FindAll(x=> x.inventory != null))
             {
-                if (ent.inventory!=null)
-                    invList.Add(ent.inventory);
+                invList.Add(ent.inventory);
             }
             return invList;
         }
@@ -141,51 +123,40 @@ namespace RPGGame
         }
 
         public static void GoldMerge(Entity ent)                                                                             
-        {
-            Queue<Gold> goldQueue = new Queue<Gold>();                                                      
+        {                                                
             int amount = 0;                                                                                 
             
-            foreach (Item item in GetInventory(ent).inventData)                                                      
-            {
-                if (item.GetType().Name == "Gold")                                                          
-                {
-                    goldQueue.Enqueue(item as Gold);                                                        
-                    amount += (item as Gold).amount;                                                        
-                }
-            }
-            if (goldQueue.Count!=0)
-                do
-                {
-                    GetInventory(Target).inventData.Remove(goldQueue.Dequeue());                                            
-                }
-                while (goldQueue.Count != 0);
-            GetInventory(Target).inventData.Add(new Gold(amount));                                                      
+            foreach (Gold gold in GetInventory(ent).inventData.FindAll(x => x.GetType().Name == "Gold"))                                                      
+                amount += gold.Amount;
 
+            ent.inventory.inventData.RemoveAll(x => x.GetType().Name == "Gold");
+
+            ent.inventory.inventData.Add(new Gold(amount));                                                      
         }
 
         public static int GetGold(Entity ent)                                                                   
         {
             GoldMerge(ent);
-            foreach (Item item in GetInventory(ent).inventData)                                                      
-                if (item.GetType().Name == "Gold")                                                  
-                    return (item as Gold).amount;                                            
-            return 0;                                                                                       
+            int amount = 0;
+            amount = (GetInventory(ent).inventData.Find(x=>x.GetType().Name == "Gold") as Gold).Amount;
+            return amount;                                                                                      
         }
 
         public static Inventory GetInventory(string invName)
         {
-            foreach (Inventory inv in Inventories)
-                if (inv.name == invName)
-                    return inv;
-            return new Inventory(invName);
+            Inventory inv = Inventories.Find(x => x.name == invName);
+            if (inv == null)
+                return new Inventory(invName);
+            return inv;
         }
         public static Inventory GetInventory(Entity ent)
         {
-            if (ent != null)
-                foreach (Inventory inv in Inventories)
-                    if (inv.name == ent.inventory.name)
-                        return inv;
-            return new Inventory(ent.name);
+            if (ent == null)
+                return null;
+            Inventory inv = Inventories.Find(x => x.name == ent.inventory.name);
+            if (inv == null)
+                return new Inventory(ent.name);
+            return inv;
         }
 
 
@@ -193,10 +164,10 @@ namespace RPGGame
         {
             if (ent == null)
                 return false;
-            foreach (Inventory inv in GetLocalInventories())
-                if (inv.name == ent.inventory.name)
-                return true;
-            return false;
+            Inventory inv = GetLocalInventories().Find(x => x.name == ent.inventory.name);
+            if (inv == null)
+                return false;
+            return true;
         }
 
         public static List<Inventory> GetLocalInventories()

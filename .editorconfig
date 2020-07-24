@@ -2,3 +2,9 @@
 
 # IDE0060: Remove unused parameter
 dotnet_code_quality_unused_parameters = all:none
+
+# IDE0051: Remove unused private members
+dotnet_diagnostic.IDE0051.severity = none
+
+# CS0414: The field 'Gold.equipped' is assigned but its value is never used
+dotnet_diagnostic.CS0414.severity = none
