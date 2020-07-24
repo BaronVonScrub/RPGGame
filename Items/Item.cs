@@ -65,8 +65,6 @@ namespace RPGGame
             ForceSet("type", this.GetType().Name);
         }
 
-        protected Item(int inputData) { }
-
         virtual public String Look()
         {
             return Name;                                                                       
