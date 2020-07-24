@@ -28,7 +28,6 @@ namespace RPGGame
                 while (lines[lineNum+1] != "" && lines[lineNum + 1] != "ENDFILE");
                 lineNum += 1;
                 Inventories.Add(inv);
-                TextTool.WriteLine(inv.name + " added!");
             }
             while (lineNum != lines.Length - 1);
         }
@@ -55,5 +54,41 @@ namespace RPGGame
             sw.Write("ENDFILE");
             sw.Close();
         }
+
+        public static void ImportEntities()
+        {
+            string storageFile = Directory.GetCurrentDirectory() + "\\Entities.dat";
+            String[] lines = File.ReadAllLines(storageFile);
+
+            for (int lineNum=0; lineNum<lines.Length-1;lineNum+=7)
+            {
+                String[] entData = { lines[lineNum], lines[lineNum + 1], lines[lineNum + 2], lines[lineNum + 3], lines[lineNum + 4], lines[lineNum + 5] };
+                MainBoard.AddToBoard(EntityFactory(entData));
+            }
+        }
+
+        public static void ExportEntities()
+        {
+            string storageFile = Directory.GetCurrentDirectory() + "\\Entities.dat";
+            File.WriteAllText(storageFile, "");
+            using StreamWriter sw = File.CreateText(storageFile);
+            foreach (KeyValuePair< Coordinate,List <Entity>> pos in MainBoard.entityPos)
+            {
+                foreach (Entity ent in pos.Value)
+                {
+                    sw.WriteLine(ent.Name);
+                    sw.WriteLine(ent.GetType().Name);
+                    sw.WriteLine(Convert.ToInt32(ent.icon).ToString());
+                    sw.WriteLine(ent.drawPriority);
+                    sw.WriteLine(ent.position.x.ToString()+" "+ ent.position.y.ToString());
+                    if (ent.inventory != null)
+                        sw.WriteLine(ent.inventory.name);
+                    else
+                        sw.WriteLine("Null");
+                    sw.WriteLine();
+                }
+            }
+        }
+
     }
 }

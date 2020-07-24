@@ -135,4 +135,10 @@ struct Coordinate
         this.x = x;
         this.y = y;
     }
+
+    public Coordinate(String[] inp)
+    {
+        this.x = Int32.Parse(inp[0]);
+        this.y = Int32.Parse(inp[1]);
+    }
 }

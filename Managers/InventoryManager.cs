@@ -154,7 +154,7 @@ namespace RPGGame
                 return null;
             Inventory inv = Inventories.Find(x => x.name == ent.inventory.name);
             if (inv == null)
-                return new Inventory(ent.name);
+                return new Inventory(ent.Name);
             return inv;
         }
 
@@ -162,6 +162,8 @@ namespace RPGGame
         public static Boolean InventoryIsAccessible(Entity ent)
         {
             if (ent == null)
+                return false;
+            if (ent.inventory == null)
                 return false;
             Inventory inv = GetLocalInventories().Find(x => x.name == ent.inventory.name);
             if (inv == null)

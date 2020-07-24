@@ -11,15 +11,17 @@ namespace RPGGame
         public List<Item> equipped = new List<Item>();
         public char icon = (char)32;
         public int drawPriority = 0;
-        public string name;
+        private string name;
         protected Dictionary<String, Item[]> equiptory = new Dictionary<string, Item[]>();
+
+        public string Name { get => name; set => name = value; }
 
         #region Constructors
         public Entity() { }
 
         public Entity(String name, Coordinate position, char icon, int drawPriority, Inventory inventory)
         {
-            this.name = name;
+            this.Name = name;
             this.position = position;
             this.inventory = inventory;
             this.icon = icon;
@@ -31,7 +33,7 @@ namespace RPGGame
 
         public Entity(String name, Coordinate position, char icon, int drawPriority)
         {
-            this.name = name;
+            this.Name = name;
             this.position = position;
             this.icon = icon;
             this.drawPriority = drawPriority;
@@ -43,7 +45,7 @@ namespace RPGGame
 
         public Entity(String name, Coordinate position, char icon, Inventory inventory)
         {
-            this.name = name;
+            this.Name = name;
             this.position = position;
             this.inventory = inventory;
             this.drawPriority = 1;
@@ -55,7 +57,7 @@ namespace RPGGame
 
         public Entity(String name, Coordinate position, char icon)
         {
-            this.name = name;
+            this.Name = name;
             this.position = position;
             this.icon = icon;
             this.drawPriority = 0;

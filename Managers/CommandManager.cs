@@ -34,8 +34,8 @@ namespace RPGGame
             MainBoard.AddToBoard(Player);
        
                 
-            foreach (Entity ent in EntityManager.GetLocalEntities().FindAll(x => (x.name!="Player")))
-                WriteLine("You see "+ent.name);
+            foreach (Entity ent in EntityManager.GetLocalEntities().FindAll(x => (x.Name!="Player")))
+                WriteLine("You see "+ent.Name);
 
         }
         public static void Buy()                                                                                   
@@ -168,7 +168,8 @@ namespace RPGGame
 
         public static void Quit()                                                                                  
         {
-            ExportInventories();                                                                 
+            ExportInventories();
+            ExportEntities();
         }
     }
 

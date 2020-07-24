@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Linq;
+using static RPGGame.InventoryManager;
 using static RPGGame.GlobalVariables;
 
 namespace RPGGame
@@ -25,7 +26,7 @@ namespace RPGGame
 
         public static Entity GetTarget()                                                                           
         {
-            Entity tempTarget = MainBoard.GetFromBoard(Player.position).Find(x => Regex.Match(Input, "\\b" + x.name + "\\b").Success);
+            Entity tempTarget = MainBoard.GetFromBoard(Player.position).Find(x => Regex.Match(Input, "\\b" + x.Name + "\\b").Success);
             if (tempTarget == null)
                 return Target;
             return tempTarget;                                                                              
@@ -61,6 +62,20 @@ namespace RPGGame
             foreach (Inventory inventory in Inventories)
                 KeyList += inventory.name + "|";
             KeyList = KeyList[0..^1];
+        }
+
+        public static Entity EntityFactory(string[] entData)
+        {
+            Inventory inv = null;
+            if (entData[5] != "Null")
+                inv = GetInventory(entData[5]);
+
+            return entData[1] switch
+            {
+                "Human" => new Human(entData[0],new Coordinate(entData[4].Split(" ")),(char)Int32.Parse(entData[2]),Int32.Parse(entData[3]),inv),
+                "Entity" => new Entity(entData[0], new Coordinate(entData[4].Split(" ")), (char)Int32.Parse(entData[2]), Int32.Parse(entData[3]), inv),
+                _ => new Entity()
+            };
         }
 
         public static Item ItemMake()                                                                              
