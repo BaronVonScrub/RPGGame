@@ -10,64 +10,50 @@ namespace RPGGame
 {
     class ImportExportTool
     {
-        public static string[] GetInventoryList()                                                        
+        public static void ImportInventories()
         {
-            string currDir = Directory.GetCurrentDirectory();
-            string storageDir = currDir + "\\Inventories";
-            Directory.CreateDirectory(storageDir);
-            string[] dirList = Directory.GetFiles(storageDir);
-            string[] nameClean = dirList.Select(x => x.Replace(storageDir + "\\", "")).ToArray();
-            string[] nameClean2 = nameClean.Select(x => x.Replace(".dat", "")).ToArray();
-            return nameClean2;
-        }
-
-        public static void ImportInventory(string inventoryName)                                                    
-        {
-            #region Set paths
-            string currDir = Directory.GetCurrentDirectory();
-            string storageDir = currDir + "\\Inventories";
-            string inventFile = storageDir + "\\" + inventoryName + ".dat";
-            #endregion
-
-            #region Ensure file exists
-            if (!File.Exists(inventFile))
-                using (StreamWriter sw = File.CreateText(inventFile))
-                    sw.Close();
-            #endregion
-
-            #region Read File
-            Inventory inv = GetInventory(inventoryName);
-            foreach (string item in File.ReadLines(inventFile))                                              
-                inv.inventData.Add(ItemMake(item));                                                         
-            Inventories.Add(inv);
-
-            #endregion
-        }
-
-        public static void ExportInventory(Inventory inventory)                              
-        {
-            #region Set paths
-            string currDir = Directory.GetCurrentDirectory();
-            string storageDir = currDir + "\\Inventories";
-            string invent = inventory.name;
-            string inventFile = storageDir + "\\" + invent + ".dat";
-            #endregion
-
-            #region Output to file
-            File.WriteAllText(inventFile, "");
-            using StreamWriter sw = File.CreateText(inventFile);
-            foreach (Item item in inventory.inventData)
+            string storageFile = Directory.GetCurrentDirectory() + "\\Inventories.dat";
+            String[] lines = File.ReadAllLines(storageFile);
+            int lineNum = 0;
+            Inventory inv;
+            do
             {
-                sw.Write(item.itemData["type"].ToUpper());
-                foreach (KeyValuePair<String, String> att in item.itemData)
+                lineNum += 1;
+                inv = new Inventory(lines[lineNum]);
+                do
                 {
-                    sw.Write(" " + att.Key + ":" + att.Value);
+                    lineNum += 1;
+                    inv.inventData.Add(ItemMake(lines[lineNum]));
                 }
-                sw.Write(System.Environment.NewLine);
+                while (lines[lineNum+1] != "" && lines[lineNum + 1] != "ENDFILE");
+                lineNum += 1;
+                Inventories.Add(inv);
+                TextTool.WriteLine(inv.name + " added!");
             }
+            while (lineNum != lines.Length - 1);
+        }
 
-
+        public static void ExportInventories()                              
+        {
+            #region Set paths
+            string storageFile = Directory.GetCurrentDirectory()+ "\\Inventories.dat";
+            File.WriteAllText(storageFile, "");
+            using StreamWriter sw = File.CreateText(storageFile);
             #endregion
+
+            foreach (Inventory inv in Inventories) {
+                sw.Write(System.Environment.NewLine);
+                sw.WriteLine(inv.name);
+                foreach (Item item in inv.inventData)
+                {
+                    sw.Write(item.itemData["type"].ToUpper());
+                    foreach (KeyValuePair<String, String> att in item.itemData)
+                        sw.Write(" " + att.Key + ":" + att.Value);
+                    sw.Write(System.Environment.NewLine);
+                }
+            }
+            sw.Write("ENDFILE");
+            sw.Close();
         }
     }
 }

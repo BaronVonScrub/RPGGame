@@ -1,0 +1,9 @@
+
+PLAYER
+WEAPON attackModifier:4 equipped:False name:Bow type:Weapon value:15
+GOLD amount:30 equipped:False name:Gold type:Gold value:30
+
+MERCHANT
+WEAPON attackModifier:5 equipped:False name:Axe type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+ENDFILE

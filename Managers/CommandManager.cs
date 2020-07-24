@@ -7,6 +7,7 @@ using static RPGGame.GlobalVariables;
 using static RPGGame.TextTool;
 using static RPGGame.InventoryManager;
 using static RPGGame.ParseTool;
+using static RPGGame.ImportExportTool;
 
 namespace RPGGame
 {
@@ -167,10 +168,7 @@ namespace RPGGame
 
         public static void Quit()                                                                                  
         {
-            foreach (Inventory inventory in Inventories)
-            {                            
-                ImportExportTool.ExportInventory(inventory);                                                                 
-            }
+            ExportInventories();                                                                 
         }
     }
 

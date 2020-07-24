@@ -12,10 +12,7 @@ namespace RPGGame
     {
         public static void Initialize()
         {
-            foreach (string inventoryName in ImportExportTool.GetInventoryList())                                    
-            {
-                ImportExportTool.ImportInventory(inventoryName);                                                     
-            }
+            ImportInventories();                                                     
         }
         public static Item RemoveNoLog()                                                                                
         {
@@ -93,9 +90,11 @@ namespace RPGGame
                     SuperStatus = false;
                 return false;                                                                              
             }
-            from.inventory.inventData.Add(new Gold(value));                                                                                  
+            from.inventory.inventData.Add(new Gold(value));
+            GoldMerge(from);
             to.inventory.inventData.Add(moveItem);
             to.inventory.inventData.Add(new Gold(-1 * value));
+            GoldMerge(to);
 
             if (!wasSuperStatus)
                 SuperStatus = false;                                                                                                                                                          

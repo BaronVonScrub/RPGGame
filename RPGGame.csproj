@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="mkdir &quot;$(TargetDir)Inventories&quot;&#xD;&#xA;echo f | XCOPY &quot;$(SolutionDir)InventoriesData&quot; &quot;$(TargetDir)Inventories&quot; /S /Y" />
+    <Exec Command="COPY &quot;$(SolutionDir)Inventories.dat&quot; &quot;$(TargetDir)&quot; /Y" />
   </Target>
 
 </Project>

@@ -15,7 +15,7 @@ namespace RPGGame
         {
             MainBoard = new GameBoard();
 
-            Player = new Human("Player", new Coordinate(0, 0), (char)9787, 100, GetInventory("INVENTORY"));
+            Player = new Human("Player", new Coordinate(0, 0), (char)9787, 100, GetInventory("PLAYER"));
             Target = Player;
             merchant = new Human("Merchant",new Coordinate(3, 0), (char)9786, 99, GetInventory("MERCHANT"));
             dummy = new Entity("Dummy", new Coordinate(5, 0), (char)9786, 99,null);
@@ -24,7 +24,7 @@ namespace RPGGame
             MainBoard.AddToBoard(merchant);
             MainBoard.AddToBoard(dummy);
 
-            Random r = new Random();
+            /*Random r = new Random();
             for (int i= 0;i<10;i++)
             {
                 MainBoard.AddToBoard(
@@ -38,7 +38,7 @@ namespace RPGGame
                         )
                     );
                 InventNum++;
-            }
+            }*/
         }
 
         public static List<Entity> GetLocalEntities()
