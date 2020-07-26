@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="COPY &quot;$(SolutionDir)Inventories.dat&quot; &quot;$(TargetDir)&quot; /Y&#xD;&#xA;COPY &quot;$(SolutionDir)Entities.dat&quot; &quot;$(TargetDir)&quot; /Y" />
+    <Exec Command="COPY &quot;$(SolutionDir)Inventories.dat&quot; &quot;$(TargetDir)&quot; /Y&#xD;&#xA;COPY &quot;$(SolutionDir)Entities.dat&quot; &quot;$(TargetDir)&quot; /Y&#xD;&#xA;COPY &quot;$(SolutionDir)Tune.csv&quot; &quot;$(TargetDir)&quot; /Y" />
   </Target>
 
   <ItemGroup>
