@@ -18,6 +18,7 @@ namespace RPGGame
         public const int viewDistanceHeight = 5;
         public const string UNDERLINE = "\x1B[4m";                                                                  
         public const string RESET = "\x1B[0m";
+
         public const char Ver = (char)9474;
         public const char Hor = (char)9472;
         public const char TopL = (char)9484;
@@ -40,7 +41,8 @@ namespace RPGGame
         private static Entity target;
         private static List<Inventory> inventories = new List<Inventory>();
         private static Queue<Line> textQueue = new Queue<Line>();
-        private static String keyList = "";                                                                   
+        private static String keyList = "";    
+        private static Boolean mute = false;
 
         public static int InventNum { get => inventNum; set => inventNum = value; }
         internal static Entity Player { get => player; set => player = value; }
@@ -56,6 +58,7 @@ namespace RPGGame
         public static string KeyList { get => keyList; set => keyList = value; }
         internal static Queue<Line> TextQueue { get => textQueue; set => textQueue = value; }
         public static List<string> TestCommandList { get => testCommandList; set => testCommandList = value; }
+        public static Boolean Mute { get => mute; set => mute = value; }
 
         private static Dictionary<String, Action> commands = new Dictionary<String, Action>()                        
                 {
@@ -68,6 +71,7 @@ namespace RPGGame
                     { "\\bEQUIP\\b", () => Equip() },
                     { "\\bUNEQUIP\\b", () => Unequip() },
                     { "\\bTAKE\\b", () => Take() },
+                    { "\\bMUTE\\b", () => MuteToggle() },
                     { "^GO NORTH$|^[nN]$" , () => Move(NORTH) },
                     { "^GO SOUTH$|^[sS]$" , () => Move(SOUTH) },
                     { "^GO EAST$|^[eE]$" , () => Move(EAST) },

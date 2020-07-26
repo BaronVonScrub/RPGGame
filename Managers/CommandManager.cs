@@ -8,6 +8,8 @@ using static RPGGame.TextTool;
 using static RPGGame.InventoryManager;
 using static RPGGame.ParseTool;
 using static RPGGame.ImportExportTool;
+using System.Threading;
+using static RPGGame.MusicPlayer;
 
 namespace RPGGame
 {
@@ -26,16 +28,26 @@ namespace RPGGame
         public static void Empty()
         {}
 
+        public static void MuteToggle(){
+        Mute=!Mute;
+        }
+
         public static void Move(MoveCommand direction)
         {
+            List<Entity> goalSquareEntities = MainBoard.GetFromBoard(new Coordinate(Player.position.x + direction.x, Player.position.y + direction.y));
+            if (goalSquareEntities != null && goalSquareEntities.Exists(x => x.Impassable == true))
+            {
+                WriteLine("Can't walk there!");
+                return;
+            }
+
             MainBoard.entityPos[Player.position].Remove(Player);
             Player.position.x += direction.x;
             Player.position.y += direction.y;
             MainBoard.AddToBoard(Player);
-       
-                
-            foreach (Entity ent in EntityManager.GetLocalEntities().FindAll(x => (x.Name!="Player")))
-                WriteLine("You see "+ent.Name);
+
+            foreach (Entity ent in EntityManager.GetLocalEntities().FindAll(x => (x.Name != "Player")))
+                WriteLine("You see " + ent.Name);
 
         }
         public static void Buy()                                                                                   
@@ -189,6 +201,7 @@ namespace RPGGame
         {
             ExportInventories();
             ExportEntities();
+            StopMusic();
         }
     }
 

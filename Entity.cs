@@ -13,10 +13,12 @@ namespace RPGGame
         public int drawPriority = 0;
         private string name;
         private Boolean passive;
+        private Boolean impassable;
         protected Dictionary<String, Item[]> equiptory = new Dictionary<string, Item[]>();
 
         public string Name { get => name; set => name = value; }
         public bool Passive { get => passive; set => passive = value; }
+        public bool Impassable { get => impassable; set => impassable = value; }
 
         #region Constructors
         public Entity() { }
@@ -29,6 +31,7 @@ namespace RPGGame
             this.icon = icon;
             this.drawPriority = drawPriority;
             Passive = true;
+            Impassable = false;
             if (inventory != null)
                 if (!Inventories.Contains(inventory))
                     Inventories.Add(inventory);
@@ -43,6 +46,7 @@ namespace RPGGame
             this.drawPriority = drawPriority;
             this.inventory = new Inventory(name);
             Passive = true;
+            Impassable = false;
             if (inventory != null)
                 if (!Inventories.Contains(inventory))
                     Inventories.Add(inventory);
@@ -57,6 +61,7 @@ namespace RPGGame
             this.drawPriority = 1;
             this.icon = icon;
             Passive = true;
+            Impassable = false;
             if (inventory != null)
                 if (!Inventories.Contains(inventory))
                     Inventories.Add(inventory);
@@ -71,6 +76,7 @@ namespace RPGGame
             this.drawPriority = 0;
             this.inventory = new Inventory(name);
             Passive = true;
+            Impassable = false;
             if (inventory != null)
                 if (!Inventories.Contains(inventory))
                     Inventories.Add(inventory);

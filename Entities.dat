@@ -25,3 +25,52 @@ Entity
 1
 -2 0
 CHEST
+
+Wall
+Wall
+9474
+1
+4 0
+Null
+
+Wall
+Wall
+9488
+1
+4 -1
+Null
+
+Wall
+Wall
+9496
+1
+4 1
+Null
+
+Wall
+Wall
+9472
+1
+3 -1
+Null
+
+Wall
+Wall
+9472
+1
+3 1
+Null
+
+Wall
+Wall
+9484
+1
+2 -1
+Null
+
+Wall
+Wall
+9492
+1
+2 1
+Null

@@ -15,6 +15,7 @@ namespace RPGGame
         public void RenderBoard()
         {
             currentView = Player.GetView();
+            Boolean wallBuffer = false;
 
             #region Draw top border
             Pad();
@@ -36,10 +37,44 @@ namespace RPGGame
                 Draw(VerticalBorder);
                 for (int xx=currentView.topLeft.x;xx<currentView.bottomRight.x+1; xx++)
                 {
-                    Draw((char)32);
-                    Draw(GetHighestDrawPriority(GetFromBoard(new Coordinate(xx,yy))));
+                    if (wallBuffer == false)
+                        Draw((char)32);
+                    else
+                        wallBuffer = false;
+
+                    char toDraw = GetHighestDrawPriority(GetFromBoard(new Coordinate(xx, yy)));
+                    Draw(toDraw);
+
+                    if (toDraw == Hor)
+                    {
+                        Write("\b\b"+Hor+Hor+Hor);
+                        wallBuffer = true;
+                    }
+                    if (toDraw == TopL)
+                    {
+                        wallBuffer = true;
+                        Draw(Hor);
+                    }
+                    if (toDraw == TopR)
+                    {
+                        Write("\b\b" + Hor + TopR);
+                    }
+                    if (toDraw == BotL)
+                    {
+                        wallBuffer = true;
+                        Draw(Hor);
+                    }
+                    if (toDraw == BotR)
+                    {
+                        Write("\b\b" + Hor + BotR);
+                    }
                 }
                 Draw((char)32);
+                if (wallBuffer == true)
+                {
+                    Write("\b");
+                    wallBuffer = false;
+                }
                 Draw(VerticalBorder);
                 Console.WriteLine();
             }

@@ -1,4 +1,6 @@
-﻿namespace RPGGame
+﻿using System;
+using System.Threading;
+namespace RPGGame
 {
     class Game
     {
@@ -9,6 +11,7 @@
             ParseTool.Initialize();
             InventoryManager.Initialize();
             EntityManager.Initialize();
+            MusicPlayer.Initialize();
             GameLoop.Run();
         }
     }
