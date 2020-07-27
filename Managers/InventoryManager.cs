@@ -23,13 +23,18 @@ namespace RPGGame
             }
 
             Target = GetTarget();                                                                       
-            String data = Strip(Input);
+            string data = Strip(Input);
 
-            Item remove = GetCurrentInventoryList().Find(x => data.ToUpper() == x.Name.ToUpper());
+            if (GetCurrentInventoryList(Target) == null)
+            {
+                WriteLine("Inventory not found!");
+                return null;
+            }
+            Item remove = GetCurrentInventoryList(Target).Find(x => data.ToUpper() == x.Name.ToUpper());
 
             if (remove != null)                                                                         
             {
-                GetCurrentInventoryList().Remove(remove);                                                     
+                GetCurrentInventoryList(Target).Remove(remove);                                                     
                 return remove;                                                                          
             }
             else
@@ -68,13 +73,14 @@ namespace RPGGame
 
         public static Boolean Trade(Entity from, Entity to)                                                        
         {
-            int value = 0;
+            int value;
             Item moveItem = Grab(from, to);
 
             if (moveItem == null)
-            {
                 return false;
-            }
+
+            if (from == null || to == null)
+                return false;
 
             value = moveItem.Value;
 
@@ -117,9 +123,20 @@ namespace RPGGame
             return a.Name.CompareTo(b.Name);
         }
 
-        public static List<Item> GetCurrentInventoryList()
+        public static List<Item> GetCurrentInventoryList(Entity ent)
         {
-            return GetInventory(Target).inventData;
+            Inventory temp = GetInventory(ent);
+            if (temp == null)
+                return null;
+            return temp.inventData;
+        }
+
+        public static List<Item> GetCurrentInventoryList(string invName)
+        {
+            Inventory temp = GetInventory(invName);
+            if (temp == null)
+                return null;
+            return temp.inventData;
         }
 
         public static void GoldMerge(Entity ent)                                                                             

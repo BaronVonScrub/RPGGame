@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using static RPGGame.TextTool;
-using static RPGGame.GlobalVariables;
-using System.Text;
+using static RPGGame.ConstantVariables;
 
 namespace RPGGame
 {
@@ -65,19 +64,19 @@ namespace RPGGame
             ForceSet("type", this.GetType().Name);
         }
 
-        virtual public String Look()
+        virtual public string Look()
         {
             return Name;                                                                       
         }
 
-        protected void ForceSet(String key, String value)
+        protected void ForceSet(String key, string value)
         {
             if (itemData.ContainsKey(key))
                 itemData.Remove(key);
             itemData.Add(key, value);
         }
 
-        protected void AttributeSet(String key, ref String refVal) {
+        protected void AttributeSet(String key, ref string refVal) {
             if (itemData.ContainsKey(key))
                 refVal = itemData[key];
             else

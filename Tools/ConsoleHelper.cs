@@ -57,8 +57,10 @@ namespace RPGGame
         {
             SetUpConsole();                                                                
             SetCurrentFont("Courier New", 25);                                             
-            MoveWindow(ConsoleHelper.GetConsoleWindow(), 300, 20, 800, 800, true);         
-            Console.SetBufferSize(57, 30);
+            MoveWindow(ConsoleHelper.GetConsoleWindow(), 300, 20, 800, 800, true);
+            Console.WriteLine();
+            double minSize = Console.WindowLeft + Console.WindowWidth;
+            Console.SetBufferSize((int)Math.Ceiling(minSize), 30);
             Console.Title = "RPG GAME";
 
             IntPtr handle = GetConsoleWindow();

@@ -3,8 +3,7 @@ using static RPGGame.GlobalVariables;
 using static RPGGame.TextTool;
 using static RPGGame.ConsoleHelper;
 using static RPGGame.ParseTool;
-using System.Collections.Generic;
-using System.Text;
+using static RPGGame.ConstantVariables;
 
 namespace RPGGame
 {

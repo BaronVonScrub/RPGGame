@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.Linq;
 using static RPGGame.InventoryManager;
 using static RPGGame.GlobalVariables;
+using static RPGGame.ConstantVariables;
 using static RPGGame.EntityManager;
 using System.Reflection;
 
@@ -16,11 +17,11 @@ namespace RPGGame
             KeyListCreate();
         }
 
-        public static String ProcessInput(string inp)                                                            
+        public static string ProcessInput(string inp)                                                            
         {
             Target = GetTarget();
 
-            String command = Commands.Keys.ToList().Find(x => Regex.Match(inp, x).Success);
+            string command = Commands.Keys.ToList().Find(x => Regex.Match(inp, x).Success);
             if (command == null)
                 return "";
             return command;                                                                                       
@@ -34,23 +35,23 @@ namespace RPGGame
             return tempTarget;                                                                              
         }
 
-        public static String GetItemType()                                                                             
+        public static string GetItemType()                                                                             
         {
-            String tempType = null;
+            string tempType = null;
             tempType = Types.Find(x => Regex.Match(Input, "\\b" + x + "\\b").Success);
             return tempType;                                                                                
         }
 
-        public static String GetItemType(String indata)                                                                             
+        public static string GetItemType(String indata)                                                                             
         {
-            String tempType = null;
+            string tempType = null;
             tempType = Types.Find(x => Regex.Match(indata, "\\b" + x + "\\b").Success);
             return tempType;                                                                                
         }
 
-        public static String Strip(string indata)                                                                  
+        public static string Strip(string indata)                                                                  
         {
-            String data = Regex.Replace(indata, KeyList, "");                                                
+            string data = Regex.Replace(indata, KeyList, "");                                                
             data = Regex.Replace(data, "^\\s*|\\s*$", "");                                                  
             return data;                                                                                    
         }
@@ -94,7 +95,7 @@ namespace RPGGame
         public static Item ItemMake(String indata)                                                                              
         {
             string type = FirstUpperOnly(GetItemType(indata));                                                                        
-            String data = Strip(indata);
+            string data = Strip(indata);
             if (data != "")
                 return ItemFactoryReflection(type, indata);
             else

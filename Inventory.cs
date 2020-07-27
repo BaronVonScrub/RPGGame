@@ -6,7 +6,7 @@ namespace RPGGame
 {
     class Inventory
     {
-        public String name;
+        public string name;
         public List<Item> inventData;
 
         public Inventory(string name, List<Item> inventData)

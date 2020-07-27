@@ -8,8 +8,8 @@ using static RPGGame.TextTool;
 using static RPGGame.InventoryManager;
 using static RPGGame.ParseTool;
 using static RPGGame.ImportExportTool;
-using System.Threading;
 using static RPGGame.MusicPlayer;
+using static RPGGame.ConstantVariables;
 
 namespace RPGGame
 {
@@ -17,12 +17,12 @@ namespace RPGGame
     {
         public static void Unequip()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public static void Equip()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public static void Empty()
@@ -46,7 +46,7 @@ namespace RPGGame
             Player.position.y += direction.y;
             MainBoard.AddToBoard(Player);
 
-            foreach (Entity ent in EntityManager.GetLocalEntities().FindAll(x => (x.Name != "Player")))
+            foreach (Entity ent in EntityManager.GetLocalEntities(Player).FindAll(x => (x.Name != "Player")))
                 WriteLine("You see " + ent.Name);
 
         }
@@ -74,11 +74,11 @@ namespace RPGGame
                 return;
             }
 
-            GetCurrentInventoryList().Sort(AlphabeticalByName);
+            GetCurrentInventoryList(Target).Sort(AlphabeticalByName);
 
             GoldDisplay();
 
-            foreach (Item item in GetCurrentInventoryList().FindAll(x => (x.GetType().Name != "Gold")))                                                 
+            foreach (Item item in GetCurrentInventoryList(Target).FindAll(x => (x.GetType().Name != "Gold")))                                                 
                 if (item.itemData.ContainsKey("amount"))                                                
                 {
                     WriteLine(item.itemData["amount"] + " "+item.Look());                                               
@@ -90,8 +90,13 @@ namespace RPGGame
 
         public static void Examine()                                                                               
         {
-            String data = Strip(Input);      
-            Item item = GetCurrentInventoryList().Find(x => (data == x.Name));
+            string data = Strip(Input);      
+            if (GetCurrentInventoryList(Target) ==null)
+            {
+                WriteLine("Inventory not found!");
+                return;
+            }
+            Item item = GetCurrentInventoryList(Target).Find(x => (data == x.Name));
             if (item != null)
                 item.Examine();
             else
@@ -101,9 +106,13 @@ namespace RPGGame
         public static void Rename()                                                                                
         {
             Target = GetTarget();                                                                           
-            String data = Strip(Input);                                                                     
-
-            Item item = GetCurrentInventoryList().Find(x => data.Contains(x.Name));
+            string data = Strip(Input);
+            if (GetCurrentInventoryList(Target) == null)
+            {
+                WriteLine("Inventory not found!");
+                return;
+            }
+            Item item = GetCurrentInventoryList(Target).Find(x => data.Contains(x.Name));
             if (item != null)
             {
                 data = data.Replace(item.Name + " ", "");
@@ -119,6 +128,11 @@ namespace RPGGame
         public static void Take()
         {
             Target = GetTarget();
+            if (Target == null)
+            {
+                WriteLine("Target not found!");
+                return;
+            }
 
             if (Target.Passive == false)
             {
@@ -126,7 +140,6 @@ namespace RPGGame
                 return;
             }
 
-            String data = Strip(Input);
             Item moveItem = Grab(Target, Player);
 
             if (moveItem == null)
@@ -150,7 +163,7 @@ namespace RPGGame
                 Item newItem = ItemMake();                                                                  
                 if (newItem != null)                                                                        
                 {
-                    GetCurrentInventoryList().Add(newItem);                                                       
+                    GetCurrentInventoryList(Target).Add(newItem);                                                       
                     WriteLine("Item added!");
                 }
                 else
@@ -164,6 +177,11 @@ namespace RPGGame
         public static Item Remove()
         {
             Item temp = RemoveNoLog(false);
+            if (temp == null)
+            {
+                WriteLine("Item not found!");
+                return null;
+            }
             WriteLine(temp.Name + " removed!");
             return temp;
         }
@@ -186,7 +204,7 @@ namespace RPGGame
                 WriteLine(Input);                                                          
                 ConsoleHelper.Redraw(); ;
                 System.Threading.Thread.Sleep(500);                                               
-                String testCommand = ProcessInput(test);                                           
+                string testCommand = ProcessInput(test);                                           
 
                 WriteLine("");
                 Commands[testCommand]();                                                           

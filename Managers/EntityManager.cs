@@ -29,9 +29,9 @@ namespace RPGGame
             return ent;
         }
 
-        public static List<Entity> GetLocalEntities()
+        public static List<Entity> GetLocalEntities(Entity ent)
         {
-            return MainBoard.GetFromBoard(Player.position);
+            return MainBoard.GetFromBoard(ent.position);
         }
 
         public static dynamic EntityFactoryReflection(string entType, string name, Coordinate position, Char icon, int drawPriority, Inventory inventory) {

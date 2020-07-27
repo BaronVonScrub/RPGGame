@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using static RPGGame.GlobalVariables;
+using static RPGGame.ConstantVariables;
 using static RPGGame.TextTool;
 
 namespace RPGGame

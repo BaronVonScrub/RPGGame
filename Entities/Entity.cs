@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using static RPGGame.GlobalVariables;
+using static RPGGame.ConstantVariables;
 
 namespace RPGGame
 {
@@ -140,18 +141,6 @@ namespace RPGGame
                 return false;
             }
             return true;
-        }
-    }
-
-    struct View
-    {
-        public Coordinate topLeft;
-        public Coordinate bottomRight;
-
-        public View(Coordinate topLeft, Coordinate bottomRight)
-        {
-            this.topLeft = topLeft;
-            this.bottomRight = bottomRight;
         }
     }
 }

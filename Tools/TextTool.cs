@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using static RPGGame.GlobalVariables;
+using static RPGGame.ConstantVariables;
 using static RPGGame.InventoryManager;
 
 namespace RPGGame
@@ -24,10 +24,10 @@ namespace RPGGame
                 TextQueue.Dequeue();
         }
 
-        public static String ReadLine()                                                          
+        public static string ReadLine()                                                          
         {
             Console.ForegroundColor = ConsoleColor.White;
-            String line = Console.ReadLine();
+            string line = Console.ReadLine();
             TextQueue.Enqueue(new Line(line, ConsoleColor.White));
             if (TextQueue.Count > 16)
                 TextQueue.Dequeue();
@@ -61,7 +61,7 @@ namespace RPGGame
     }
     struct Line
     {
-        public String lineData;
+        public string lineData;
         public ConsoleColor col;
 
         public Line(String lineData, ConsoleColor col)

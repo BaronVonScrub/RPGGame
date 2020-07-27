@@ -13,7 +13,7 @@ namespace RPGGame
     {
 
         public static List<Note> noteList = new List<Note>();
-        private static string musicFile = Directory.GetCurrentDirectory() + "\\Tune.dat";
+        private static readonly string musicFile = Directory.GetCurrentDirectory() + "\\Tune.dat";
         public static Thread musicThread;
         private static Boolean stopMusic = false;
         public static void Initialize()
