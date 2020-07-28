@@ -6,13 +6,16 @@ namespace RPGGame
 {
     class Wall : Entity
     {
-        public Wall(char icon, Coordinate position) : base("Wall", position, icon, null) {
-            Impassable = true;
+        new static int[] stats = new int[] {100, 100, 0, 0, 0, 0};
+        public Wall(char icon, Coordinate position) : base("Wall", position, icon, null, stats) {
+            Passable = false;
+            Passive = false;
         }
 
-        public Wall(string nameJunk, Coordinate position, char icon, int drawPriorityJunk, Inventory inventoryJunk) : base("Wall", position, icon, null)
+        public Wall(string nameJunk, Coordinate position, char icon, int drawPriorityJunk, Inventory inventoryJunk, int[] stats) : base("Wall", position, icon, null, stats)
         {
-            Impassable = true;
+            Passable = false;
+            Passive = false;
         }
     }
 }

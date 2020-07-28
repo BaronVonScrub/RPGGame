@@ -33,4 +33,54 @@ namespace RPGGame
             this.bottomRight = bottomRight;
         }
     }
+    struct Line
+    {
+        public string lineData;
+        public ConsoleColor col;
+
+        public Line(String lineData, ConsoleColor col)
+        {
+            this.lineData = lineData;
+            this.col = col;
+        }
+    }
+
+    struct EntityData
+    {
+        public string type;
+        public string name;
+        public char icon;
+        public int drawPriority;
+        public Coordinate position;
+        public Inventory inventory;
+        public int[] stats;
+
+        public EntityData(string[] data)
+        {
+            type = data[1];
+            name = data[0];
+            icon = (char)Int32.Parse(data[2]);
+            drawPriority = Int32.Parse(data[3]);
+            position = new Coordinate(data[4].Split(" "));
+            inventory = null;
+
+            if (data[5] != "Null")
+                inventory = InventoryManager.GetInventory(data[5]);
+
+            stats = new int[6];
+            string[] tempStats = data[6].Split(" ");
+            for (int i = 0; i < stats.Length; i++)
+                stats[i] = Int32.Parse(tempStats[i]);
+        }
+    }
+
+    struct ItemData
+    {
+        public string type;
+        public string data;
+        public ItemData(string inData) {
+            type = ParseTool.FirstUpperOnly(ParseTool.GetItemType(inData));
+            data = ParseTool.Strip(inData);
+        }
+    }
 }

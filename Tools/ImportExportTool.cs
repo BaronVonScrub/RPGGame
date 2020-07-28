@@ -5,6 +5,7 @@ using System.Linq;
 using static RPGGame.GlobalVariables;
 using static RPGGame.InventoryManager;
 using static RPGGame.ParseTool;
+using static RPGGame.EntityManager;
 
 namespace RPGGame
 {
@@ -23,7 +24,8 @@ namespace RPGGame
                 do
                 {
                     lineNum += 1;
-                    inv.inventData.Add(ItemMake(lines[lineNum]));
+                    ItemData data = new ItemData(lines[lineNum]);
+                    inv.inventData.Add(ItemCreate(data));
                 }
                 while (lines[lineNum + 1] != "" && lines[lineNum + 1] != "ENDFILE");
                 lineNum += 1;
@@ -60,11 +62,11 @@ namespace RPGGame
             string storageFile = Directory.GetCurrentDirectory() + "\\Entities.dat";
             String[] lines = File.ReadAllLines(storageFile);
 
-            for (int lineNum=0; lineNum<lines.Length-1;lineNum+=7)
+            for (int lineNum=0; lineNum<lines.Length-1;lineNum+=8)
             {
-                string[] entData = new string[6];
-                Array.Copy(lines, lineNum, entData, 0, 6);
-                MainBoard.AddToBoard(EntityFactory(entData));
+                string[] entData = new string[7];
+                Array.Copy(lines, lineNum, entData, 0, 7);
+                MainBoard.AddToBoard(EntityCreate(new EntityData(entData)));
             }
         }
 
@@ -86,6 +88,11 @@ namespace RPGGame
                         sw.WriteLine(ent.inventory.name);
                     else
                         sw.WriteLine("Null");
+                    foreach (int s in ent.stats)
+                    {
+                        sw.Write(s + " ");
+                    }
+                    sw.WriteLine();
                     sw.WriteLine();
                 }
             }

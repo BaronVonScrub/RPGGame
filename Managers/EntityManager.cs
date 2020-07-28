@@ -34,10 +34,24 @@ namespace RPGGame
             return board.GetFromBoard(ent.position);
         }
 
-        public static dynamic EntityFactoryReflection(string entType, string name, Coordinate position, Char icon, int drawPriority, Inventory inventory) {
+        public static dynamic EntityCreate(string entType, string name, Coordinate position, Char icon, int drawPriority, Inventory inventory, int[] stats) {
             Assembly currentAssembly = Assembly.GetExecutingAssembly();
             var currentType = currentAssembly.GetTypes().SingleOrDefault(t => t.Name == entType);
-            return Activator.CreateInstance(currentType,name,position,icon,drawPriority,inventory);
+            return Activator.CreateInstance(currentType,name,position,icon,drawPriority,inventory,stats);
+        }
+
+        public static dynamic EntityCreate(EntityData inData)
+        {
+            Assembly currentAssembly = Assembly.GetExecutingAssembly();
+            var currentType = currentAssembly.GetTypes()
+                                             .SingleOrDefault(t => t.Name == inData.type);
+            return Activator.CreateInstance(currentType,
+                                            inData.name,
+                                            inData.position,
+                                            inData.icon,
+                                            inData.drawPriority,
+                                            inData.inventory,
+                                            inData.stats); ;
         }
     }
 }

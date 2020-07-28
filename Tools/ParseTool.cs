@@ -66,7 +66,7 @@ namespace RPGGame
             return data;                                                                                    
         }
 
-        static string FirstUpperOnly(string s)
+        public static string FirstUpperOnly(string s)
         {
             // Check for empty string.
             if (string.IsNullOrEmpty(s))
@@ -88,37 +88,23 @@ namespace RPGGame
             KeyList = KeyList[0..^1];
         }
 
-        public static Entity EntityFactory(string[] entData)
-        {
-            Inventory inv = null;
-            if (entData[5] != "Null")
-                inv = GetInventory(entData[5]);
-
-            return EntityFactoryReflection(entData[1], entData[0], new Coordinate(entData[4].Split(" ")), (char)Int32.Parse(entData[2]), Int32.Parse(entData[3]), inv);
-        }
-
-        public static Item ItemMake()                                                                              
-        {
-            return ItemMake(Input);                                                                             
-        }
-
-        public static Item ItemMake(String indata)                                                                              
-        {
-            string type = FirstUpperOnly(GetItemType(indata));                                                                        
-            string data = Strip(indata);
-            if (data != "")
-                return ItemFactoryReflection(type, indata);
-            else
-                return null;                                                                                
-        }
-
-        public static dynamic ItemFactoryReflection(string entType, string indata)
+        public static dynamic ItemCreate(ItemData inData)
         {
             Assembly currentAssembly = Assembly.GetExecutingAssembly();
-            var currentType = currentAssembly.GetTypes().SingleOrDefault(t => t.Name == entType);
+            var currentType = currentAssembly.GetTypes().SingleOrDefault(t => t.Name == inData.type);
             if (currentType == null)
                 return null;
-            return Activator.CreateInstance(currentType, indata);
+            return Activator.CreateInstance(currentType,inData.data);
+        }
+
+        public static dynamic ItemCreate()
+        {
+            ItemData inData = new ItemData(Input);
+            Assembly currentAssembly = Assembly.GetExecutingAssembly();
+            var currentType = currentAssembly.GetTypes().SingleOrDefault(t => t.Name == inData.type);
+            if (currentType == null)
+                return null;
+            return Activator.CreateInstance(currentType, inData.data);
         }
     }
 }

@@ -131,6 +131,12 @@ struct Note
 
     public Note(int freq, int dur)
     {
+        if (((freq < 37)&&(freq!=0)) || (freq > 32767))
+            throw new ArgumentException("Frequency out of bounds!");
+
+        if (dur<=0)
+            throw new ArgumentException("Duration out of bounds!");
+
         this.freq = freq;
         this.dur = dur;
     }

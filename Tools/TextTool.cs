@@ -59,15 +59,4 @@ namespace RPGGame
             WriteLine(UNDERLINE + "______________________________________________________" + RESET);
         }
     }
-    struct Line
-    {
-        public string lineData;
-        public ConsoleColor col;
-
-        public Line(String lineData, ConsoleColor col)
-        {
-            this.lineData = lineData;
-            this.col = col;
-        }
-    }
 }

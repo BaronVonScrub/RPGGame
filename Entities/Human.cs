@@ -14,12 +14,12 @@ namespace RPGGame
             { "Miscellaneous", new Item[5] }
         };
 
-        public Human(String name, Coordinate position, char icon, int drawPriority, Inventory inventory):base(name,position,icon,drawPriority,inventory){ Passive = false; }
+        public Human(String name, Coordinate position, char icon, int drawPriority, Inventory inventory, int[] stats):base(name,position,icon,drawPriority,inventory, stats){ Passive = false; }
 
-        public Human(String name, Coordinate position, char icon, int drawPriority):base(name,position,icon,drawPriority){ Passive = false; }
+        public Human(String name, Coordinate position, char icon, int drawPriority, int[] stats) :base(name,position,icon,drawPriority, stats) { Passive = false; }
 
-        public Human(String name, Coordinate position, char icon, Inventory inventory):base(name,position,icon,inventory){ Passive = false; }
+        public Human(String name, Coordinate position, char icon, Inventory inventory, int[] stats) :base(name,position,icon,inventory, stats) { Passive = false; }
 
-        public Human(String name, Coordinate position, char icon):base(name,position,icon){ Passive = false; }
+        public Human(String name, Coordinate position, char icon, int[] stats) :base(name,position,icon,stats){ Passive = false; }
     }
 }

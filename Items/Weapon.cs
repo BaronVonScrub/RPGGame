@@ -8,7 +8,9 @@ namespace RPGGame
     {
         int attackModifier = 0;                                                     
         public Weapon(string inputData) : base(inputData) {
-            attackModifier = Int32.Parse(itemData["attackModifier"]);               
+
+            if (itemData.ContainsKey("attackModifier"))
+                attackModifier = Int32.Parse(itemData["attackModifier"]);  
         }
 
     }

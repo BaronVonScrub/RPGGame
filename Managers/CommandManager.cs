@@ -35,7 +35,7 @@ namespace RPGGame
         public static void Move(MoveCommand direction)
         {
             List<Entity> goalSquareEntities = MainBoard.GetFromBoard(new Coordinate(Player.position.x + direction.x, Player.position.y + direction.y));
-            if (goalSquareEntities != null && goalSquareEntities.Exists(x => x.Impassable == true))
+            if (goalSquareEntities != null && goalSquareEntities.Exists(x => x.Passable == false))
             {
                 WriteLine("Can't walk there!");
                 return;
@@ -160,7 +160,7 @@ namespace RPGGame
             if (SuperStatus)                                                                                      
             {
                 Target = GetTarget();                                                                       
-                Item newItem = ItemMake();                                                                  
+                Item newItem = ItemCreate();                                                                  
                 if (newItem != null)                                                                        
                 {
                     GetCurrentInventoryList(Target).Add(newItem);                                                       

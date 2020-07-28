@@ -14,70 +14,75 @@ namespace RPGGame
         public int drawPriority = 0;
         private string name;
         private Boolean passive;
-        private Boolean impassable;
+        private Boolean passable;
         protected Dictionary<String, Item[]> equiptory = new Dictionary<string, Item[]>();
+        public int[] stats = new int[] {0, 0, 0, 0, 0, 0};
 
         public string Name { get => name; set => name = value; }
         public bool Passive { get => passive; set => passive = value; }
-        public bool Impassable { get => impassable; set => impassable = value; }
+        public bool Passable { get => passable; set => passable = value; }
 
         #region Constructors
         public Entity() { }
 
-        public Entity(String name, Coordinate position, char icon, int drawPriority, Inventory inventory)
+        public Entity(String name, Coordinate position, char icon, int drawPriority, Inventory inventory, int[] stats)
         {
             this.Name = name;
             this.position = position;
             this.inventory = inventory;
             this.icon = icon;
             this.drawPriority = drawPriority;
+            this.stats = stats;
             Passive = true;
-            Impassable = false;
+            Passable = true;
             if (inventory != null)
                 if (!Inventories.Contains(inventory))
                     Inventories.Add(inventory);
             EquipUpdate();
         }
 
-        public Entity(String name, Coordinate position, char icon, int drawPriority)
+        public Entity(String name, Coordinate position, char icon, int drawPriority, int[] stats)
         {
             this.Name = name;
             this.position = position;
             this.icon = icon;
             this.drawPriority = drawPriority;
             this.inventory = new Inventory(name);
+            this.stats = stats;
             Passive = true;
-            Impassable = false;
+            Passable = true;
             if (inventory != null)
                 if (!Inventories.Contains(inventory))
                     Inventories.Add(inventory);
             EquipUpdate();
         }
 
-        public Entity(String name, Coordinate position, char icon, Inventory inventory)
+        public Entity(String name, Coordinate position, char icon, Inventory inventory, int[] stats)
         {
             this.Name = name;
             this.position = position;
             this.inventory = inventory;
             this.drawPriority = 1;
             this.icon = icon;
+            this.stats = stats;
             Passive = true;
-            Impassable = false;
+            Passable = true;
             if (inventory != null)
                 if (!Inventories.Contains(inventory))
                     Inventories.Add(inventory);
             EquipUpdate();
         }
 
-        public Entity(String name, Coordinate position, char icon)
+        public Entity(String name, Coordinate position, char icon, int[] stats)
         {
             this.Name = name;
             this.position = position;
             this.icon = icon;
             this.drawPriority = 0;
             this.inventory = new Inventory(name);
+            this.stats = stats;
             Passive = true;
-            Impassable = false;
+            Passable = true;
             if (inventory != null)
                 if (!Inventories.Contains(inventory))
                     Inventories.Add(inventory);
