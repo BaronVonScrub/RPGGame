@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using static RPGGame.GlobalVariables;
 using static RPGGame.ConstantVariables;
+using static RPGGame.TextTool;
 
 namespace RPGGame
 {
@@ -9,18 +10,56 @@ namespace RPGGame
     {
         public Coordinate position = new Coordinate();
         public Inventory inventory;
-        public List<Item> equipped = new List<Item>();
         public char icon = (char)32;
         public int drawPriority = 0;
         private string name;
         private Boolean passive;
         private Boolean passable;
-        protected Dictionary<String, Item[]> equiptory = new Dictionary<string, Item[]>();
-        public int[] stats = new int[] {0, 0, 0, 0, 0, 0};
+        private Dictionary<String, Item[]> equiptory = new Dictionary<string, Item[]>();
+        protected int[] stats = new int[] { 0, 0, 0, 0, 0, 0 };
 
         public string Name { get => name; set => name = value; }
         public bool Passive { get => passive; set => passive = value; }
         public bool Passable { get => passable; set => passable = value; }
+
+        public Boolean Unequip(Item item)
+        {
+            if (item.Equipped == false)
+            {
+                WriteLine("That item is not equipped!");
+                return false;
+            }
+
+            string itemType = item.GetType().Name;
+            if (!this.Equiptory.ContainsKey(itemType))
+            {
+                WriteLine("That shouldn't be equippable; naughty!");
+                item.Equipped = false;
+                return false;
+            }
+
+            Boolean done = false;
+            for (int i = 0; i < Equiptory[itemType].Length; i++)
+                if (Equiptory[itemType][i] == item)
+                {
+                    item.Equipped = false;
+                    Equiptory[itemType][i] = null;
+                    done = true;
+                    break;
+                }
+            if (!done)
+            {
+                WriteLine(itemType + "Item not found in equiptory; weird.");
+                item.Equipped = false;
+                return false;
+            }
+
+            WriteLine(item.Name + " unequipped!");
+            return true;
+        }
+
+        public int[] Stats { get => stats; set => stats = value; }
+        public virtual Dictionary<string, Item[]> Equiptory { get => equiptory; set => equiptory = value; }
 
         #region Constructors
         public Entity() { }
@@ -32,7 +71,7 @@ namespace RPGGame
             this.inventory = inventory;
             this.icon = icon;
             this.drawPriority = drawPriority;
-            this.stats = stats;
+            this.Stats = stats;
             Passive = true;
             Passable = true;
             if (inventory != null)
@@ -48,7 +87,7 @@ namespace RPGGame
             this.icon = icon;
             this.drawPriority = drawPriority;
             this.inventory = new Inventory(name);
-            this.stats = stats;
+            this.Stats = stats;
             Passive = true;
             Passable = true;
             if (inventory != null)
@@ -64,7 +103,7 @@ namespace RPGGame
             this.inventory = inventory;
             this.drawPriority = 1;
             this.icon = icon;
-            this.stats = stats;
+            this.Stats = stats;
             Passive = true;
             Passable = true;
             if (inventory != null)
@@ -80,7 +119,7 @@ namespace RPGGame
             this.icon = icon;
             this.drawPriority = 0;
             this.inventory = new Inventory(name);
-            this.stats = stats;
+            this.Stats = stats;
             Passive = true;
             Passable = true;
             if (inventory != null)
@@ -108,16 +147,15 @@ namespace RPGGame
         {
             if (inventory == null)
                 return;
-            foreach (Item item in inventory.inventData.FindAll(x => x.Equipped = true))
+            foreach (Item item in inventory.inventData.FindAll(x => x.Equipped == true))
             {
                 Boolean done = false;
-                item.Equipped = true;
-
-                if (equiptory.ContainsKey(item.GetType().Name))
-                    for (int i = 0; i < equiptory[item.GetType().Name].Length; i++)
-                        if (equiptory[item.GetType().Name][i] == null)
+                if (Equiptory.ContainsKey(item.GetType().Name))
+                    for (int i = 0; i < Equiptory[item.GetType().Name].Length; i++)
+                        if (Equiptory[item.GetType().Name][i] == null)
                         {
-                            equiptory[item.GetType().Name][i] = item;
+                            Equiptory[item.GetType().Name][i] = item;
+                            item.Equipped = true;
                             done = true;
                             break;
                         }
@@ -128,24 +166,41 @@ namespace RPGGame
 
         public Boolean Equip(Item item)
         {
-            Boolean done = false;
-            if (item.itemData["equipped"] == "true")
+            if (item.Equipped == true)
             {
-                item.Equipped = true;
-                for (int i = 0; i < equiptory[item.GetType().Name].Length; i++)
-                    if (equiptory[item.GetType().Name][i] == null)
-                    {
-                        equiptory[item.GetType().Name][i] = item;
-                        done = true;
-                        break;
-                    }
-            }
-            if (!done)
-            {
-                item.Equipped = false;
+                WriteLine("That item is already equipped!");
                 return false;
             }
+
+            string itemType = item.GetType().Name;
+            if (!this.Equiptory.ContainsKey(itemType))
+            {
+                WriteLine("That can't be equipped!");
+                return false;
+            }
+
+            Boolean done = false;
+            for (int i = 0; i < Equiptory[itemType].Length; i++)
+                if (Equiptory[itemType][i] == null)
+                {
+                    item.Equipped = true;
+                    Equiptory[itemType][i] = item;
+                    done = true;
+                    break;
+                }
+            if (!done)
+            {
+                WriteLine(itemType+" slots are full!");
+                return false;
+            }
+
+            WriteLine(item.Name + " equipped!");
             return true;
+        }
+
+        internal void GetStats()
+        {
+            throw new NotImplementedException();
         }
     }
 }

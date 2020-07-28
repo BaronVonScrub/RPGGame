@@ -17,12 +17,40 @@ namespace RPGGame
     {
         public static void Unequip()
         {
-            //throw new NotImplementedException();
+            Unequip(Player, Input);
         }
 
-        public static void Equip()
+        public static Boolean Unequip(Entity target, string inp)
         {
-            //throw new NotImplementedException();
+            string itemName = Strip(inp);
+            Item item = target.inventory.GetItem(itemName);
+            if (item != null)
+            {
+                target.Unequip(item);
+                return true;
+            }
+
+            WriteLine("Item not found!");
+            return false;
+        }
+
+            public static void Equip()
+        {
+            Equip(Player, Input);
+        }
+
+        public static Boolean Equip(Entity target, string inp)
+        {
+            string itemName = Strip(inp);
+            Item item = target.inventory.GetItem(itemName);
+            if (item != null)
+            {
+                target.Equip(item);
+                return true;
+            }
+
+            WriteLine("Item not found!");
+            return false;
         }
 
         public static void Empty()

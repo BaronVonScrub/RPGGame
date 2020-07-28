@@ -20,5 +20,11 @@ namespace RPGGame
             this.name = name;
             this.inventData = new List<Item>();
         }
+
+        public Item GetItem(string itemName)
+        {
+            Item item = inventData.Find(x => x.Name == itemName);
+            return item;
+        }
     }
 }

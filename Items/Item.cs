@@ -61,11 +61,12 @@ namespace RPGGame
             AttributeSet("name",ref name);
             AttributeSet("value", ref val);
             AttributeSet("equipped", ref equipped);
-            ForceSet("type", this.GetType().Name);
         }
 
         virtual public string Look()
         {
+            if (Equipped == true)
+                return Name + " (Equipped)";
             return Name;                                                                       
         }
 

@@ -47,7 +47,7 @@ namespace RPGGame
                 sw.WriteLine(inv.name);
                 foreach (Item item in inv.inventData)
                 {
-                    sw.Write(item.itemData["type"].ToUpper());
+                    sw.Write(item.GetType().Name.ToUpper());
                     foreach (KeyValuePair<String, String> att in item.itemData)
                         sw.Write(" " + att.Key + ":" + att.Value);
                     sw.Write(System.Environment.NewLine);
@@ -88,7 +88,7 @@ namespace RPGGame
                         sw.WriteLine(ent.inventory.name);
                     else
                         sw.WriteLine("Null");
-                    foreach (int s in ent.stats)
+                    foreach (int s in ent.Stats)
                     {
                         sw.Write(s + " ");
                     }

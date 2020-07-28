@@ -7,7 +7,7 @@ namespace RPGGame
     class Wall : Entity
     {
         new static int[] stats = new int[] {100, 100, 0, 0, 0, 0};
-        public Wall(char icon, Coordinate position) : base("Wall", position, icon, null, stats) {
+        public Wall(char icon, Coordinate position) : base("Wall", position, icon, null, Stats1) {
             Passable = false;
             Passive = false;
         }
@@ -17,5 +17,7 @@ namespace RPGGame
             Passable = false;
             Passive = false;
         }
+
+        public static int[] Stats1 { get => stats; set => stats = value; }
     }
 }

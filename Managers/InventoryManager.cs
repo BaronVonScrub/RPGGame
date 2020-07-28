@@ -74,13 +74,21 @@ namespace RPGGame
         public static Boolean Trade(Entity from, Entity to)                                                        
         {
             int value;
+
+            if (from == null || to == null)
+                return false;
+
             Item moveItem = Grab(from, to);
 
             if (moveItem == null)
                 return false;
 
-            if (from == null || to == null)
+            if (moveItem.Equipped==true)
+            {
+                WriteLine("Item cannot be traded while equipped!");
+                from.inventory.inventData.Add(moveItem);
                 return false;
+            }
 
             value = moveItem.Value;
 

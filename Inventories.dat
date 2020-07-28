@@ -1,13 +1,13 @@
 
 PLAYER
-WEAPON attackModifier:4 equipped:False name:Bow type:Weapon value:15
-GOLD amount:30 equipped:False name:Gold type:Gold value:30
+WEAPON attackModifier:4 equipped:True name:Bow value:15
+GOLD amount:30 equipped:False name:Gold value:30
 
 MERCHANT
-WEAPON attackModifier:5 equipped:False name:Axe type:Weapon value:15
-GOLD amount:500 equipped:False name:Gold type:Gold value:500
+WEAPON attackModifier:5 equipped:False name:Axe value:15
+GOLD amount:500 equipped:False name:Gold value:500
 
 CHEST
-WEAPON attackModifier:2 equipped:False name:Dagger type:Weapon value:5
-GOLD amount:10 equipped:False name:Gold type:Gold value:10
+WEAPON attackModifier:2 equipped:False name:Dagger value:5
+GOLD amount:10 equipped:False name:Gold value:10
 ENDFILE
