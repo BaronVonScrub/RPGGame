@@ -122,7 +122,7 @@ namespace RPGGame
         public char GetHighestDrawPriority(List<Entity> inList)
         {
             int highest = 0;
-            char ic = (char)2281;
+            char ic = (char)1622;
             if (inList!=null)
                 foreach (Entity ent in inList)
                     if (ent.drawPriority > highest) {

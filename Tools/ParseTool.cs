@@ -27,12 +27,22 @@ namespace RPGGame
             return command;                                                                                       
         }
 
-        public static Entity GetTarget()                                                                           
+        public static Entity GetTarget(Entity ent, string inp ,GameBoard board)                                                                           
         {
-            Entity tempTarget = MainBoard.GetFromBoard(Player.position).Find(x => Regex.Match(Input, "\\b" + x.Name + "\\b").Success);
+            Entity tempTarget = board.GetFromBoard(ent.position).Find(x => Regex.Match(inp, "\\b" + x.Name + "\\b").Success);
             if (tempTarget == null)
                 return Target;
             return tempTarget;                                                                              
+        }
+
+        public static Entity GetTarget()
+        {
+            return GetTarget(Player, Input, MainBoard);
+        }
+
+        public static Entity GetTarget(string inp)
+        {
+            return GetTarget(Player, inp, MainBoard);
         }
 
         public static string GetItemType()                                                                             
@@ -106,6 +116,8 @@ namespace RPGGame
         {
             Assembly currentAssembly = Assembly.GetExecutingAssembly();
             var currentType = currentAssembly.GetTypes().SingleOrDefault(t => t.Name == entType);
+            if (currentType == null)
+                return null;
             return Activator.CreateInstance(currentType, indata);
         }
     }

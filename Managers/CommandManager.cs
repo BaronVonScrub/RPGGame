@@ -46,7 +46,7 @@ namespace RPGGame
             Player.position.y += direction.y;
             MainBoard.AddToBoard(Player);
 
-            foreach (Entity ent in EntityManager.GetLocalEntities(Player).FindAll(x => (x.Name != "Player")))
+            foreach (Entity ent in EntityManager.GetLocalEntities(Player,MainBoard).FindAll(x => (x.Name != "Player")))
                 WriteLine("You see " + ent.Name);
 
         }
