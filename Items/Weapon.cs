@@ -6,12 +6,7 @@ namespace RPGGame
 {
     class Weapon : Item
     {
-        int attackModifier = 0;                                                     
-        public Weapon(string inputData) : base(inputData) {
-
-            if (itemData.ContainsKey("attackModifier"))
-                attackModifier = Int32.Parse(itemData["attackModifier"]);  
-        }
-
+        public override string[] MustHave { get; set; } = new string[] { "accuracyModifier", "damageModifier", "maxRange", "minRange", "slotsNeeded", "value", "name", "equipped" };
+        public Weapon(string inputData) : base(inputData) {}
     }
 }

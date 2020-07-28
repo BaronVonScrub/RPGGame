@@ -6,11 +6,11 @@ using static RPGGame.ConstantVariables;
 
 namespace RPGGame
 {
-    abstract class Item                                                                                 
+    abstract class Item
     {
         protected Boolean equipped = false;
         protected int val;
-        protected string name = "Unnamed item";
+        protected string name = "";
         public SortedDictionary<String, String> itemData = new SortedDictionary<String, String>();      
         
         public Boolean Equipped {
@@ -48,19 +48,30 @@ namespace RPGGame
             }
         }
 
+        abstract public string[] MustHave { get; set; }
+
         protected Item() { }
 
         protected Item(string inputData)                                                                
         {
             foreach (Match match in Regex.Matches(inputData, AttFinder))                                
             {
-                String[] attData = match.Value.Split(":");                                              
-                itemData.Add(attData[0],attData[1]);                                                    
+                String[] attData = match.Value.Split(":");
+                itemData.Add(attData[0],attData[1]);
             }
+
+            Guarantee();
 
             AttributeSet("name",ref name);
             AttributeSet("value", ref val);
             AttributeSet("equipped", ref equipped);
+            ForceSet("type", this.GetType().Name);
+        }
+
+        public void Guarantee()
+        {
+            foreach (string att in MustHave)
+                AttributeSet(att);
         }
 
         virtual public string Look()
@@ -100,19 +111,24 @@ namespace RPGGame
                 itemData[key] = refVal.ToString();
         }
 
-        public void Examine()                                                                           
+        protected void AttributeSet(String key)
+        {
+            if (!itemData.ContainsKey(key))
+                itemData[key] = 0.ToString();
+        }
+
+        virtual public void Examine()                                                                           
         {                                                      
-            WriteLine(Name);
-            if (itemData.ContainsKey("type"))                                                           
-                WriteLine("Type : "+itemData["type"]);
+            WriteLine(Name);                                                     
+            WriteLine("Type : "+itemData["type"]);
             if (itemData.ContainsKey("amount"))
                 WriteLine("Amount : " + itemData["amount"]);                                       
-            if (itemData.ContainsKey("value"))
-                WriteLine("value : " + itemData["value"]);                                         
+            WriteLine("Value : " + itemData["value"]);       
+            
             foreach (KeyValuePair<String,String> dat in itemData)                                       
             {
                 if (dat.Key!="name"&&dat.Key!="type"&&dat.Key!="amount"&&dat.Key!="value")              
-                    WriteLine(dat.Key + " : " + dat.Value);                                        
+                    WriteLine(ToTitleCase(dat.Key) + " : " + dat.Value);                                        
             }
         }
 

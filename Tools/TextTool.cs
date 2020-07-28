@@ -2,12 +2,47 @@
 using static RPGGame.GlobalVariables;
 using static RPGGame.ConstantVariables;
 using static RPGGame.InventoryManager;
+using System.Text.RegularExpressions;
+using System.Text;
 
 namespace RPGGame
 {
     class TextTool
     {
-         public static void Initialize()
+        public static string AddSpacesBetweenCaps(string inString)
+        {
+            if (string.IsNullOrWhiteSpace(inString))
+                return "";
+            StringBuilder outString = new StringBuilder(inString.Length * 2);
+            outString.Append(inString[0]);
+            for (int i = 1; i < inString.Length; i++)
+            {
+                if (char.IsUpper(inString[i]) && inString[i - 1] != ' ')
+                    outString.Append(' ');
+                outString.Append(inString[i]);
+            }
+            return outString.ToString();
+        }
+
+        public static string ToTitleCase(string inp)
+        {
+            string temp = ToUpperCamelCase(inp);
+            temp = AddSpacesBetweenCaps(temp);
+            return temp;
+        }
+
+        public static string ToUpperCamelCase(string s)
+        {
+            // Check for empty string.
+            if (string.IsNullOrEmpty(s))
+            {
+                return string.Empty;
+            }
+            // Return char and concat substring.
+            return char.ToUpper(s[0]) + s.Substring(1);
+        }
+
+        public static void Initialize()
         {
             WriteLine("                        Welcome!");
             WriteLine("            Type HELP for a list of commands!");

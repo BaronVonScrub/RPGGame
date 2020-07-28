@@ -8,6 +8,15 @@ namespace RPGGame
 {
     class Entity
     {
+        public enum StatType
+        {
+            MaxHealth,
+            CurrHealth,
+            BaseArmour,
+            Speed,
+            Distance
+        }
+
         public Coordinate position = new Coordinate();
         public Inventory inventory;
         public char icon = (char)32;
@@ -16,7 +25,7 @@ namespace RPGGame
         private Boolean passive;
         private Boolean passable;
         private Dictionary<String, Item[]> equiptory = new Dictionary<string, Item[]>();
-        protected int[] stats = new int[] { 0, 0, 0, 0, 0, 0 };
+        protected int[] stats = new int[] { 0, 0, 0, 0, 0 };
 
         public string Name { get => name; set => name = value; }
         public bool Passive { get => passive; set => passive = value; }
@@ -146,6 +155,8 @@ namespace RPGGame
         public void EquipUpdate()
         {
             if (inventory == null)
+                return;
+            if (inventory.inventData.Count == 0)
                 return;
             foreach (Item item in inventory.inventData.FindAll(x => x.Equipped == true))
             {

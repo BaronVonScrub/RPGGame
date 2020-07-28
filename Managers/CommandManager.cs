@@ -172,6 +172,8 @@ namespace RPGGame
 
             if (moveItem == null)
                 return;
+
+            WriteLine(moveItem.Name + " taken!");
             Player.inventory.inventData.Add(moveItem);
 
         }

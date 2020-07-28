@@ -6,6 +6,7 @@ using static RPGGame.GlobalVariables;
 using static RPGGame.InventoryManager;
 using static RPGGame.ParseTool;
 using static RPGGame.EntityManager;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace RPGGame
 {
@@ -19,19 +20,37 @@ namespace RPGGame
             Inventory inv;
             do
             {
-                lineNum += 1;
+                if (lineNum==lines.Length)
+                    break;
+
+                do
+                {
+                    if (lineNum == lines.Length)
+                        break;
+                    if (lines[lineNum] == "")
+                        break;
+                    lineNum++;
+                }
+                while (true);
+
+                if (lineNum == lines.Length)
+                    break;
                 inv = new Inventory(lines[lineNum]);
                 do
                 {
                     lineNum += 1;
+                    if (lineNum == lines.Length)
+                        break;
+                    if (lines[lineNum] == "")
+                        break;
                     ItemData data = new ItemData(lines[lineNum]);
                     inv.inventData.Add(ItemCreate(data));
                 }
-                while (lines[lineNum + 1] != "" && lines[lineNum + 1] != "ENDFILE");
+                while (true);
                 lineNum += 1;
                 Inventories.Add(inv);
             }
-            while (lines[lineNum] != "ENDFILE");
+            while (true);
         }
 
         public static void ExportInventories()                              
@@ -43,7 +62,6 @@ namespace RPGGame
             #endregion
 
             foreach (Inventory inv in Inventories) {
-                sw.Write(System.Environment.NewLine);
                 sw.WriteLine(inv.name);
                 foreach (Item item in inv.inventData)
                 {
@@ -52,8 +70,8 @@ namespace RPGGame
                         sw.Write(" " + att.Key + ":" + att.Value);
                     sw.Write(System.Environment.NewLine);
                 }
+                sw.WriteLine();
             }
-            sw.Write("ENDFILE");
             sw.Close();
         }
 
@@ -88,9 +106,11 @@ namespace RPGGame
                         sw.WriteLine(ent.inventory.name);
                     else
                         sw.WriteLine("Null");
-                    foreach (int s in ent.Stats)
+                    for(int i= 0; i< ent.Stats.Length;i++)
                     {
-                        sw.Write(s + " ");
+                        sw.Write(ent.Stats[i]);
+                        if (i != ent.Stats.Length - 1)
+                            sw.Write(" ");
                     }
                     sw.WriteLine();
                     sw.WriteLine();

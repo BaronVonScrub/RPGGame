@@ -67,8 +67,8 @@ namespace RPGGame
             if (data[5] != "Null")
                 inventory = InventoryManager.GetInventory(data[5]);
 
-            stats = new int[6];
             string[] tempStats = data[6].Split(" ");
+            stats = new int[tempStats.Length];
             for (int i = 0; i < stats.Length; i++)
                 stats[i] = Int32.Parse(tempStats[i]);
         }

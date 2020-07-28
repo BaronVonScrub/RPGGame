@@ -5,20 +5,16 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="COPY &quot;$(SolutionDir)Inventories.dat&quot; &quot;$(TargetDir)&quot; /Y&#xD;&#xA;COPY &quot;$(SolutionDir)Entities.dat&quot; &quot;$(TargetDir)&quot; /Y&#xD;&#xA;COPY &quot;$(SolutionDir)Tune.csv&quot; &quot;$(TargetDir)&quot; /Y" />
-  </Target>
-
   <ItemGroup>
     <PackageReference Include="System.Runtime" Version="4.3.1" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="Entities.dat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Update="Inventories.dat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Update="README.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

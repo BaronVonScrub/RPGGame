@@ -1,13 +1,15 @@
 
 PLAYER
-WEAPON attackModifier:4 equipped:True name:Bow value:15
-GOLD amount:30 equipped:False name:Gold value:30
+ARMOUR defenceModifier:2 armourModifier:1 equipped:True name:Leather Armour value:50
+WEAPON accuracyModifier:4 damageModifier:4 maxRange:4 minRange:2 slotsNeeded:2 equipped:True name:Bow value:60
+GOLD amount:30
 
 MERCHANT
-WEAPON attackModifier:5 equipped:False name:Axe value:15
-GOLD amount:500 equipped:False name:Gold value:500
+WEAPON accuracyModifier:5 damageModifier:4 maxRange:2 minRange:2 slotsNeeded:2 equipped:False name:Axe value:50
+WEAPON accuracyModifier:4 damageModifier:2 maxRange:1 minRange:1 slotsNeeded:1 equipped:False name:Dagger value:20
+WEAPON accuracyModifier:2 damageModifier:2 maxRange:1 minRange:1 slotsNeeded:1 equipped:False name:Stilletto value:20
+GOLD amount:500
 
 CHEST
-WEAPON attackModifier:2 equipped:False name:Dagger value:5
-GOLD amount:10 equipped:False name:Gold value:10
+GOLD amount:10
 ENDFILE
