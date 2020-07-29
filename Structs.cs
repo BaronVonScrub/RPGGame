@@ -54,6 +54,7 @@ namespace RPGGame
         public Coordinate position;
         public Inventory inventory;
         public int[] stats;
+        public string description;
 
         public EntityData(string[] data)
         {
@@ -71,7 +72,8 @@ namespace RPGGame
             stats = new int[tempStats.Length];
             for (int i = 0; i < stats.Length; i++)
                 stats[i] = Int32.Parse(tempStats[i]);
-        }
+
+            description = data[7];        }
     }
 
     struct ItemData
@@ -79,8 +81,8 @@ namespace RPGGame
         public string type;
         public string data;
         public ItemData(string inData) {
-            type = ParseTool.FirstUpperOnly(ParseTool.GetItemType(inData));
-            data = ParseTool.Strip(inData);
+            type = ParseManager.FirstUpperOnly(ParseManager.GetItemType(inData));
+            data = ParseManager.Strip(inData);
         }
     }
 }

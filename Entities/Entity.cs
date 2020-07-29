@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using static RPGGame.GlobalVariables;
 using static RPGGame.ConstantVariables;
-using static RPGGame.TextTool;
+using static RPGGame.TextManager;
 using System.Linq;
 using System.Globalization;
 
@@ -157,11 +157,12 @@ namespace RPGGame
         public virtual bool Aggressive { get; internal set; } = false;
         public bool Dead { get; set; } = false;
         public string Status { get; internal set; } = "";
+        public string Description { get; internal set; } = "NO DESCRIPTION SET";
 
         #region Constructors
         public Entity() { }
 
-        public Entity(String name, Coordinate position, char icon, int drawPriority, Inventory inventory, int[] stats)
+        public Entity(String name, Coordinate position, char icon, int drawPriority, Inventory inventory, int[] stats, string description)
         {
             this.Name = name;
             this.position = position;
@@ -169,11 +170,13 @@ namespace RPGGame
             this.icon = icon;
             this.drawPriority = drawPriority;
             this.Stats = stats;
+            this.Description = description;
             Passive = true;
             Passable = true;
             if (inventory != null)
                 if (!Inventories.Contains(inventory))
                     Inventories.Add(inventory);
+            this.Description = description;
             EquipUpdate();
         }
 
@@ -189,7 +192,7 @@ namespace RPGGame
             Stats[CurrHealth] = inHealth;
         }
 
-        public Entity(String name, Coordinate position, char icon, int drawPriority, int[] stats)
+        public Entity(String name, Coordinate position, char icon, int drawPriority, int[] stats, string description)
         {
             this.Name = name;
             this.position = position;
@@ -197,6 +200,7 @@ namespace RPGGame
             this.drawPriority = drawPriority;
             this.inventory = new Inventory(name);
             this.Stats = stats;
+            this.Description = description;
             Passive = true;
             Passable = true;
             if (inventory != null)
@@ -205,7 +209,7 @@ namespace RPGGame
             EquipUpdate();
         }
 
-        public Entity(String name, Coordinate position, char icon, Inventory inventory, int[] stats)
+        public Entity(String name, Coordinate position, char icon, Inventory inventory, int[] stats, string description)
         {
             this.Name = name;
             this.position = position;
@@ -213,6 +217,7 @@ namespace RPGGame
             this.drawPriority = 1;
             this.icon = icon;
             this.Stats = stats;
+            this.Description = description;
             Passive = true;
             Passable = true;
             if (inventory != null)
@@ -221,7 +226,7 @@ namespace RPGGame
             EquipUpdate();
         }
 
-        public Entity(String name, Coordinate position, char icon, int[] stats)
+        public Entity(String name, Coordinate position, char icon, int[] stats, string description)
         {
             this.Name = name;
             this.position = position;
@@ -229,6 +234,7 @@ namespace RPGGame
             this.drawPriority = 0;
             this.inventory = new Inventory(name);
             this.Stats = stats;
+            this.Description = description;
             Passive = true;
             Passable = true;
             if (inventory != null)
@@ -262,11 +268,11 @@ namespace RPGGame
             foreach (Item item in inventory.inventData.FindAll(x => x.Equipped == true))
             {
                 item.Equipped = false;
-                Equip(item);
+                Equip(item, this);
             }
         }
 
-        public Boolean Equip(Item item)
+        public static Boolean Equip(Item item, Entity target)
         {
             if (item.Equipped == true)
             {
@@ -276,7 +282,7 @@ namespace RPGGame
 
             string itemType = item.GetType().Name;
 
-            if (!Equiptory.ContainsKey(itemType))
+            if (!target.Equiptory.ContainsKey(itemType))
             {
                 WriteLine("Can't equip that!");
                 return false;
@@ -286,9 +292,9 @@ namespace RPGGame
             if (itemType == "Weapon")
                 slotsRequired = (item as Weapon).slotsRequired;
 
-            if (Equiptory[item.GetType().Name].ToList().FindAll(x => x == null).Count < slotsRequired)
+            if (target.Equiptory[itemType].ToList().FindAll(x => x == null).Count < slotsRequired)
             {
-                WriteLine("Not enough slots!");
+                WriteLine("Not enough slots to equip "+item.Name+"!");
                 item.Equipped = false;
                 return false;
             }
@@ -296,10 +302,10 @@ namespace RPGGame
             item.Equipped = true;
 
             for (int j = 0; j < slotsRequired; j++)
-                for (int i = 0; i < Equiptory[item.GetType().Name].Length; i++)
-                    if (Equiptory[item.GetType().Name][i] == null)
+                for (int i = 0; i < target.Equiptory[itemType].Length; i++)
+                    if (target.Equiptory[itemType][i] == null)
                     {
-                        Equiptory[item.GetType().Name][i] = item;
+                        target.Equiptory[itemType][i] = item;
                         break;
                     }
             return true;

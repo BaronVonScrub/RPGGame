@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using static RPGGame.GlobalVariables;
-using static RPGGame.TextTool;
+using static RPGGame.TextManager;
 namespace RPGGame
 {
-    public static class ConsoleHelper
-    
-    
-    
+    public static class ConsoleManager
+
+
+
     {
         private const int FixedWidthTrueType = 54;
         private const int StandardOutputHandle = -11;
@@ -55,9 +55,9 @@ namespace RPGGame
 
         public static void Initialize()
         {
-            SetUpConsole();                                                                
-            SetCurrentFont("Courier New", 25);                                             
-            MoveWindow(ConsoleHelper.GetConsoleWindow(), 300, 20, 800, 800, true);
+            SetUpConsole();
+            SetCurrentFont("Courier New", 25);
+            MoveWindow(ConsoleManager.GetConsoleWindow(), 300, 20, 800, 800, true);
             Console.WriteLine();
             double minSize = Console.WindowLeft + Console.WindowWidth;
             Console.SetBufferSize((int)Math.Ceiling(minSize), 30);
@@ -86,8 +86,8 @@ namespace RPGGame
 
         internal static void SetUpConsole()
         {
-            var iStdOut = ConsoleHelper.GetStdHandle(STD_OUTPUT_HANDLE);
-            if (!ConsoleHelper.GetConsoleMode(iStdOut, out uint outConsoleMode))
+            var iStdOut = ConsoleManager.GetStdHandle(STD_OUTPUT_HANDLE);
+            if (!ConsoleManager.GetConsoleMode(iStdOut, out uint outConsoleMode))
             {
                 Console.WriteLine("failed to get output console mode");
                 Console.ReadKey();
@@ -95,9 +95,9 @@ namespace RPGGame
             }
 
             outConsoleMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
-            if (!ConsoleHelper.SetConsoleMode(iStdOut, outConsoleMode))
+            if (!ConsoleManager.SetConsoleMode(iStdOut, outConsoleMode))
             {
-                Console.WriteLine($"failed to set output console mode, error code: {ConsoleHelper.GetLastError()}");
+                Console.WriteLine($"failed to set output console mode, error code: {ConsoleManager.GetLastError()}");
                 Console.ReadKey();
                 return;
             }
@@ -113,7 +113,7 @@ namespace RPGGame
             public int FontFamily;
             public int FontWeight;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-            
+
             public string FontName;
         }
 
@@ -141,7 +141,7 @@ namespace RPGGame
                     FontSize = fontSize > 0 ? fontSize : before.FontSize
                 };
 
-                
+
                 if (!SetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref set))
                 {
                     var ex = Marshal.GetLastWin32Error();

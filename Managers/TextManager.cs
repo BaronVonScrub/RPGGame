@@ -7,7 +7,7 @@ using System.Text;
 
 namespace RPGGame
 {
-    class TextTool
+    class TextManager
     {
         public static string AddSpacesBetweenCaps(string inString)
         {
@@ -49,7 +49,7 @@ namespace RPGGame
             WriteLine("");
         }
 
-        public static void WriteLine(String inp)                                                          
+        public static void WriteLine(String inp)
         {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(inp);
@@ -59,7 +59,7 @@ namespace RPGGame
                 TextQueue.Dequeue();
         }
 
-        public static string ReadLine()                                                          
+        public static string ReadLine()
         {
             Console.ForegroundColor = ConsoleColor.White;
             string line = Console.ReadLine();
@@ -80,16 +80,16 @@ namespace RPGGame
             }
         }
 
-        public static void Write(String inp)                                                              
+        public static void Write(String inp)
         {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write(inp);
             Console.ForegroundColor = ConsoleColor.White;
         }
-        
+
         public static void GoldDisplay()
-        {                            
-            WriteLine("GOLD : " + GetGold(Target));                                                         
+        {
+            WriteLine("GOLD : " + GetGold(Target));
             WriteLine(UNDERLINE + "______________________________________________________" + RESET);
         }
     }

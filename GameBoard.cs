@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using static RPGGame.GlobalVariables;
 using static RPGGame.ConstantVariables;
-using static RPGGame.TextTool;
+using static RPGGame.TextManager;
 
 namespace RPGGame
 {
@@ -69,6 +69,30 @@ namespace RPGGame
                     {
                         Write("\b\b" + Hor + BotR);
                     }
+                    //
+                    if (toDraw == HPath || toDraw == TTPath || toDraw == TBPath || toDraw == XPath)
+                    {
+                        Write("\b\b" + HPath + toDraw + HPath);
+                        wallBuffer = true;
+                    }
+                    if (toDraw == LTPath)
+                    {
+                        wallBuffer = true;
+                        Draw(HPath);
+                    }
+                    if (toDraw == RTPath)
+                    {
+                        Write("\b\b" + HPath + RTPath);
+                    }
+                    if (toDraw == LBPath)
+                    {
+                        wallBuffer = true;
+                        Draw(Hor);
+                    }
+                    if (toDraw == RBPath)
+                    {
+                        Write("\b\b" + HPath + RBPath);
+                    }
                 }
                 Draw((char)32);
                 if (wallBuffer == true)
@@ -96,7 +120,9 @@ namespace RPGGame
 
             string positionReadOut = "(" + Player.position.x + "," + Player.position.y + ")";
             Console.SetCursorPosition(Console.BufferWidth / 2 - positionReadOut.Length / 2,Console.CursorTop);
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(positionReadOut);
+            Console.ForegroundColor = ConsoleColor.White;
         }
 
         public static void Pad()

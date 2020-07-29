@@ -4,10 +4,10 @@ using System.Text;
 using System.IO;
 using System.Text.RegularExpressions;
 using static RPGGame.GlobalVariables;
-using static RPGGame.TextTool;
+using static RPGGame.TextManager;
 using static RPGGame.InventoryManager;
-using static RPGGame.ParseTool;
-using static RPGGame.ImportExportTool;
+using static RPGGame.ParseManager;
+using static RPGGame.ImportExportManager;
 using static RPGGame.MusicPlayer;
 using static RPGGame.ConstantVariables;
 using static RPGGame.CombatManager;
@@ -40,6 +40,12 @@ namespace RPGGame
             return false;
         }
 
+        public static void Look()
+        {
+            Target = GetTarget();
+            WriteLine(Target.Description);
+        }
+
             public static void Equip()
         {
             Equip(Player, Input);
@@ -52,7 +58,7 @@ namespace RPGGame
 
             if (item != null)
             {
-                Boolean successful = target.Equip(item);
+                Boolean successful = Entity.Equip(item, Player);
                 if (successful)
                     WriteLine("Equipped " + item.Name + "!");
                 return successful;
@@ -91,7 +97,7 @@ namespace RPGGame
             MonsterGen(direction, Player.DistanceFromCenter()) ;
 
             foreach (Entity ent in EntityManager.GetLocalEntities(Player,MainBoard).FindAll(x => (x.Name != "Player")))
-                WriteLine("You see " + ent.Name + ent.Status+"\b");
+                WriteLine("You see a " + ent.Name + ent.Status+"\b");
 
         }
         public static void Buy()                                                                                   
@@ -212,11 +218,24 @@ namespace RPGGame
                 WriteLine("Inventory not found!");
                 return;
             }
-            Item item = GetCurrentInventoryList(Target).Find(x => (data == x.Name));
-            if (item != null)
-                item.Examine();
-            else
+
+            Item item = GetCurrentInventoryList(Target).Find(x => ((data == x.Name) && (x.Equipped==false)));
+            if (item==null)
+                item = GetCurrentInventoryList(Target).Find(x => (data == x.Name));
+
+            if (item==null)
+            {
                 WriteLine("Item not found!");
+                return;
+            }
+
+            if(Target!=Player && item.Equipped==true)
+            {
+                WriteLine("Can't examine while someone else has it equipped!");
+                return;
+            }
+
+            item.Examine();  
         }
 
         public static void Rename()                                                                                
@@ -317,19 +336,19 @@ namespace RPGGame
         public static void Test()                                                                                  
         {
             System.Threading.Thread.Sleep(1000);                                                   
-            ConsoleHelper.Redraw();
+            ConsoleManager.Redraw();
             foreach (String test in TestCommandList)                                                      
             {
                 Input = test;                                                                      
                 WriteLine(Input);                                                          
-                ConsoleHelper.Redraw(); ;
+                ConsoleManager.Redraw(); ;
                 System.Threading.Thread.Sleep(500);                                               
                 string testCommand = ProcessInput(test);                                           
 
                 WriteLine("");
                 Commands[testCommand]();                                                           
                 WriteLine("");
-                ConsoleHelper.Redraw();
+                ConsoleManager.Redraw();
                 System.Threading.Thread.Sleep(2000);                                               
 
             }

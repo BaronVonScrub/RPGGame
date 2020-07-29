@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using static RPGGame.TextTool;
+using static RPGGame.TextManager;
 using static RPGGame.ConstantVariables;
 
 namespace RPGGame

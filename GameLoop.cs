@@ -1,8 +1,8 @@
 ﻿using System;
 using static RPGGame.GlobalVariables;
-using static RPGGame.TextTool;
-using static RPGGame.ConsoleHelper;
-using static RPGGame.ParseTool;
+using static RPGGame.TextManager;
+using static RPGGame.ConsoleManager;
+using static RPGGame.ParseManager;
 using static RPGGame.ConstantVariables;
 
 namespace RPGGame

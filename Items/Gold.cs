@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
-using static RPGGame.TextTool;
+using static RPGGame.TextManager;
 
 namespace RPGGame
 {

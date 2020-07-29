@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using static RPGGame.GlobalVariables;
 using static RPGGame.ConstantVariables;
 using System.Text;
-using static RPGGame.TextTool;
-using static RPGGame.ImportExportTool;
-using static RPGGame.ParseTool;
+using static RPGGame.TextManager;
+using static RPGGame.ImportExportManager;
+using static RPGGame.ParseManager;
 using System.Linq;
 
 namespace RPGGame

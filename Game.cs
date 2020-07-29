@@ -8,9 +8,9 @@ namespace RPGGame
         static void Main()
         {
             MusicPlayer.Initialize();
-            ConsoleHelper.Initialize();
-            TextTool.Initialize();
-            ParseTool.Initialize();
+            ConsoleManager.Initialize();
+            TextManager.Initialize();
+            ParseManager.Initialize();
             InventoryManager.Initialize();
             EntityManager.Initialize();
             GameLoop.Run();

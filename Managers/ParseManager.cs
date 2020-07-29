@@ -10,30 +10,30 @@ using System.Reflection;
 
 namespace RPGGame
 {
-    static class ParseTool
+    static class ParseManager
     {
         public static void Initialize()
         {
             KeyListCreate();
         }
 
-        public static string ProcessInput(string inp)                                                            
+        public static string ProcessInput(string inp)
         {
             Target = GetTarget();
 
             string command = Commands.Keys.ToList().Find(x => Regex.Match(inp, x).Success);
             if (command == null)
                 return "";
-            return command;                                                                                       
+            return command;
         }
 
-        public static Entity GetTarget(Entity ent, string inp ,GameBoard board)                                                                           
+        public static Entity GetTarget(Entity ent, string inp, GameBoard board)
         {
             List<Entity> localEnts = board.GetFromBoard(ent.position);
             Entity tempTarget = board.GetFromBoard(ent.position).Find(x => Regex.Match(inp, "\\b" + x.Name + "\\b").Success);
             if (tempTarget == null)
                 return Target;
-            return tempTarget;                                                                              
+            return tempTarget;
         }
 
         public static Entity GetTarget()
@@ -46,25 +46,25 @@ namespace RPGGame
             return GetTarget(Player, inp, MainBoard);
         }
 
-        public static string GetItemType()                                                                             
+        public static string GetItemType()
         {
             string tempType = null;
             tempType = Types.Find(x => Regex.Match(Input, "\\b" + x + "\\b").Success);
-            return tempType;                                                                                
+            return tempType;
         }
 
-        public static string GetItemType(String indata)                                                                             
+        public static string GetItemType(String indata)
         {
             string tempType = null;
             tempType = Types.Find(x => Regex.Match(indata, "\\b" + x + "\\b").Success);
-            return tempType;                                                                                
+            return tempType;
         }
 
-        public static string Strip(string indata)                                                                  
+        public static string Strip(string indata)
         {
-            string data = Regex.Replace(indata, KeyList, "");                                                
-            data = Regex.Replace(data, "^\\s*|\\s*$", "");                                                  
-            return data;                                                                                    
+            string data = Regex.Replace(indata, KeyList, "");
+            data = Regex.Replace(data, "^\\s*|\\s*$", "");
+            return data;
         }
 
         public static string FirstUpperOnly(string s)
@@ -95,7 +95,7 @@ namespace RPGGame
             var currentType = currentAssembly.GetTypes().SingleOrDefault(t => t.Name == inData.type);
             if (currentType == null)
                 return null;
-            return Activator.CreateInstance(currentType,inData.data);
+            return Activator.CreateInstance(currentType, inData.data);
         }
 
         public static dynamic ItemCreate()

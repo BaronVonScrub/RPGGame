@@ -1,11 +1,11 @@
 ﻿using System;
 using static RPGGame.GlobalVariables;
 using static RPGGame.ConstantVariables;
-using static RPGGame.ConsoleHelper;
+using static RPGGame.ConsoleManager;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using static RPGGame.TextTool;
+using static RPGGame.TextManager;
 using System.Text.RegularExpressions;
 
 namespace RPGGame

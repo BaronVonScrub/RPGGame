@@ -25,6 +25,18 @@ namespace RPGGame
         public const string UNDERLINE = "\x1B[4m";                                                                  
         public const string RESET = "\x1B[0m";
 
+        public const char LTPath = (char)9556;
+        public const char HPath = (char)9552;
+        public const char RTPath = (char)9559;
+        public const char VPath = (char)9553;
+        public const char LBPath = (char)9562;
+        public const char RBPath = (char)9565;
+        public const char XPath = (char)9580;
+        public const char TTPath = (char)9577;
+        public const char TBPath = (char)9574;
+        public const char TLPath = (char)9571;
+        public const char TRPath = (char)9568;
+
         public const char Ver = (char)9474;
         public const char Hor = (char)9472;
         public const char TopL = (char)9484;
@@ -53,7 +65,8 @@ namespace RPGGame
                     { "\\bBUY\\b", () => Buy() },
                     { "\\bSELL\\b", () => Sell() },
                     { "\\bME\\b", () => LookAtMe() },
-                    { "\\bTRADE\\b|\\bLOOK\\b", () => TradeWith() },
+                    { "\\bLOOK\\b|\\bTALK\\b", () => Look() },
+                    { "\\bTRADE\\b", () => TradeWith() },
                     { "\\bEXAMINE\\b", () => Examine() },
                     { "\\bRENAME\\b", () => Rename() },
                     { "\\bEQUIP\\b", () => Equip() },
