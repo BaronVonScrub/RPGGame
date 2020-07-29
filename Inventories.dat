@@ -1,4 +1,3 @@
-
 PLAYER
 ARMOUR defenceModifier:2 armourModifier:1 equipped:True name:Leather Armour value:50
 WEAPON accuracyModifier:4 damageModifier:4 maxRange:4 minRange:2 slotsNeeded:2 equipped:True name:Bow value:60
@@ -11,5 +10,3 @@ WEAPON accuracyModifier:2 damageModifier:2 maxRange:1 minRange:1 slotsNeeded:1 e
 GOLD amount:500
 
 CHEST
-GOLD amount:10
-ENDFILE

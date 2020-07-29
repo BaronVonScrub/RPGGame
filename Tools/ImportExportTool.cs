@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Linq;
 using static RPGGame.GlobalVariables;
-using static RPGGame.InventoryManager;
-using static RPGGame.ParseTool;
+using static RPGGame.ConstantVariables;
 using static RPGGame.EntityManager;
+using static RPGGame.TextTool;
+using static RPGGame.ParseTool;
 using System.Runtime.InteropServices.ComTypes;
 
 namespace RPGGame
@@ -16,41 +18,23 @@ namespace RPGGame
         {
             string storageFile = Directory.GetCurrentDirectory() + "\\Inventories.dat";
             String[] lines = File.ReadAllLines(storageFile);
-            int lineNum = 0;
-            Inventory inv;
-            do
+            Inventory inv = null;
+            foreach  (string data in lines)
             {
-                if (lineNum==lines.Length)
-                    break;
-
-                do
+                switch (data)
                 {
-                    if (lineNum == lines.Length)
+                    case var someVal when (new Regex("^[\\w\\s]+$").IsMatch(someVal)):                  //No attributes, but not empty
+                        inv = new Inventory(data,new List<Item>());
                         break;
-                    if (lines[lineNum] == "")
+                    case var someVal when (new Regex(AttFinder).Matches(someVal).Count != 0):           //There are attributes
+                        Item item = ItemCreate(new ItemData(data));
+                        inv.inventData.Add(item);
                         break;
-                    lineNum++;
+                    default:                                                                            //Empty
+                        Inventories.Add(inv);
+                        break;
                 }
-                while (true);
-
-                if (lineNum == lines.Length)
-                    break;
-                inv = new Inventory(lines[lineNum]);
-                do
-                {
-                    lineNum += 1;
-                    if (lineNum == lines.Length)
-                        break;
-                    if (lines[lineNum] == "")
-                        break;
-                    ItemData data = new ItemData(lines[lineNum]);
-                    inv.inventData.Add(ItemCreate(data));
-                }
-                while (true);
-                lineNum += 1;
-                Inventories.Add(inv);
             }
-            while (true);
         }
 
         public static void ExportInventories()                              
