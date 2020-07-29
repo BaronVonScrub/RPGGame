@@ -10,6 +10,9 @@ using static RPGGame.ParseTool;
 using static RPGGame.ImportExportTool;
 using static RPGGame.MusicPlayer;
 using static RPGGame.ConstantVariables;
+using static RPGGame.CombatManager;
+using static RPGGame.EntityManager;
+using System.Runtime.InteropServices;
 
 namespace RPGGame
 {
@@ -75,31 +78,46 @@ namespace RPGGame
                 return;
             }
 
+            if (!CombatCheck(goalSquareEntities)){
+                return;
+            }
+
             MainBoard.entityPos[Player.position].Remove(Player);
             Player.position.x += direction.x;
             Player.position.y += direction.y;
             MainBoard.AddToBoard(Player);
 
+            CleanUp(MainBoard);
+            MonsterGen(direction, Player.DistanceFromCenter()) ;
+
             foreach (Entity ent in EntityManager.GetLocalEntities(Player,MainBoard).FindAll(x => (x.Name != "Player")))
-                WriteLine("You see " + ent.Name);
+                WriteLine("You see " + ent.Name + ent.Status+"\b");
 
         }
         public static void Buy()                                                                                   
         {
+            Entity other = GetTarget();
+
             if (Trade(GetTarget(), Player))                                                       
                 WriteLine("Item bought!");
             else
                 WriteLine("Purchase failed!");
+
+            Target = other;
         }
 
         public static void Sell()                                                                                  
         {
+            Entity other = GetTarget();
+
             if (Trade(Player, GetTarget()))                                                      
                 WriteLine("Item sold!");
             else
                 WriteLine("Sale failed!");
+
+            Target = other;
         }
-        public static void Look()                                                                                  
+        public static void TradeWith()
         {
             Target = GetTarget();
             if (!InventoryIsAccessible(Target))
@@ -110,16 +128,80 @@ namespace RPGGame
 
             GetCurrentInventoryList(Target).Sort(AlphabeticalByName);
 
+            Console.Clear();
+
+            WriteLine(UNDERLINE + Target.Name.ToUpper() + RESET);
             GoldDisplay();
 
-            foreach (Item item in GetCurrentInventoryList(Target).FindAll(x => (x.GetType().Name != "Gold")))                                                 
-                if (item.itemData.ContainsKey("amount"))                                                
+            int count = 0;
+
+            foreach (Item item in GetCurrentInventoryList(Target).FindAll(x => (x.GetType().Name != "Gold")))
+            {
+                count += 1;
+                if (count % (Console.BufferHeight-5) == 0)
                 {
-                    WriteLine(item.itemData["amount"] + " "+item.Look());                                               
+                    Console.WriteLine("Press enter for more...");
+                    Console.ReadKey();
+                    Console.Clear();
+                }
+
+                if (item.itemData.ContainsKey("amount"))
+                {
+                    WriteLine(item.itemData["amount"] + " " + item.Look());
                 }
                 else
-                    WriteLine(item.Look());                                                                            
+                    WriteLine(item.Look());
+            }
             WriteLine(UNDERLINE + "______________________________________________________" + RESET);
+            Console.WriteLine("Press enter to continue.");
+            Console.ReadKey();
+            do
+            { TextQueue.Dequeue();  }
+            while (TextQueue.Count!=0);
+        }
+
+        public static void LookAtMe()
+        {
+            Target = Player;
+            if (!InventoryIsAccessible(Target))
+            {
+                WriteLine("Target inventory is not visible.");
+                return;
+            }
+
+            GetCurrentInventoryList(Target).Sort(AlphabeticalByName);
+
+            Console.Clear();
+
+            WriteLine(UNDERLINE + Target.Name.ToUpper() + RESET);
+            Player.StatDisplay();
+            GoldDisplay();
+
+            int count = 0;
+
+            foreach (Item item in GetCurrentInventoryList(Target).FindAll(x => (x.GetType().Name != "Gold")))
+            {
+                count += 1;
+                if (count % (Console.BufferHeight - 5) == 0)
+                {
+                    Console.WriteLine("Press enter for more...");
+                    Console.ReadKey();
+                    Console.Clear();
+                }
+
+                if (item.itemData.ContainsKey("amount"))
+                {
+                    WriteLine(item.itemData["amount"] + " " + item.Look());
+                }
+                else
+                    WriteLine(item.Look());
+            }
+            WriteLine(UNDERLINE + "______________________________________________________" + RESET);
+            Console.WriteLine("Press enter to continue.");
+            Console.ReadKey();
+            do
+            { TextQueue.Dequeue(); }
+            while (TextQueue.Count != 0);
         }
 
         public static void Examine()                                                                               
@@ -181,6 +263,8 @@ namespace RPGGame
 
             WriteLine(moveItem.Name + " taken!");
             Player.inventory.inventData.Add(moveItem);
+
+            CleanUp(MainBoard);
 
         }
 

@@ -51,7 +51,10 @@ namespace RPGGame
         abstract public string[] MustHave { get; set; }
 
         protected Item() { }
-
+        public int Get(string key)
+        {
+            return Int32.Parse(itemData[key]);
+        }
         protected Item(string inputData)                                                                
         {
             foreach (Match match in Regex.Matches(inputData, AttFinder))                                
@@ -114,7 +117,14 @@ namespace RPGGame
         protected void AttributeSet(String key)
         {
             if (!itemData.ContainsKey(key))
+            {
+                if (key=="equipped")
+                {
+                    itemData[key] = "false";
+                    return;
+                }
                 itemData[key] = 0.ToString();
+            }
         }
 
         virtual public void Examine()                                                                           

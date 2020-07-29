@@ -37,14 +37,23 @@ namespace RPGGame
         public const char TeeD = (char)9516;
         public const char Cross = (char)9532;
 
+        public static Weapon Fist = new Weapon("attackModifier:2 damageModifier:1 maxRange:1 minRange:1 slotsNeeded:1 value:0 name:Fist equipped:true");
+
         private const string attFinder = "(\\S+:[\\w\\s]+)(?=\\s|$)";
+
+        public static readonly int MaxHealth = 0;
+        public static readonly int CurrHealth = 1;
+        public static readonly int BaseArmour = 2;
+        public static readonly int Speed = 3;
+        public static readonly int Distance = 4;
 
         private readonly static Dictionary<String, Action> commands = new Dictionary<String, Action>()                        
                 {
                     { "^$", () => Empty() },
                     { "\\bBUY\\b", () => Buy() },
                     { "\\bSELL\\b", () => Sell() },
-                    { "\\bLOOK\\b", () => Look() },
+                    { "\\bME\\b", () => LookAtMe() },
+                    { "\\bTRADE\\b|\\bLOOK\\b", () => TradeWith() },
                     { "\\bEXAMINE\\b", () => Examine() },
                     { "\\bRENAME\\b", () => Rename() },
                     { "\\bEQUIP\\b", () => Equip() },
@@ -107,5 +116,41 @@ namespace RPGGame
             "LOOK Merchant",
             "QUIT"
             };
+
+
+        public static readonly Item[] ItemTable = new Item[] {
+            new Gold(1),
+            new Gold(2),
+            new Gold(5),
+            new Gold(10),
+            new Ammunition("amount:5 value:1 name:Rock"),
+            new Weapon("name:Shiv equipped:false value:5 slotsNeeded:1 minRange:1 maxRange:1 damageModifier:2 attackModifier:2"),
+            new Armour("name:Rags equipped:false value:5 armourModifier:0 defenceModifier:1"),
+            new Miscellaneous("name:Shiny rock value:8"),
+            new Potion("name:Healing Draught value:10 effect:healing 10"),
+            new Weapon("name:Dagger equipped:false value:10 slotsNeeded:1 minRange:1 maxRange:1 damageModifier:2 attackModifier:3"),
+            new Ammunition("amount:5 value:12 name:Arrow"),
+            new Armour("name:Cloth Armour equipped:false value:25 armourModifier:1 defenceModifier:1"),
+            new Ring("name:Silver Ring value:30 equipped:false" ),
+            new Gold(50),
+            new Weapon("name:Shortsword equipped:false value:60 slotsNeeded:1 minRange:1 maxRange:2 damageModifier:4 attackModifier:4"),
+            new Weapon("name:Longsword equipped:false value:80 slotsNeeded:1 minRange:1 maxRange:2 damageModifier:5 attackModifier:4"),
+            new Weapon("name:Shortbow equipped:false value:80 slotsNeeded:2 minRange:2 maxRange:10 damageModifier:3 attackModifier:3"),
+            new Armour("name:Leather Armour equipped:false value:85 armourModifier:2 defenceModifier:1"),
+            new Armour("name:Chain Mail equipped:false value:100 armourModifier:3 defenceModifier:1"),
+            new Weapon("name:Mace equipped:false value:100 slotsNeeded:1 minRange:1 maxRange:2 damageModifier:4 attackModifier:8"),
+            new Ring("name:Gold Ring value:120 equipped:false"),
+            new Armour("name:Duelists Doublet equipped:false value:130 armourModifier:1 defenceModifier:4"),
+            new Ring("name:Jeweled Ring valuie:150 equipped:false"),
+            new Weapon("name:Rapier equipped:false value:150 slotsNeeded:1 minRange:2 maxRange:3 damageModifier:5 attackModifier:2"),
+            new Weapon("name:Longbow equipped:false value:150 slotsNeeded:2 minRange:3 maxRange:20 damageModifier:5 attackModifier:5"),
+            new Armour("name:Plate Armour equipped:false value:180 armourModifier:8 defenceModifier:-2"),
+            new Weapon("name:Greatsword equipped:false value:200 slotsNeeded:2 minRange:2 maxRange:4 damageModifier:6 attackModifier:8"),
+            new Gold(200),
+            new Miscellaneous("name:Wand of Nigel Thornberry value:220 effect:Smashing"),
+            new Potion("name:Potion of Flight value:220 effect:Flight"),
+            new Weapon("name:Greataxe equipped:false value:250 slotsNeeded:2 minRange:2 maxRange:3 damageModifier:8 attackModifier:6"),
+        };
     }
 }
+ 

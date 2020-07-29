@@ -1,19 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
 using static RPGGame.GlobalVariables;
+using static RPGGame.ConstantVariables;
 using System.Text;
 using static RPGGame.TextTool;
 using static RPGGame.ImportExportTool;
 using static RPGGame.ParseTool;
+using System.Linq;
 
 namespace RPGGame
 {
     static class InventoryManager
     {
+        public static int InventoryNum { get; set; } = 0;
+
         public static void Initialize()
         {
             ImportInventories();                                                     
         }
+
+        public static Inventory GenerateInv()
+        {
+            Random r = new Random();
+            int i = 0;
+            int level = 0;
+            do
+            {
+                level++;
+                i = r.Next(5);
+            }
+            while (i != 1);
+
+            string inventName;
+            do
+            {
+                InventoryNum++;
+                inventName = "Inventory" + InventoryNum.ToString();
+            }
+            while (Inventories.Exists(x => x.name == inventName));
+
+            Inventory newInv = new Inventory(inventName, new List<Item>());
+
+            level = Math.Min(level, ItemTable.Length);
+            int num = r.Next(level);
+
+            for (int j = 0; j < level; j++)
+                newInv.inventData.Add(ItemTable[r.Next(level)]);
+
+            Inventories.Add(newInv);
+            return newInv;
+        }
+
         public static Item RemoveNoLog(Boolean bypass)                                                                                
         {
             if (!SuperStatus&&bypass==false)
@@ -112,7 +149,7 @@ namespace RPGGame
             to.inventory.inventData.Add(moveItem);
             to.inventory.inventData.Add(new Gold(-1 * value));
             GoldMerge(to);
-                                                                                                                                                        
+
             return true;                                                                                    
         }
 
@@ -156,13 +193,16 @@ namespace RPGGame
 
             ent.inventory.inventData.RemoveAll(x => x.GetType().Name == "Gold");
 
-            ent.inventory.inventData.Add(new Gold(amount));                                                      
+            if (amount!=0)
+                ent.inventory.inventData.Add(new Gold(amount));                                                      
         }
 
         public static int GetGold(Entity ent)                                                                   
         {
             GoldMerge(ent);
             int amount = 0;
+            if (!GetInventory(ent).inventData.Exists(x => x.GetType().Name == "Gold"))
+                return amount;
             amount = (GetInventory(ent).inventData.Find(x=>x.GetType().Name == "Gold") as Gold).Amount;
             return amount;                                                                                      
         }

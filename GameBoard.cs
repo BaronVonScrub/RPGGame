@@ -93,6 +93,10 @@ namespace RPGGame
             Draw(RightBottomCornerBorder);
             Console.WriteLine();
             #endregion
+
+            string positionReadOut = "(" + Player.position.x + "," + Player.position.y + ")";
+            Console.SetCursorPosition(Console.BufferWidth / 2 - positionReadOut.Length / 2,Console.CursorTop);
+            Console.WriteLine(positionReadOut);
         }
 
         public static void Pad()

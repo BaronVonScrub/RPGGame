@@ -29,6 +29,7 @@ namespace RPGGame
 
         public static Entity GetTarget(Entity ent, string inp ,GameBoard board)                                                                           
         {
+            List<Entity> localEnts = board.GetFromBoard(ent.position);
             Entity tempTarget = board.GetFromBoard(ent.position).Find(x => Regex.Match(inp, "\\b" + x.Name + "\\b").Success);
             if (tempTarget == null)
                 return Target;

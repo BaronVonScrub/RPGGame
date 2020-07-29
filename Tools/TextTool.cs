@@ -55,7 +55,7 @@ namespace RPGGame
             Console.WriteLine(inp);
             Console.ForegroundColor = ConsoleColor.White;
             TextQueue.Enqueue(new Line(inp, ConsoleColor.Green));
-            if (TextQueue.Count > 16)
+            if (TextQueue.Count > 15)
                 TextQueue.Dequeue();
         }
 
@@ -64,7 +64,7 @@ namespace RPGGame
             Console.ForegroundColor = ConsoleColor.White;
             string line = Console.ReadLine();
             TextQueue.Enqueue(new Line(line, ConsoleColor.White));
-            if (TextQueue.Count > 16)
+            if (TextQueue.Count > 15)
                 TextQueue.Dequeue();
             return line;
         }
@@ -88,8 +88,7 @@ namespace RPGGame
         }
         
         public static void GoldDisplay()
-        {
-            WriteLine(UNDERLINE + Target.inventory.name.ToUpper() + RESET);                             
+        {                            
             WriteLine("GOLD : " + GetGold(Target));                                                         
             WriteLine(UNDERLINE + "______________________________________________________" + RESET);
         }

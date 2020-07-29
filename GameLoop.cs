@@ -28,12 +28,11 @@ namespace RPGGame
                 {
                     WriteLine("");
                     Commands[CurrentCommand]();                                                         
-                    WriteLine("");
                 }
 
             }
             while (CurrentCommand != "^QUIT$" && CurrentCommand != "^TEST$");                                                     
-            WriteLine("Game saved! Press any key to continue...");
+            WriteLine("Gave saved! Press any key to continue...");
             Redraw();
             Console.ReadKey();
         }

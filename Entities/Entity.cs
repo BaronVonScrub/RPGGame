@@ -10,28 +10,91 @@ namespace RPGGame
 {
     class Entity
     {
-        public enum StatType
-        {
-            MaxHealth,
-            CurrHealth,
-            BaseArmour,
-            Speed,
-            Distance
-        }
-
         public Coordinate position = new Coordinate();
         public Inventory inventory;
         public char icon = (char)32;
         public int drawPriority = 0;
-        private string name;
-        private Boolean passive;
-        private Boolean passable;
+
+        internal int GetMaxRange()
+        {
+            int temp = 1;
+            if (!Equiptory.ContainsKey("Weapon"))
+                return temp;
+            
+            foreach(Item weapon in Equiptory["Weapon"]) {
+                if (weapon == null)
+                    continue;
+                int range = Int32.Parse(weapon.itemData["maxRange"]);
+                if (range > temp)
+                temp = range;
+            }
+            return temp;
+        }
+
+        internal int GetMinRange()
+        {
+            int temp = 1;
+            if (!Equiptory.ContainsKey("Weapon"))
+                return 1;
+
+            foreach (Item weapon in Equiptory["Weapon"])
+            {
+                if (weapon == null)
+                    continue;
+                int range = Int32.Parse(weapon.itemData["minRange"]);
+                if (range > temp)
+                    temp = range;
+            }
+            return temp;
+        }
+
+        internal List<Weapon> GetEquippedWeapons()
+        {
+            List<Weapon> tempList = new List<Weapon>() { Fist };
+            if (!Equiptory.ContainsKey("Weapon"))
+                return tempList;
+            foreach (Weapon currWeapon in Equiptory["Weapon"])
+                if (currWeapon != null)
+                    tempList.Add(currWeapon);
+            return tempList;
+        }
+
         private Dictionary<String, Item[]> equiptory = new Dictionary<string, Item[]>();
         protected int[] stats = new int[] { 0, 0, 0, 0, 0 };
 
-        public string Name { get => name; set => name = value; }
-        public bool Passive { get => passive; set => passive = value; }
-        public bool Passable { get => passable; set => passable = value; }
+        public string Name { get; set; }
+        public bool Passive { get; set; }
+        public bool Passable { get; set; }
+
+        internal int GetDefence()
+        {
+            int def = 0;
+            if (!Equiptory.ContainsKey("Armour"))
+                return def;
+            foreach (Armour arm in Equiptory["Armour"])
+                def += arm.Get("defenceModifier");
+            return def;
+        }
+
+        internal int GetSpeed()
+        {
+            return Stats[Speed];
+        }
+
+        internal int GetArmour()
+        {
+            int ar = Stats[BaseArmour];
+            if (!Equiptory.ContainsKey("Armour"))
+                return ar;
+            foreach (Armour arm in Equiptory["Armour"])
+                ar += arm.Get("armourModifier");
+            return ar;
+        }
+
+        internal int DistanceFromCenter()
+        {
+            return (int)Math.Round(Math.Sqrt((position.x * position.x) + (position.y * position.y)));
+        }
 
         public Boolean Unequip(Item item)
         {
@@ -80,9 +143,20 @@ namespace RPGGame
             return true;
         }
 
+        internal void Die()
+        {
+            Dead = true;
+            Passive = true;
+            Aggressive = false;
+            Status = " (Dead)";
+            icon = (char)9604;
+        }
 
         public int[] Stats { get => stats; set => stats = value; }
         public virtual Dictionary<string, Item[]> Equiptory { get => equiptory; set => equiptory = value; }
+        public virtual bool Aggressive { get; internal set; } = false;
+        public bool Dead { get; set; } = false;
+        public string Status { get; internal set; } = "";
 
         #region Constructors
         public Entity() { }
@@ -101,6 +175,18 @@ namespace RPGGame
                 if (!Inventories.Contains(inventory))
                     Inventories.Add(inventory);
             EquipUpdate();
+        }
+
+        internal void StatDisplay()
+        {
+            WriteLine("Health : "+Stats[CurrHealth].ToString()+"/"+Stats[MaxHealth].ToString());
+            WriteLine("Def : " + GetDefence().ToString() + "   Arm : " + GetArmour().ToString());
+            WriteLine("Speed : " + GetSpeed().ToString());
+        }
+
+        internal void SetHealth(int inHealth)
+        {
+            Stats[CurrHealth] = inHealth;
         }
 
         public Entity(String name, Coordinate position, char icon, int drawPriority, int[] stats)
@@ -217,11 +303,6 @@ namespace RPGGame
                         break;
                     }
             return true;
-        }
-
-        internal void GetStats()
-        {
-            throw new NotImplementedException();
         }
     }
 }
