@@ -11,6 +11,7 @@ namespace RPGGame
     {
         private int amount = 0;
         new readonly Boolean equipped = false;
+
         public override string[] MustHave { get; set; } = new string[] { "amount"};
         public int Amount { get => amount; set => amount = value; }
 

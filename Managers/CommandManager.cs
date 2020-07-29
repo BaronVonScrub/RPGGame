@@ -24,10 +24,13 @@ namespace RPGGame
         {
             string itemName = Strip(inp);
             Item item = target.inventory.GetItem(itemName);
+
             if (item != null)
             {
-                target.Unequip(item);
-                return true;
+                Boolean successful = target.Unequip(item);
+                if (successful)
+                    WriteLine("Unequipped "+item.Name+"!");
+                return successful;
             }
 
             WriteLine("Item not found!");
@@ -43,10 +46,13 @@ namespace RPGGame
         {
             string itemName = Strip(inp);
             Item item = target.inventory.GetItem(itemName);
+
             if (item != null)
             {
-                target.Equip(item);
-                return true;
+                Boolean successful = target.Equip(item);
+                if (successful)
+                    WriteLine("Equipped " + item.Name + "!");
+                return successful;
             }
 
             WriteLine("Item not found!");
