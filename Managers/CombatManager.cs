@@ -47,7 +47,6 @@ namespace RPGGame
             int enemyMinRange = enemy.GetMinRange();
 
 
-
             int distance = Math.Max(playerMaxRange, enemyMaxRange) + 1;
 
             WriteLine("Do you ADVANCE, RETREAT, HOLD or FLEE ?");
