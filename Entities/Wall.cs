@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RPGGame
+﻿namespace RPGGame
 {
-    class Wall : Entity
+    internal class Wall : Entity
     {
-        new static int[] stats = new int[] {100, 100, 0, 0, 0, 0};
-        public Wall(char icon, Coordinate position, string description) : base("Wall", position, icon, null, Stats1, description) {
+        private static new int[] stats = new int[] { 100, 100, 0, 0, 0, 0 };
+        public Wall(char icon, Coordinate position, string description) : base("Wall", position, icon, null, Stats1, description)
+        {
             Passable = false;
             Passive = false;
         }

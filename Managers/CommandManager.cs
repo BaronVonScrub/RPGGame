@@ -1,44 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.IO;
 using System.Text.RegularExpressions;
-using static RPGGame.GlobalVariables;
-using static RPGGame.TextManager;
-using static RPGGame.InventoryManager;
-using static RPGGame.ParseManager;
-using static RPGGame.ImportExportManager;
-using static RPGGame.MusicPlayer;
-using static RPGGame.ConstantVariables;
 using static RPGGame.CombatManager;
+using static RPGGame.ConsoleManager;
+using static RPGGame.ConstantVariables;
 using static RPGGame.EntityManager;
-using System.Runtime.InteropServices;
+using static RPGGame.GlobalVariables;
+using static RPGGame.ImportExportManager;
+using static RPGGame.InventoryManager;
+using static RPGGame.MusicPlayer;
+using static RPGGame.ParseManager;
+using static RPGGame.TextManager;
 
 namespace RPGGame
 {
-    class CommandManager
+    internal class CommandManager
     {
-        public static void Unequip()
-        {
-            Unequip(Player, Input);
-        }
-
-        public static Boolean Unequip(Entity target, string inp)
-        {
-            string itemName = Strip(inp);
-            Item item = target.inventory.GetItem(itemName);
-
-            if (item != null)
-            {
-                Boolean successful = target.Unequip(item);
-                if (successful)
-                    WriteLine("Unequipped "+item.Name+"!");
-                return successful;
-            }
-
-            WriteLine("Item not found!");
-            return false;
-        }
 
         public static void Look()
         {
@@ -46,34 +23,10 @@ namespace RPGGame
             WriteLine(Target.Description);
         }
 
-            public static void Equip()
-        {
-            Equip(Player, Input);
-        }
-
-        public static Boolean Equip(Entity target, string inp)
-        {
-            string itemName = Strip(inp);
-            Item item = target.inventory.GetItem(itemName);
-
-            if (item != null)
-            {
-                Boolean successful = Entity.Equip(item, Player);
-                if (successful)
-                    WriteLine("Equipped " + item.Name + "!");
-                return successful;
-            }
-
-            WriteLine("Item not found!");
-            return false;
-        }
-
         public static void Empty()
-        {}
+        { }
 
-        public static void MuteToggle(){
-        Mute=!Mute;
-        }
+        public static void MuteToggle() => Mute = !Mute;
 
         public static void Move(MoveCommand direction)
         {
@@ -84,7 +37,8 @@ namespace RPGGame
                 return;
             }
 
-            if (!CombatCheck(goalSquareEntities)){
+            if (!CombatCheck(goalSquareEntities))
+            {
                 return;
             }
 
@@ -94,17 +48,22 @@ namespace RPGGame
             MainBoard.AddToBoard(Player);
 
             CleanUp(MainBoard);
-            MonsterGen(direction, Player.DistanceFromCenter()) ;
+            MonsterGen(direction, Player.DistanceFromCenter());
 
-            foreach (Entity ent in EntityManager.GetLocalEntities(Player,MainBoard).FindAll(x => (x.Name != "Player")))
-                WriteLine("You see a " + ent.Name + ent.Status+"\b");
+            foreach (Entity ent in EntityManager.GetLocalEntities(Player, MainBoard).FindAll(x => (x.Name != "Player")))
+                WriteLine("You see a " + ent.Name + ent.Status + "\b");
 
         }
-        public static void Buy()                                                                                   
+
+        public static void UnequipByInput() => UnequipFromTargetByName(Player, Input);
+
+        public static void EquipByInput() => EquipToTargetByName(Player, Input);
+
+        public static void Buy()
         {
             Entity other = GetTarget();
 
-            if (Trade(GetTarget(), Player))                                                       
+            if (Trade(GetTarget(), Player))
                 WriteLine("Item bought!");
             else
                 WriteLine("Purchase failed!");
@@ -112,11 +71,11 @@ namespace RPGGame
             Target = other;
         }
 
-        public static void Sell()                                                                                  
+        public static void Sell()
         {
             Entity other = GetTarget();
 
-            if (Trade(Player, GetTarget()))                                                      
+            if (Trade(Player, GetTarget()))
                 WriteLine("Item sold!");
             else
                 WriteLine("Sale failed!");
@@ -134,7 +93,9 @@ namespace RPGGame
 
             GetCurrentInventoryList(Target).Sort(AlphabeticalByName);
 
-            Console.Clear();
+            if (!IsTestMode())
+                Console.Clear();
+
 
             WriteLine(UNDERLINE + Target.Name.ToUpper() + RESET);
             GoldDisplay();
@@ -144,12 +105,13 @@ namespace RPGGame
             foreach (Item item in GetCurrentInventoryList(Target).FindAll(x => (x.GetType().Name != "Gold")))
             {
                 count += 1;
-                if (count % (Console.BufferHeight-5) == 0)
-                {
-                    Console.WriteLine("Press enter for more...");
-                    Console.ReadKey();
-                    Console.Clear();
-                }
+                if (!IsTestMode())
+                    if (count % (Console.BufferHeight - 5) == 0)
+                    {
+                        Console.WriteLine("Press enter for more...");
+                        Console.ReadKey();
+                        Console.Clear();
+                    }
 
                 if (item.itemData.ContainsKey("amount"))
                 {
@@ -160,87 +122,86 @@ namespace RPGGame
             }
             WriteLine(UNDERLINE + "______________________________________________________" + RESET);
             Console.WriteLine("Press enter to continue.");
-            Console.ReadKey();
-            do
-            { TextQueue.Dequeue();  }
-            while (TextQueue.Count!=0);
-        }
-
-        public static void LookAtMe()
-        {
-            Target = Player;
-            if (!InventoryIsAccessible(Target))
-            {
-                WriteLine("Target inventory is not visible.");
-                return;
-            }
-
-            GetCurrentInventoryList(Target).Sort(AlphabeticalByName);
-
-            Console.Clear();
-
-            WriteLine(UNDERLINE + Target.Name.ToUpper() + RESET);
-            Player.StatDisplay();
-            GoldDisplay();
-
-            int count = 0;
-
-            foreach (Item item in GetCurrentInventoryList(Target).FindAll(x => (x.GetType().Name != "Gold")))
-            {
-                count += 1;
-                if (count % (Console.BufferHeight - 5) == 0)
-                {
-                    Console.WriteLine("Press enter for more...");
-                    Console.ReadKey();
-                    Console.Clear();
-                }
-
-                if (item.itemData.ContainsKey("amount"))
-                {
-                    WriteLine(item.itemData["amount"] + " " + item.Look());
-                }
-                else
-                    WriteLine(item.Look());
-            }
-            WriteLine(UNDERLINE + "______________________________________________________" + RESET);
-            Console.WriteLine("Press enter to continue.");
-            Console.ReadKey();
+            if (!IsTestMode())
+                Console.ReadKey();
             do
             { TextQueue.Dequeue(); }
             while (TextQueue.Count != 0);
         }
 
-        public static void Examine()                                                                               
+        public static void LookAtMe()
         {
-            string data = Strip(Input);      
-            if (GetCurrentInventoryList(Target) ==null)
+            Target = Player;
+
+            GetCurrentInventoryList(Player).Sort(AlphabeticalByName);
+
+            if (!IsTestMode())
+                Console.Clear();
+
+            WriteLine(UNDERLINE + Player.Name.ToUpper() + RESET);
+            Player.StatDisplay();
+            GoldDisplay();
+
+            int count = 0;
+
+            foreach (Item item in GetCurrentInventoryList(Player).FindAll(x => (x.GetType().Name != "Gold")))
+            {
+                count += 1;
+                if (!IsTestMode())
+                    if (count % (Console.BufferHeight - 5) == 0)
+                    {
+                        Console.WriteLine("Press enter for more...");
+                        Console.ReadKey();
+                        Console.Clear();
+                    }
+
+                if (item.itemData.ContainsKey("amount"))
+                {
+                    WriteLine(item.itemData["amount"] + " " + item.Look());
+                }
+                else
+                    WriteLine(item.Look());
+            }
+            WriteLine(UNDERLINE + "______________________________________________________" + RESET);
+            Console.WriteLine("Press enter to continue.");
+            if (!IsTestMode())
+                Console.ReadKey();
+            do
+            { TextQueue.Dequeue(); }
+            while (TextQueue.Count != 0);
+        }
+
+        public static void Examine()
+        {
+            string data = Strip(Input);
+            if (GetCurrentInventoryList(Target) == null)
             {
                 WriteLine("Inventory not found!");
                 return;
             }
 
-            Item item = GetCurrentInventoryList(Target).Find(x => ((data == x.Name) && (x.Equipped==false)));
-            if (item==null)
+            Item item = GetCurrentInventoryList(Target).Find(x => ((data == x.Name) && (x.Equipped == false)));
+            if (item == null)
                 item = GetCurrentInventoryList(Target).Find(x => (data == x.Name));
 
-            if (item==null)
+            if (item == null)
             {
                 WriteLine("Item not found!");
                 return;
             }
 
-            if(Target!=Player && item.Equipped==true)
+            if (Target != Player && item.Equipped == true)
             {
                 WriteLine("Can't examine while someone else has it equipped!");
                 return;
             }
 
-            item.Examine();  
+            item.Examine();
         }
 
-        public static void Rename()                                                                                
+        public static void Rename()
         {
-            Target = GetTarget();                                                                           
+            Target = GetTarget();
             string data = Strip(Input);
             if (GetCurrentInventoryList(Target) == null)
             {
@@ -257,7 +218,7 @@ namespace RPGGame
             }
             else
                 WriteLine("Item not found!");
-                
+
         }
 
         public static void Take()
@@ -287,22 +248,22 @@ namespace RPGGame
 
         }
 
-        public static void GrantSuper()                                                                                 
+        public static void GrantSuper()
         {
             SuperStatus = true;
             WriteLine("SuperStatus access granted!");
             WriteLine("The SuperStatus commands are ADD and REMOVE");
         }
 
-        public static void Add()                                                                                   
+        public static void Add()
         {
-            if (SuperStatus)                                                                                      
+            if (SuperStatus)
             {
-                Target = GetTarget();                                                                       
-                Item newItem = ItemCreate();                                                                  
-                if (newItem != null)                                                                        
+                Target = GetTarget();
+                Item newItem = ItemCreate();
+                if (newItem != null)
                 {
-                    GetCurrentInventoryList(Target).Add(newItem);                                                       
+                    GetCurrentInventoryList(Target).Add(newItem);
                     WriteLine("Item added!");
                 }
                 else
@@ -325,36 +286,40 @@ namespace RPGGame
             return temp;
         }
 
-        public static void Help()                                                                                  
+        public static void Help()
         {
-            WriteLine("The commands available to you are LOOK, EXAMINE, BUY,");
-            WriteLine(" GO NORTH, GO SOUTH, GO EAST, GO WEST, SELL, RENAME,");
-            WriteLine("                       HELP, QUIT");
+            WriteLine("  The commands available to you are BUY, SELL, LOOK,");
+            WriteLine("  TALK, ME, TRADE, EXAMINE, RENAME, EQUIP, UNEQUIP,");
+            WriteLine("   TAKE, MUTE GO NORTH, GO SOUTH, GO EAST, GO WEST,");
+            WriteLine("                      HELP, QUIT");
 
         }
 
-        public static void Test()                                                                                  
+        public static void Test()
         {
-            System.Threading.Thread.Sleep(1000);                                                   
+            if (!IsTestMode())
+                System.Threading.Thread.Sleep(1000);
             ConsoleManager.Redraw();
-            foreach (String test in TestCommandList)                                                      
+            foreach (string test in TestCommandList)
             {
-                Input = test;                                                                      
-                WriteLine(Input);                                                          
+                Input = test;
+                WriteLine(Input);
                 ConsoleManager.Redraw(); ;
-                System.Threading.Thread.Sleep(500);                                               
-                string testCommand = ProcessInput(test);                                           
+                if (!IsTestMode())
+                    System.Threading.Thread.Sleep(500);
+                string testCommand = ProcessInput(test);
 
                 WriteLine("");
-                Commands[testCommand]();                                                           
+                Commands[testCommand]();
                 WriteLine("");
                 ConsoleManager.Redraw();
-                System.Threading.Thread.Sleep(2000);                                               
+                if (!IsTestMode())
+                    System.Threading.Thread.Sleep(2000);
 
             }
         }
 
-        public static void Quit()                                                                                  
+        public static void Quit()
         {
             ExportInventories();
             ExportEntities();
@@ -362,7 +327,7 @@ namespace RPGGame
         }
     }
 
-    struct MoveCommand
+    internal struct MoveCommand
     {
         public int x;
         public int y;

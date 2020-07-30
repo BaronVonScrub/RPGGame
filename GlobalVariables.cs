@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace RPGGame
 {
-    class GlobalVariables
+    internal class GlobalVariables
     {
         //Dynamically change throughout the program, want easily accessible to whoever needs them.
 
@@ -25,6 +24,6 @@ namespace RPGGame
 
         public static Queue<Line> TextQueue { get; set; } = new Queue<Line>();              //Contains a list of recent console input/output
 
-        public static Boolean Mute { get; set; } = false;                                   //Contains the mute state of the game
+        public static bool Mute { get; set; } = false;                                   //Contains the mute state of the game
     }
 }

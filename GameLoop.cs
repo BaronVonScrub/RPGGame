@@ -1,13 +1,13 @@
 ﻿using System;
-using static RPGGame.GlobalVariables;
-using static RPGGame.TextManager;
 using static RPGGame.ConsoleManager;
-using static RPGGame.ParseManager;
 using static RPGGame.ConstantVariables;
+using static RPGGame.GlobalVariables;
+using static RPGGame.ParseManager;
+using static RPGGame.TextManager;
 
 namespace RPGGame
 {
-    class GameLoop
+    internal class GameLoop
     {
         public static void Run()
         {
@@ -15,8 +15,8 @@ namespace RPGGame
             {
                 Redraw();
 
-                Input = ReadLine();                                                   
-                CurrentCommand = ProcessInput(Input);                                           
+                Input = ReadLine();
+                CurrentCommand = ProcessInput(Input);
 
                 if (CurrentCommand == "")
                 {
@@ -27,14 +27,15 @@ namespace RPGGame
                 else
                 {
                     WriteLine("");
-                    Commands[CurrentCommand]();                                                         
+                    Commands[CurrentCommand]();
                 }
 
             }
-            while (CurrentCommand != "^QUIT$" && CurrentCommand != "^TEST$");                                                     
+            while (CurrentCommand != "^QUIT$" && CurrentCommand != "^TEST$");
             WriteLine("Gave saved! Press any key to continue...");
             Redraw();
-            Console.ReadKey();
+            if (!IsTestMode())
+                Console.ReadKey();
         }
     }
 }

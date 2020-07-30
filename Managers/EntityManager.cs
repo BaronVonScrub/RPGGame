@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using static RPGGame.GlobalVariables;
-using static RPGGame.InventoryManager;
-using static RPGGame.ImportExportManager;
-using static RPGGame.TextManager;
 using System.Reflection;
-using System.Runtime.CompilerServices;
+using static RPGGame.GlobalVariables;
+using static RPGGame.ImportExportManager;
+using static RPGGame.InventoryManager;
+using static RPGGame.ParseManager;
+using static RPGGame.TextManager;
 
 namespace RPGGame
 {
-    static class EntityManager
+    internal static class EntityManager
     {
-        static int EntityNum { get; set; } = 0;
+        private static int EntityNum { get; set; } = 0;
         public static void Initialize()
         {
             MainBoard = new GameBoard();
@@ -21,6 +21,81 @@ namespace RPGGame
 
             foreach (Entity ent in EntityManager.GetLocalEntities(Player, MainBoard).FindAll(x => (x.Name != "Player")))
                 WriteLine("You see a " + ent.Name + ent.Status + "\b");
+        }
+
+        public static bool UnequipFromTargetByName(Entity target, string inp)
+        {
+            string itemName = Strip(inp);
+            Item item = target.inventory.GetItem(itemName);
+
+            if (item != null)
+            {
+                bool successful = UnequipFromTargetByItem(target, item);
+                if (successful)
+                    WriteLine("Unequipped " + item.Name + "!");
+                return successful;
+            }
+
+            WriteLine("Item not found!");
+            return false;
+        }
+
+        public static bool UnequipFromTargetByItem(Entity target, Item item) => target.UnequipByItem(item);
+
+        public static bool EquipToTargetByItem(Entity target, Item item)
+        {
+            if (item.Equipped == true)
+            {
+                WriteLine("That item is already equipped!");
+                return false;
+            }
+
+            string itemType = item.GetType().Name;
+
+            if (!target.Equiptory.ContainsKey(itemType))
+            {
+                WriteLine("Can't equip that!");
+                return false;
+            }
+
+            int slotsRequired = 1;
+            if (itemType == "Weapon")
+                slotsRequired = (item as Weapon).slotsRequired;
+
+            if (target.Equiptory[itemType].ToList().FindAll(x => x == null).Count < slotsRequired)
+            {
+                WriteLine("Not enough slots to equip " + item.Name + "!");
+                item.Equipped = false;
+                return false;
+            }
+
+            item.Equipped = true;
+
+            for (int j = 0; j < slotsRequired; j++)
+                for (int i = 0; i < target.Equiptory[itemType].Length; i++)
+                    if (target.Equiptory[itemType][i] == null)
+                    {
+                        target.Equiptory[itemType][i] = item;
+                        break;
+                    }
+            return true;
+        }
+
+        public static bool EquipToTargetByName(Entity target, string inp)
+        {
+            string itemName = Strip(inp);
+            Item item = target.inventory.GetItem(itemName);
+
+            if (item != null)
+            {
+                bool successful = EquipToTargetByItem(target, item);
+                if (successful)
+                    WriteLine("Equipped " + item.Name + "!");
+                return successful;
+            }
+
+            WriteLine("Item not found!");
+            return false;
         }
 
         private static Entity GetEntity(string entName)
@@ -35,22 +110,19 @@ namespace RPGGame
             return ent;
         }
 
-        public static List<Entity> GetLocalEntities(Entity ent, GameBoard board)
-        {
-            return board.GetFromBoard(ent.position);
-        }
+        public static List<Entity> GetLocalEntities(Entity ent, GameBoard board) => board.GetFromBoard(ent.position);
 
-        public static dynamic EntityCreate(string entType, string name, Coordinate position, Char icon, int drawPriority, Inventory inventory, int[] stats, string description)
+        public static dynamic EntityCreate(string entType, string name, Coordinate position, char icon, int drawPriority, Inventory inventory, int[] stats, string description)
         {
-            Assembly currentAssembly = Assembly.GetExecutingAssembly();
-            var currentType = currentAssembly.GetTypes().SingleOrDefault(t => t.Name == entType);
-                return Activator.CreateInstance(currentType, name, position, icon, drawPriority, inventory, stats, description);
+            var currentAssembly = Assembly.GetExecutingAssembly();
+            Type currentType = currentAssembly.GetTypes().SingleOrDefault(t => t.Name == entType);
+            return Activator.CreateInstance(currentType, name, position, icon, drawPriority, inventory, stats, description);
         }
 
         public static dynamic EntityCreate(EntityData inData)
         {
-            Assembly currentAssembly = Assembly.GetExecutingAssembly();
-            var currentType = currentAssembly.GetTypes()
+            var currentAssembly = Assembly.GetExecutingAssembly();
+            Type currentType = currentAssembly.GetTypes()
                                              .SingleOrDefault(t => t.Name == inData.type);
             return Activator.CreateInstance(currentType,
                                             inData.name,
@@ -65,9 +137,9 @@ namespace RPGGame
         public static void MonsterGen(MoveCommand direction, int dist)
         {
             Coordinate pos;
-            MoveCommand perp = new MoveCommand(direction.x == 1 ? 0 : 1, direction.y == 1 ? 0 : 1);
-            int chancesPerSquare = (int)Math.Floor((float)dist / 8)-VisibleEnemies();
-            Random r = new Random();
+            var perp = new MoveCommand(direction.x == 1 ? 0 : 1, direction.y == 1 ? 0 : 1);
+            int chancesPerSquare = (int)Math.Floor((float)dist / 10) - VisibleEnemies();
+            var r = new Random();
             for (int i = -5; i < 6; i++)
             {
                 pos = new Coordinate(Player.position.x + direction.x * 5 + perp.x * i, Player.position.y + direction.y * 5 + perp.y * i);
@@ -82,9 +154,10 @@ namespace RPGGame
             }
         }
 
-        public static void CleanUp(GameBoard board) {
+        public static void CleanUp(GameBoard board)
+        {
 
-            List<Entity> toBeRemoved = new List<Entity>();
+            var toBeRemoved = new List<Entity>();
 
             foreach (Coordinate coord in board.entityPos.Keys)
             {
@@ -108,13 +181,13 @@ namespace RPGGame
         private static int VisibleEnemies()
         {
             int num = 0;
-            List<Coordinate> coordList = new List<Coordinate>();
-            List<Entity> nearby = new List<Entity>();
+            var coordList = new List<Coordinate>();
+            var nearby = new List<Entity>();
 
             for (int i = -5; i < 6; i++)
                 for (int j = -5; j < 6; j++)
                 {
-                    Coordinate coord = new Coordinate(Player.position.x + i, Player.position.y + j);
+                    var coord = new Coordinate(Player.position.x + i, Player.position.y + j);
                     if (MainBoard.GetFromBoard(coord) != null)
                         foreach (Entity ent in MainBoard.GetFromBoard(coord))
                             nearby.Add(ent);
@@ -125,17 +198,17 @@ namespace RPGGame
             return num;
         }
 
-        private static void EnemyMake(Coordinate pos)
+        public static void EnemyMake(Coordinate pos)
         {
-            List<Type> EnemyTypes = new List<Type>();
+            var EnemyTypes = new List<Type>();
 
-            var types = Assembly.GetExecutingAssembly().GetTypes();
+            Type[] types = Assembly.GetExecutingAssembly().GetTypes();
             foreach (Type type in types)
                 if (type.IsSubclassOf(typeof(Enemy)))
                     EnemyTypes.Add(type);
 
 
-            Random r = new Random();
+            var r = new Random();
             string entType = EnemyTypes[r.Next(EnemyTypes.Count)].Name;
             string name;
 
@@ -148,15 +221,15 @@ namespace RPGGame
 
 
 
-            Char icon = (char)547;
+            char icon = (char)547;
 
             int drawPriority = 99;
 
             Inventory inventory = GenerateInv();
 
-            int hp = 5+r.Next(0,20);
+            int hp = 5 + r.Next(0, 20);
 
-            int[] stats = { hp, hp, r.Next(1), 1+r.Next(2), -1 };
+            int[] stats = { hp, hp, r.Next(1), 1 + r.Next(2), -1 };
 
             string description = "A fearsome enemy!";
 

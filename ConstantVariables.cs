@@ -4,7 +4,7 @@ using static RPGGame.CommandManager;
 
 namespace RPGGame
 {
-    static class ConstantVariables
+    internal static class ConstantVariables
     {
         //Never altered during runtime
 
@@ -14,16 +14,17 @@ namespace RPGGame
         public static List<string> TestCommandList => testCommandList;
 
         public const int padding = 15;
+        public const int viewDistanceWidth = 5;
+        public const int viewDistanceHeight = 5;
+        public const string UNDERLINE = "\x1B[4m";
+        public const string RESET = "\x1B[0m";
+
         public const char LeftTopCornerBorder = (char)9556;
         public const char HorizontalBorder = (char)9552;
         public const char RightTopCornerBorder = (char)9559;
         public const char VerticalBorder = (char)9553;
         public const char LeftBottomCornerBorder = (char)9562;
         public const char RightBottomCornerBorder = (char)9565;
-        public const int viewDistanceWidth = 5;
-        public const int viewDistanceHeight = 5;
-        public const string UNDERLINE = "\x1B[4m";                                                                  
-        public const string RESET = "\x1B[0m";
 
         public const char LTPath = (char)9556;
         public const char HPath = (char)9552;
@@ -59,33 +60,32 @@ namespace RPGGame
         public static readonly int Speed = 3;
         public static readonly int Distance = 4;
 
-        private readonly static Dictionary<String, Action> commands = new Dictionary<String, Action>()                        
+        private static readonly Dictionary<string, Action> commands = new Dictionary<string, Action>()
                 {
                     { "^$", () => Empty() },
-                    { "\\bBUY\\b", () => Buy() },
-                    { "\\bSELL\\b", () => Sell() },
+                    { "^BUY\\b", () => Buy() },
+                    { "^SELL\\b", () => Sell() },
+                    { "^GIVE ME GOOD GRADES$", () => GrantSuper() },
+                    { "^LOOK\\b|^TALK\\b", () => Look() },
                     { "\\bME\\b", () => LookAtMe() },
-                    { "\\bLOOK\\b|\\bTALK\\b", () => Look() },
-                    { "\\bTRADE\\b", () => TradeWith() },
-                    { "\\bEXAMINE\\b", () => Examine() },
-                    { "\\bRENAME\\b", () => Rename() },
-                    { "\\bEQUIP\\b", () => Equip() },
-                    { "\\bUNEQUIP\\b", () => Unequip() },
-                    { "\\bTAKE\\b", () => Take() },
-                    { "\\bMUTE\\b", () => MuteToggle() },
+                    { "^TRADE\\b", () => TradeWith() },
+                    { "^EXAMINE\\b", () => Examine() },
+                    { "^RENAME\\b", () => Rename() },
+                    { "^EQUIP\\b", () => EquipByInput() },
+                    { "^UNEQUIP\\b", () => UnequipByInput() },
+                    { "^TAKE\\b", () => Take() },
+                    { "^MUTE$", () => MuteToggle() },
                     { "^GO NORTH$|^[nN]$" , () => Move(NORTH) },
                     { "^GO SOUTH$|^[sS]$" , () => Move(SOUTH) },
                     { "^GO EAST$|^[eE]$" , () => Move(EAST) },
                     { "^GO WEST$|^[wW]$" , () => Move(WEST) },
-                    { "^GIVE ME GOOD GRADES$", () => GrantSuper() },
-                    { "\\bADD\\b", () => Add() },
-                    { "\\bREMOVE\\b", () => Remove() },
-                    { "\\bHELP\\b", () => Help() },
+                    { "^ADD\\b", () => Add() },
+                    { "^REMOVE\\b", () => Remove() },
+                    { "^HELP$", () => Help() },
                     { "^QUIT$", () => Quit() },
                     { "^TEST$", () => Test() }
                 };
-
-        static readonly List<string> types = new List<String>()                                                       
+        private static readonly List<string> types = new List<string>()
             {
                 "WEAPON",
                 "POTION",
@@ -96,12 +96,12 @@ namespace RPGGame
                 "MISCELLANEOUS",
             };
 
-        private readonly static MoveCommand NORTH = new MoveCommand(0, -1);
-        private readonly static MoveCommand SOUTH = new MoveCommand(0, 1);
-        private readonly static MoveCommand EAST = new MoveCommand(1, 0);
-        private readonly static MoveCommand WEST = new MoveCommand(-1, 0);
+        public static readonly MoveCommand NORTH = new MoveCommand(0, -1);
+        public static readonly MoveCommand SOUTH = new MoveCommand(0, 1);
+        public static readonly MoveCommand EAST = new MoveCommand(1, 0);
+        public static readonly MoveCommand WEST = new MoveCommand(-1, 0);
 
-        private readonly static List<string> testCommandList = new List<string>                                                        
+        private static readonly List<string> testCommandList = new List<string>
             {
             "HELP",
             "LOOK Player",
@@ -166,4 +166,3 @@ namespace RPGGame
         };
     }
 }
- 

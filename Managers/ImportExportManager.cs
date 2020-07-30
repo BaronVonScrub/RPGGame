@@ -2,22 +2,19 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Linq;
-using static RPGGame.GlobalVariables;
 using static RPGGame.ConstantVariables;
 using static RPGGame.EntityManager;
-using static RPGGame.TextManager;
+using static RPGGame.GlobalVariables;
 using static RPGGame.ParseManager;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace RPGGame
 {
-    class ImportExportManager
+    internal class ImportExportManager
     {
         public static void ImportInventories()
         {
             string storageFile = Directory.GetCurrentDirectory() + "\\Inventories.dat";
-            String[] lines = File.ReadAllLines(storageFile);
+            string[] lines = File.ReadAllLines(storageFile);
             Inventory inv = null;
             foreach (string data in lines)
             {
@@ -51,7 +48,7 @@ namespace RPGGame
                 foreach (Item item in inv.inventData)
                 {
                     sw.Write(item.GetType().Name.ToUpper());
-                    foreach (KeyValuePair<String, String> att in item.itemData)
+                    foreach (KeyValuePair<string, string> att in item.itemData)
                         sw.Write(" " + att.Key + ":" + att.Value);
                     sw.Write(System.Environment.NewLine);
                 }
@@ -63,7 +60,7 @@ namespace RPGGame
         public static void ImportEntities()
         {
             string storageFile = Directory.GetCurrentDirectory() + "\\Entities.dat";
-            String[] lines = File.ReadAllLines(storageFile);
+            string[] lines = File.ReadAllLines(storageFile);
 
             for (int lineNum = 0; lineNum < lines.Length - 1; lineNum += 9)
             {

@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using static RPGGame.TextManager;
 using static RPGGame.ConstantVariables;
+using static RPGGame.TextManager;
 
 namespace RPGGame
 {
-    abstract class Item
+    internal abstract class Item
     {
-        protected Boolean equipped = false;
+        protected bool equipped = false;
         protected int val;
         protected string name = "";
-        public SortedDictionary<String, String> itemData = new SortedDictionary<String, String>();      
-        
-        public Boolean Equipped {
+        public SortedDictionary<string, string> itemData = new SortedDictionary<string, string>();
+
+        public bool Equipped
+        {
             get => equipped;
             set
             {
@@ -48,27 +48,24 @@ namespace RPGGame
             }
         }
 
-        abstract public string[] MustHave { get; set; }
+        public abstract string[] MustHave { get; set; }
 
         protected Item() { }
-        public int Get(string key)
+        public int Get(string key) => int.Parse(itemData[key]);
+        protected Item(string inputData)
         {
-            return Int32.Parse(itemData[key]);
-        }
-        protected Item(string inputData)                                                                
-        {
-            foreach (Match match in Regex.Matches(inputData, AttFinder))                                
+            foreach (Match match in Regex.Matches(inputData, AttFinder))
             {
-                String[] attData = match.Value.Split(":");
-                itemData.Add(attData[0],attData[1]);
+                string[] attData = match.Value.Split(":");
+                itemData.Add(attData[0], attData[1]);
             }
 
             Guarantee();
 
-            AttributeSet("name",ref name);
+            AttributeSet("name", ref name);
             AttributeSet("value", ref val);
             AttributeSet("equipped", ref equipped);
-            ForceSet("type", this.GetType().Name);
+            ForceSet("type", GetType().Name);
         }
 
         public void Guarantee()
@@ -77,48 +74,49 @@ namespace RPGGame
                 AttributeSet(att);
         }
 
-        virtual public string Look()
+        public virtual string Look()
         {
             if (Equipped == true)
                 return Name + " (Equipped)";
-            return Name;                                                                       
+            return Name;
         }
 
-        protected void ForceSet(String key, string value)
+        protected void ForceSet(string key, string value)
         {
             if (itemData.ContainsKey(key))
                 itemData.Remove(key);
             itemData.Add(key, value);
         }
 
-        protected void AttributeSet(String key, ref string refVal) {
+        protected void AttributeSet(string key, ref string refVal)
+        {
             if (itemData.ContainsKey(key))
                 refVal = itemData[key];
             else
                 itemData[key] = refVal;
         }
 
-        protected void AttributeSet(String key, ref Boolean refVal)
+        protected void AttributeSet(string key, ref bool refVal)
         {
             if (itemData.ContainsKey(key))
-                refVal = Boolean.Parse(itemData[key]);
+                refVal = bool.Parse(itemData[key]);
             else
                 itemData[key] = refVal.ToString();
         }
 
-        protected void AttributeSet(String key, ref int refVal)
+        protected void AttributeSet(string key, ref int refVal)
         {
             if (itemData.ContainsKey(key))
-                refVal = Int32.Parse(itemData[key]);
+                refVal = int.Parse(itemData[key]);
             else
                 itemData[key] = refVal.ToString();
         }
 
-        protected void AttributeSet(String key)
+        protected void AttributeSet(string key)
         {
             if (!itemData.ContainsKey(key))
             {
-                if (key=="equipped")
+                if (key == "equipped")
                 {
                     itemData[key] = "false";
                     return;
@@ -127,18 +125,18 @@ namespace RPGGame
             }
         }
 
-        virtual public void Examine()                                                                           
-        {                                                      
-            WriteLine(Name);                                                     
-            WriteLine("Type : "+itemData["type"]);
+        public virtual void Examine()
+        {
+            WriteLine(Name);
+            WriteLine("Type : " + itemData["type"]);
             if (itemData.ContainsKey("amount"))
-                WriteLine("Amount : " + itemData["amount"]);                                       
-            WriteLine("Value : " + itemData["value"]);       
-            
-            foreach (KeyValuePair<String,String> dat in itemData)                                       
+                WriteLine("Amount : " + itemData["amount"]);
+            WriteLine("Value : " + itemData["value"]);
+
+            foreach (KeyValuePair<string, string> dat in itemData)
             {
-                if (dat.Key!="name"&&dat.Key!="type"&&dat.Key!="amount"&&dat.Key!="value")              
-                    WriteLine(ToTitleCase(dat.Key) + " : " + dat.Value);                                        
+                if (dat.Key != "name" && dat.Key != "type" && dat.Key != "amount" && dat.Key != "value")
+                    WriteLine(ToTitleCase(dat.Key) + " : " + dat.Value);
             }
         }
 

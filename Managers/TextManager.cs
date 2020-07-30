@@ -1,19 +1,19 @@
 ﻿using System;
-using static RPGGame.GlobalVariables;
-using static RPGGame.ConstantVariables;
-using static RPGGame.InventoryManager;
-using System.Text.RegularExpressions;
 using System.Text;
+using static RPGGame.ConsoleManager;
+using static RPGGame.ConstantVariables;
+using static RPGGame.GlobalVariables;
+using static RPGGame.InventoryManager;
 
 namespace RPGGame
 {
-    class TextManager
+    internal class TextManager
     {
         public static string AddSpacesBetweenCaps(string inString)
         {
             if (string.IsNullOrWhiteSpace(inString))
                 return "";
-            StringBuilder outString = new StringBuilder(inString.Length * 2);
+            var outString = new StringBuilder(inString.Length * 2);
             outString.Append(inString[0]);
             for (int i = 1; i < inString.Length; i++)
             {
@@ -49,7 +49,7 @@ namespace RPGGame
             WriteLine("");
         }
 
-        public static void WriteLine(String inp)
+        public static void WriteLine(string inp)
         {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(inp);
@@ -62,7 +62,9 @@ namespace RPGGame
         public static string ReadLine()
         {
             Console.ForegroundColor = ConsoleColor.White;
-            string line = Console.ReadLine();
+            string line = "";
+            if (!IsTestMode())
+                line = Console.ReadLine();
             TextQueue.Enqueue(new Line(line, ConsoleColor.White));
             if (TextQueue.Count > 15)
                 TextQueue.Dequeue();
@@ -80,7 +82,7 @@ namespace RPGGame
             }
         }
 
-        public static void Write(String inp)
+        public static void Write(string inp)
         {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write(inp);

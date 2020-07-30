@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using static RPGGame.GlobalVariables;
+using static RPGGame.ConsoleManager;
 using static RPGGame.ConstantVariables;
+using static RPGGame.GlobalVariables;
 using static RPGGame.TextManager;
 
 namespace RPGGame
 {
-    class GameBoard
+    internal class GameBoard
     {
-        View currentView;
+        private View currentView;
         public Dictionary<Coordinate, List<Entity>> entityPos = new Dictionary<Coordinate, List<Entity>>();
 
         public GameBoard() { }
@@ -16,7 +17,7 @@ namespace RPGGame
         public void RenderBoard()
         {
             currentView = Player.GetView();
-            Boolean wallBuffer = false;
+            bool wallBuffer = false;
 
             #region Draw top border
             Pad();
@@ -32,11 +33,11 @@ namespace RPGGame
             #endregion
 
             #region Draw side borders and map
-            for (int yy= currentView.topLeft.y; yy<currentView.bottomRight.y+1;yy++)
+            for (int yy = currentView.topLeft.y; yy < currentView.bottomRight.y + 1; yy++)
             {
                 Pad();
                 Draw(VerticalBorder);
-                for (int xx=currentView.topLeft.x;xx<currentView.bottomRight.x+1; xx++)
+                for (int xx = currentView.topLeft.x; xx < currentView.bottomRight.x + 1; xx++)
                 {
                     if (wallBuffer == false)
                         Draw((char)32);
@@ -48,7 +49,7 @@ namespace RPGGame
 
                     if (toDraw == Hor)
                     {
-                        Write("\b\b"+Hor+Hor+Hor);
+                        Write("\b\b" + Hor + Hor + Hor);
                         wallBuffer = true;
                     }
                     if (toDraw == TopL)
@@ -108,7 +109,7 @@ namespace RPGGame
             #region Draw bottom border
             Pad();
             Draw(LeftBottomCornerBorder);
-            for (int i = currentView.topLeft.x; i < currentView.bottomRight.x+1; i++)
+            for (int i = currentView.topLeft.x; i < currentView.bottomRight.x + 1; i++)
             {
                 Draw(HorizontalBorder);
                 Draw(HorizontalBorder);
@@ -119,7 +120,8 @@ namespace RPGGame
             #endregion
 
             string positionReadOut = "(" + Player.position.x + "," + Player.position.y + ")";
-            Console.SetCursorPosition(Console.BufferWidth / 2 - positionReadOut.Length / 2,Console.CursorTop);
+            if (!IsTestMode())
+                Console.SetCursorPosition(Console.BufferWidth / 2 - positionReadOut.Length / 2, Console.CursorTop);
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(positionReadOut);
             Console.ForegroundColor = ConsoleColor.White;
@@ -127,15 +129,14 @@ namespace RPGGame
 
         public static void Pad()
         {
-            Console.SetCursorPosition(padding,Console.CursorTop);
+            if (!IsTestMode())
+                Console.SetCursorPosition(padding, Console.CursorTop);
         }
 
-        private void Draw(char ch)
+        private void Draw(char ch) => Write(ch + "");
+
+        public void AddToBoard(Entity toAdd)
         {
-            Write(ch+"");
-        }
-
-        public void AddToBoard(Entity toAdd) {
             if (!entityPos.ContainsKey(toAdd.position))
                 entityPos.Add(toAdd.position, new List<Entity>());
             entityPos[toAdd.position].Add(toAdd);
@@ -153,9 +154,10 @@ namespace RPGGame
         {
             int highest = 0;
             char ic = (char)1622;
-            if (inList!=null)
+            if (inList != null)
                 foreach (Entity ent in inList)
-                    if (ent.drawPriority > highest) {
+                    if (ent.drawPriority > highest)
+                    {
                         highest = ent.drawPriority;
                         ic = ent.icon;
                     }

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RPGGame
+﻿namespace RPGGame
 {
-    class Ring : Item
+    internal class Ring : Item
     {
         public override string[] MustHave { get; set; } = new string[] { "value", "name", "equipped" };
         public Ring(string inputData) : base(inputData) { }

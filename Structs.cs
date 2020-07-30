@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RPGGame
 {
-    struct Coordinate
+    internal struct Coordinate
     {
         public int x;
         public int y;
@@ -15,14 +13,14 @@ namespace RPGGame
             this.y = y;
         }
 
-        public Coordinate(String[] inp)
+        public Coordinate(string[] inp)
         {
-            this.x = Int32.Parse(inp[0]);
-            this.y = Int32.Parse(inp[1]);
+            x = int.Parse(inp[0]);
+            y = int.Parse(inp[1]);
         }
     }
 
-    struct View
+    internal struct View
     {
         public Coordinate topLeft;
         public Coordinate bottomRight;
@@ -33,19 +31,20 @@ namespace RPGGame
             this.bottomRight = bottomRight;
         }
     }
-    struct Line
+
+    internal struct Line
     {
         public string lineData;
         public ConsoleColor col;
 
-        public Line(String lineData, ConsoleColor col)
+        public Line(string lineData, ConsoleColor col)
         {
             this.lineData = lineData;
             this.col = col;
         }
     }
 
-    struct EntityData
+    internal struct EntityData
     {
         public string type;
         public string name;
@@ -60,8 +59,8 @@ namespace RPGGame
         {
             type = data[1];
             name = data[0];
-            icon = (char)Int32.Parse(data[2]);
-            drawPriority = Int32.Parse(data[3]);
+            icon = (char)int.Parse(data[2]);
+            drawPriority = int.Parse(data[3]);
             position = new Coordinate(data[4].Split(" "));
             inventory = null;
 
@@ -71,16 +70,18 @@ namespace RPGGame
             string[] tempStats = data[6].Split(" ");
             stats = new int[tempStats.Length];
             for (int i = 0; i < stats.Length; i++)
-                stats[i] = Int32.Parse(tempStats[i]);
+                stats[i] = int.Parse(tempStats[i]);
 
-            description = data[7];        }
+            description = data[7];
+        }
     }
 
-    struct ItemData
+    internal struct ItemData
     {
         public string type;
         public string data;
-        public ItemData(string inData) {
+        public ItemData(string inData)
+        {
             type = ParseManager.FirstUpperOnly(ParseManager.GetItemType(inData));
             data = ParseManager.Strip(inData);
         }

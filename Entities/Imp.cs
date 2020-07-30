@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace RPGGame.Entities
 {
-    class Imp : Enemy
+    internal class Imp : Enemy
     {
-        private Dictionary<String, Item[]> equiptory = new Dictionary<String, Item[]>()
+        private Dictionary<string, Item[]> equiptory = new Dictionary<string, Item[]>()
         {
             { "Weapon",new Item[1]},
             { "Ring", new Item[10]},
@@ -15,12 +13,12 @@ namespace RPGGame.Entities
         };
         public override Dictionary<string, Item[]> Equiptory { get => equiptory; set => equiptory = value; }
 
-        public Imp(String name, Coordinate position, char icon, int drawPriority, Inventory inventory, int[] stats, string description) : base(name, position, icon, drawPriority, inventory, stats, description) { Passive = false; }
+        public Imp(string name, Coordinate position, char icon, int drawPriority, Inventory inventory, int[] stats, string description) : base(name, position, icon, drawPriority, inventory, stats, description) => Passive = false;
 
-        public Imp(String name, Coordinate position, char icon, int drawPriority, int[] stats, string description) : base(name, position, icon, drawPriority, stats, description) { Passive = false; }
+        /*public Imp(String name, Coordinate position, char icon, int drawPriority, int[] stats, string description) : base(name, position, icon, drawPriority, stats, description) { Passive = false; }*/
 
-        public Imp(String name, Coordinate position, char icon, Inventory inventory, int[] stats, string description) : base(name, position, icon, inventory, stats, description) { Passive = false; }
+        public Imp(string name, Coordinate position, char icon, Inventory inventory, int[] stats, string description) : base(name, position, icon, inventory, stats, description) => Passive = false;
 
-        public Imp(String name, Coordinate position, char icon, int[] stats, string description) : base(name, position, icon, stats, description) { Passive = false; }
+        /*public Imp(String name, Coordinate position, char icon, int[] stats, string description) : base(name, position, icon, stats, description) { Passive = false; }*/
     }
 }

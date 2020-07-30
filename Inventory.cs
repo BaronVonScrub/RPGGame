@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace RPGGame
 {
-    class Inventory
+    internal class Inventory
     {
         public string name;
         public List<Item> inventData;
@@ -18,7 +16,7 @@ namespace RPGGame
         public Inventory(string name)
         {
             this.name = name;
-            this.inventData = new List<Item>();
+            inventData = new List<Item>();
         }
 
         public Item GetItem(string itemName)

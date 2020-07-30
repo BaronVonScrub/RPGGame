@@ -3,9 +3,9 @@
 
 namespace RPGGame
 {
-    class Game
+    internal class Game
     {
-        static void Main()
+        private static void Main()
         {
             MusicPlayer.Initialize();
             ConsoleManager.Initialize();

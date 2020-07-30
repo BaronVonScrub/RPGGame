@@ -1,34 +1,29 @@
-﻿using Microsoft.VisualBasic.CompilerServices;
-using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Text;
-using static RPGGame.TextManager;
+﻿using static RPGGame.TextManager;
 
 namespace RPGGame
 {
-    class Gold : Item
+    internal class Gold : Item
     {
         private int amount = 0;
-        new readonly Boolean equipped = false;
+        private new readonly bool equipped = false;
 
-        public override string[] MustHave { get; set; } = new string[] { "amount"};
+        public override string[] MustHave { get; set; } = new string[] { "amount" };
         public int Amount { get => amount; set => amount = value; }
 
-        public Gold(string inputData) : base(inputData)                         
-        {   
-            Name = "Gold";                                                      
-            Amount = Int32.Parse(itemData["amount"]);                           
+        public Gold(string inputData) : base(inputData)
+        {
+            Name = "Gold";
+            Amount = int.Parse(itemData["amount"]);
             Value = Amount;
         }
 
-        public Gold(int inputData) : base()                            
+        public Gold(int inputData) : base()
         {
             ForceSet("name", "Gold");
             ForceSet("value", inputData.ToString());
             ForceSet("amount", inputData.ToString());
             ForceSet("equipped", equipped.ToString());
-            ForceSet("type", this.GetType().Name);
+            ForceSet("type", GetType().Name);
             Amount = inputData;
             Name = "Gold";
         }

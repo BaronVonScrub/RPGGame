@@ -1,13 +1,12 @@
 ﻿using System;
+using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
 using static RPGGame.GlobalVariables;
 using static RPGGame.TextManager;
 namespace RPGGame
 {
     public static class ConsoleManager
-
-
-
     {
         private const int FixedWidthTrueType = 54;
         private const int StandardOutputHandle = -11;
@@ -22,7 +21,6 @@ namespace RPGGame
 
         [DllImport("user32.dll")]
         private static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
-
 
         [DllImport("kernel32.dll")]
         internal static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
@@ -50,17 +48,39 @@ namespace RPGGame
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         internal static extern bool GetCurrentConsoleFontEx(IntPtr hConsoleOutput, bool MaximumWindow, ref FontInfo ConsoleCurrentFontEx);
 
+        public enum SystemMetric
+        {
+            VirtualScreenWidth = 78, // CXVIRTUALSCREEN 0x0000004E 
+            VirtualScreenHeight = 79, // CYVIRTUALSCREEN 0x0000004F 
+        }
+
+        [DllImport("user32.dll")]
+        public static extern int GetSystemMetrics(SystemMetric metric);
+
+        public static Size GetVirtualDisplaySize()
+        {
+            int width = GetSystemMetrics(SystemMetric.VirtualScreenWidth);
+            int height = GetSystemMetrics(SystemMetric.VirtualScreenHeight);
+
+            return new Size(width, height);
+        }
 
         private static readonly IntPtr ConsoleOutputHandle = GetStdHandle(StandardOutputHandle);
+
+        public static void CenterScreen(Size size) => MoveWindow(ConsoleManager.GetConsoleWindow(), (int)Math.Round(size.Width / 8f), (int)Math.Round(size.Height / 10f), 800, 800, true);
 
         public static void Initialize()
         {
             SetUpConsole();
-            SetCurrentFont("Courier New", 25);
-            MoveWindow(ConsoleManager.GetConsoleWindow(), 300, 20, 800, 800, true);
+            if (!IsTestMode())
+                SetCurrentFont("Courier New", 25);
+            CenterScreen(GetVirtualDisplaySize());
             Console.WriteLine();
-            double minSize = Console.WindowLeft + Console.WindowWidth;
-            Console.SetBufferSize((int)Math.Ceiling(minSize), 30);
+            double minSize = 0;
+            if (!IsTestMode())
+                minSize = Console.WindowLeft + Console.WindowWidth;
+            if (!IsTestMode())
+                Console.SetBufferSize((int)Math.Ceiling(minSize), 30);
             Console.Title = "RPG GAME";
 
             IntPtr handle = GetConsoleWindow();
@@ -74,23 +94,29 @@ namespace RPGGame
 
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             Console.ForegroundColor = ConsoleColor.White;
-            Console.CursorVisible = false;
+            if (!IsTestMode())
+                Console.CursorVisible = false;
         }
+
+        public static bool IsTestMode() => AppDomain.CurrentDomain.GetAssemblies().Any(
+                a => a.FullName.ToLowerInvariant().StartsWith("unittesting"));
 
         public static void Redraw()
         {
-            Console.Clear();
+            if (!IsTestMode())
+                Console.Clear();
             MainBoard.RenderBoard();
             RenderText();
         }
 
         internal static void SetUpConsole()
         {
-            var iStdOut = ConsoleManager.GetStdHandle(STD_OUTPUT_HANDLE);
+            IntPtr iStdOut = ConsoleManager.GetStdHandle(STD_OUTPUT_HANDLE);
             if (!ConsoleManager.GetConsoleMode(iStdOut, out uint outConsoleMode))
             {
                 Console.WriteLine("failed to get output console mode");
-                Console.ReadKey();
+                if (!IsTestMode())
+                    Console.ReadKey();
                 return;
             }
 
@@ -98,7 +124,8 @@ namespace RPGGame
             if (!ConsoleManager.SetConsoleMode(iStdOut, outConsoleMode))
             {
                 Console.WriteLine($"failed to set output console mode, error code: {ConsoleManager.GetLastError()}");
-                Console.ReadKey();
+                if (!IsTestMode())
+                    Console.ReadKey();
                 return;
             }
         }
@@ -123,7 +150,7 @@ namespace RPGGame
 
         public static FontInfo[] SetCurrentFont(string font, short fontSize = 0)
         {
-            FontInfo before = new FontInfo
+            var before = new FontInfo
             {
                 cbSize = Marshal.SizeOf<FontInfo>()
             };
@@ -131,7 +158,7 @@ namespace RPGGame
             if (GetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref before))
             {
 
-                FontInfo set = new FontInfo
+                var set = new FontInfo
                 {
                     cbSize = Marshal.SizeOf<FontInfo>(),
                     FontIndex = 0,
@@ -144,12 +171,12 @@ namespace RPGGame
 
                 if (!SetCurrentConsoleFontEx(ConsoleOutputHandle, false, ref set))
                 {
-                    var ex = Marshal.GetLastWin32Error();
+                    int ex = Marshal.GetLastWin32Error();
                     Console.WriteLine("Set error " + ex);
                     throw new System.ComponentModel.Win32Exception(ex);
                 }
 
-                FontInfo after = new FontInfo
+                var after = new FontInfo
                 {
                     cbSize = Marshal.SizeOf<FontInfo>()
                 };
@@ -159,7 +186,7 @@ namespace RPGGame
             }
             else
             {
-                var er = Marshal.GetLastWin32Error();
+                int er = Marshal.GetLastWin32Error();
                 Console.WriteLine("Get error " + er);
                 throw new System.ComponentModel.Win32Exception(er);
             }

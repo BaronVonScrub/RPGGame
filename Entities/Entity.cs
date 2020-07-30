@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using static RPGGame.GlobalVariables;
-using static RPGGame.ConstantVariables;
-using static RPGGame.TextManager;
 using System.Linq;
-using System.Globalization;
+using static RPGGame.ConstantVariables;
+using static RPGGame.EntityManager;
+using static RPGGame.GlobalVariables;
+using static RPGGame.TextManager;
 
 namespace RPGGame
 {
-    class Entity
+    internal class Entity
     {
         public Coordinate position = new Coordinate();
         public Inventory inventory;
@@ -20,13 +20,14 @@ namespace RPGGame
             int temp = 1;
             if (!Equiptory.ContainsKey("Weapon"))
                 return temp;
-            
-            foreach(Item weapon in Equiptory["Weapon"]) {
+
+            foreach (Item weapon in Equiptory["Weapon"])
+            {
                 if (weapon == null)
                     continue;
-                int range = Int32.Parse(weapon.itemData["maxRange"]);
+                int range = int.Parse(weapon.itemData["maxRange"]);
                 if (range > temp)
-                temp = range;
+                    temp = range;
             }
             return temp;
         }
@@ -41,7 +42,7 @@ namespace RPGGame
             {
                 if (weapon == null)
                     continue;
-                int range = Int32.Parse(weapon.itemData["minRange"]);
+                int range = int.Parse(weapon.itemData["minRange"]);
                 if (range > temp)
                     temp = range;
             }
@@ -50,7 +51,7 @@ namespace RPGGame
 
         internal List<Weapon> GetEquippedWeapons()
         {
-            List<Weapon> tempList = new List<Weapon>() { Fist };
+            var tempList = new List<Weapon>() { Fist };
             if (!Equiptory.ContainsKey("Weapon"))
                 return tempList;
             foreach (Weapon currWeapon in Equiptory["Weapon"])
@@ -59,7 +60,7 @@ namespace RPGGame
             return tempList;
         }
 
-        private Dictionary<String, Item[]> equiptory = new Dictionary<string, Item[]>();
+        private Dictionary<string, Item[]> equiptory = new Dictionary<string, Item[]>();
         protected int[] stats = new int[] { 0, 0, 0, 0, 0 };
 
         public string Name { get; set; }
@@ -71,33 +72,34 @@ namespace RPGGame
             int def = 0;
             if (!Equiptory.ContainsKey("Armour"))
                 return def;
-            foreach (Armour arm in Equiptory["Armour"])
-                def += arm.Get("defenceModifier");
+            if (Equiptory["Armour"].ToList().Exists(x => x != null))
+                foreach (Armour arm in Equiptory["Armour"])
+                    def += arm.Get("defenceModifier");
             return def;
         }
 
-        internal int GetSpeed()
-        {
-            return Stats[Speed];
-        }
+        internal int GetSpeed() => Stats[Speed];
 
         internal int GetArmour()
         {
             int ar = Stats[BaseArmour];
             if (!Equiptory.ContainsKey("Armour"))
                 return ar;
-            foreach (Armour arm in Equiptory["Armour"])
-                ar += arm.Get("armourModifier");
+            if (Equiptory["Armour"].ToList().Exists(x => x != null))
+                foreach (Armour arm in Equiptory["Armour"])
+                    ar += arm.Get("armourModifier");
             return ar;
         }
 
-        internal int DistanceFromCenter()
-        {
-            return (int)Math.Round(Math.Sqrt((position.x * position.x) + (position.y * position.y)));
-        }
+        internal int DistanceFromCenter() => (int)Math.Round(Math.Sqrt((position.x * position.x) + (position.y * position.y)));
 
-        public Boolean Unequip(Item item)
+        public bool UnequipByItem(Item item)
         {
+            if (!inventory.inventData.Exists(x => x == item))
+            {
+                WriteLine("Item not found!");
+                return false;
+            }
             if (item.Equipped == false)
             {
                 WriteLine("That item is not currently equipped!");
@@ -162,62 +164,59 @@ namespace RPGGame
         #region Constructors
         public Entity() { }
 
-        public Entity(String name, Coordinate position, char icon, int drawPriority, Inventory inventory, int[] stats, string description)
+        public Entity(string name, Coordinate position, char icon, int drawPriority, Inventory inventory, int[] stats, string description)
         {
-            this.Name = name;
+            Name = name;
             this.position = position;
             this.inventory = inventory;
             this.icon = icon;
             this.drawPriority = drawPriority;
-            this.Stats = stats;
-            this.Description = description;
+            Stats = stats;
+            Description = description;
             Passive = true;
             Passable = true;
             if (inventory != null)
                 if (!Inventories.Contains(inventory))
                     Inventories.Add(inventory);
-            this.Description = description;
+            Description = description;
             EquipUpdate();
         }
 
         internal void StatDisplay()
         {
-            WriteLine("Health : "+Stats[CurrHealth].ToString()+"/"+Stats[MaxHealth].ToString());
+            WriteLine("Health : " + Stats[CurrHealth].ToString() + "/" + Stats[MaxHealth].ToString());
             WriteLine("Def : " + GetDefence().ToString() + "   Arm : " + GetArmour().ToString());
             WriteLine("Speed : " + GetSpeed().ToString());
         }
 
-        internal void SetHealth(int inHealth)
-        {
-            Stats[CurrHealth] = inHealth;
-        }
+        internal void SetHealth(int inHealth) => Stats[CurrHealth] = inHealth;
 
-        public Entity(String name, Coordinate position, char icon, int drawPriority, int[] stats, string description)
-        {
-            this.Name = name;
-            this.position = position;
-            this.icon = icon;
-            this.drawPriority = drawPriority;
-            this.inventory = new Inventory(name);
-            this.Stats = stats;
-            this.Description = description;
-            Passive = true;
-            Passable = true;
-            if (inventory != null)
-                if (!Inventories.Contains(inventory))
-                    Inventories.Add(inventory);
-            EquipUpdate();
-        }
+        /*public Entity(String name, Coordinate position, char icon, int drawPriority, int[] stats, string description)
+                {
+                    this.Name = name;
+                    this.position = position;
+                    this.icon = icon;
+                    this.drawPriority = drawPriority;
+                    this.inventory = new Inventory(name);
+                    this.Stats = stats;
+                    this.Description = description;
+                    Passive = true;
+                    Passable = true;
+                    if (inventory != null)
+                        if (!Inventories.Contains(inventory))
+                            Inventories.Add(inventory);
+                    EquipUpdate();
+                }*/
 
-        public Entity(String name, Coordinate position, char icon, Inventory inventory, int[] stats, string description)
+        public Entity(string name, Coordinate position, char icon, Inventory inventory, int[] stats, string description)
         {
-            this.Name = name;
+            Name = name;
             this.position = position;
             this.inventory = inventory;
-            this.drawPriority = 1;
+            drawPriority = 1;
             this.icon = icon;
-            this.Stats = stats;
-            this.Description = description;
+            Stats = stats;
+            Description = description;
             Passive = true;
             Passable = true;
             if (inventory != null)
@@ -226,7 +225,7 @@ namespace RPGGame
             EquipUpdate();
         }
 
-        public Entity(String name, Coordinate position, char icon, int[] stats, string description)
+        /*public Entity(String name, Coordinate position, char icon, int[] stats, string description)
         {
             this.Name = name;
             this.position = position;
@@ -241,12 +240,10 @@ namespace RPGGame
                 if (!Inventories.Contains(inventory))
                     Inventories.Add(inventory);
             EquipUpdate();
-        }
+        }*/
         #endregion
 
-        public View GetView()
-        {
-            return new View(
+        public View GetView() => new View(
                 new Coordinate(
                     position.x - viewDistanceWidth,
                     position.y - viewDistanceHeight
@@ -256,7 +253,6 @@ namespace RPGGame
                     position.y + viewDistanceHeight
                     )
                 );
-        }
 
         public void EquipUpdate()
         {
@@ -268,47 +264,8 @@ namespace RPGGame
             foreach (Item item in inventory.inventData.FindAll(x => x.Equipped == true))
             {
                 item.Equipped = false;
-                Equip(item, this);
+                EquipToTargetByItem(this, item);
             }
-        }
-
-        public static Boolean Equip(Item item, Entity target)
-        {
-            if (item.Equipped == true)
-            {
-                WriteLine("That item is already equipped!");
-                return false;
-            }
-
-            string itemType = item.GetType().Name;
-
-            if (!target.Equiptory.ContainsKey(itemType))
-            {
-                WriteLine("Can't equip that!");
-                return false;
-            }
-
-            int slotsRequired = 1;
-            if (itemType == "Weapon")
-                slotsRequired = (item as Weapon).slotsRequired;
-
-            if (target.Equiptory[itemType].ToList().FindAll(x => x == null).Count < slotsRequired)
-            {
-                WriteLine("Not enough slots to equip "+item.Name+"!");
-                item.Equipped = false;
-                return false;
-            }
-
-            item.Equipped = true;
-
-            for (int j = 0; j < slotsRequired; j++)
-                for (int i = 0; i < target.Equiptory[itemType].Length; i++)
-                    if (target.Equiptory[itemType][i] == null)
-                    {
-                        target.Equiptory[itemType][i] = item;
-                        break;
-                    }
-            return true;
         }
     }
 }

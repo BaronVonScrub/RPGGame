@@ -1,18 +1,16 @@
 ﻿using System;
-using static RPGGame.GlobalVariables;
-using static RPGGame.ConstantVariables;
-using static RPGGame.ConsoleManager;
 using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using static RPGGame.TextManager;
 using System.Text.RegularExpressions;
+using static RPGGame.ConsoleManager;
+using static RPGGame.ConstantVariables;
+using static RPGGame.GlobalVariables;
+using static RPGGame.TextManager;
 
 namespace RPGGame
 {
-    static class CombatManager
+    internal static class CombatManager
     {
-        public static Boolean CombatCheck(List<Entity> entList)
+        public static bool CombatCheck(List<Entity> entList)
         {
             if (entList == null)
                 return true;
@@ -21,12 +19,12 @@ namespace RPGGame
             List<Entity> enemyList = entList.FindAll(x => (x.Aggressive == true));
             WriteLine("Ahead you see " + enemyList.Count + " threats...");
             foreach (Entity enemy in enemyList)
-                if (!Combat( enemy))
+                if (!Combat(enemy))
                     return false;
             return true;
         }
 
-        static Boolean Combat(Entity enemy)
+        public static bool Combat(Entity enemy)
         {
             int playerHealth = Player.Stats[CurrHealth];
             int enemyHealth = enemy.Stats[CurrHealth];
@@ -50,7 +48,7 @@ namespace RPGGame
 
 
 
-            int distance = Math.Max(playerMaxRange,enemyMaxRange)+1;
+            int distance = Math.Max(playerMaxRange, enemyMaxRange) + 1;
 
             WriteLine("Do you ADVANCE, RETREAT, HOLD or FLEE ?");
             do
@@ -60,19 +58,19 @@ namespace RPGGame
 
                 //AttackPhase
                 //PlayerAttack
-                List<Weapon> alreadyAttacked = new List<Weapon>();
+                var alreadyAttacked = new List<Weapon>();
                 int damage = 0;
                 if ((playerInRangeWeapons.Count == 0) && (distance == 1))
                     playerInRangeWeapons.Add(Fist);
 
-                    foreach (Weapon currWeapon in playerInRangeWeapons)
+                foreach (Weapon currWeapon in playerInRangeWeapons)
+                {
+                    if (!alreadyAttacked.Contains(currWeapon))
                     {
-                        if (!alreadyAttacked.Contains(currWeapon))
-                        {
-                            damage += Roll(currWeapon, enemyDefence, enemyArmour);
-                            alreadyAttacked.Add(currWeapon);
-                        }
+                        damage += Roll(currWeapon, enemyDefence, enemyArmour);
+                        alreadyAttacked.Add(currWeapon);
                     }
+                }
 
                 if (playerInRangeWeapons.Count != 0)
                 {
@@ -92,15 +90,15 @@ namespace RPGGame
                 if ((enemyInRangeWeapons.Count == 0) && (distance == 1))
                     enemyInRangeWeapons.Add(Fist);
 
-                    foreach (Weapon currWeapon in enemyInRangeWeapons)
-                    {
-                        
+                foreach (Weapon currWeapon in enemyInRangeWeapons)
+                {
+
                     if (!alreadyAttacked.Contains(currWeapon))
-                        {
-                            damage += Roll(currWeapon, playerDefence, playerArmour);
-                            alreadyAttacked.Add(currWeapon);
-                        }
+                    {
+                        damage += Roll(currWeapon, playerDefence, playerArmour);
+                        alreadyAttacked.Add(currWeapon);
                     }
+                }
 
                 if (enemyInRangeWeapons.Count != 0)
                 {
@@ -121,16 +119,16 @@ namespace RPGGame
                 int dist;
                 switch (ReadLine())
                 {
-                    case var someVal 
+                    case var someVal
                     when new Regex("ADVANCE \\d").IsMatch(someVal):
-                        dist = Int32.Parse(someVal.Replace("ADVANCE ", ""));
+                        dist = int.Parse(someVal.Replace("ADVANCE ", ""));
                         distance -= dist;
-                    break;
+                        break;
                     case "ADVANCE":
                         distance -= playerSpeed;
                         break;
                     case var someVal when new Regex("RETREAT \\d").IsMatch(someVal):
-                        dist = Int32.Parse(someVal.Replace("RETREAT ", ""));
+                        dist = int.Parse(someVal.Replace("RETREAT ", ""));
                         distance += dist;
                         break;
                     case "RETREAT":
@@ -149,6 +147,14 @@ namespace RPGGame
                         }
                         else
                             WriteLine("Too close to flee!");
+                        break;
+                    case "QUIT":
+                        WriteLine("Warning! Progress will be lost if you quit during combat! Type \"YES\" to confirm!");
+                        if (IsTestMode())
+                            playerHealth = 0;
+                        else
+                            if (ReadLine() == "YES")
+                            playerHealth = 0;
                         break;
                     default:
                         WriteLine("Invalid command!");
@@ -178,7 +184,8 @@ namespace RPGGame
                 WriteLine("You die...");
                 WriteLine("Press any key to exit!");
                 ReadLine();
-                System.Environment.Exit(0);
+                if (!IsTestMode())
+                    System.Environment.Exit(0);
                 return false;
             }
 
@@ -193,11 +200,11 @@ namespace RPGGame
 
         private static int Roll(Weapon currWeapon, int defence, int armour)
         {
-            Random r = new Random();
+            var r = new Random();
             int weaponDamage = currWeapon.Get("damageModifier");
             int maxAttackRoll = currWeapon.Get("attackModifier");
-            int attackRoll = r.Next(1, maxAttackRoll+1);
-            int defenceRoll = r.Next(1, defence+1);
+            int attackRoll = r.Next(1, maxAttackRoll + 1);
+            int defenceRoll = r.Next(1, defence + 1);
 
             if (attackRoll == maxAttackRoll)
                 return weaponDamage;
