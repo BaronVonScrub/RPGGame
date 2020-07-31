@@ -1,0 +1,56 @@
+PLAYER
+ARMOUR armourModifier:1 defenceModifier:2 equipped:True name:Leather Armour tvalue:50
+WEAPON attackModifier:4 damageModifier:4 equipped:True maxRange:4 minRange:2 name:Bow slotsNeeded:2 value:60
+GOLD amount:30 equipped:False name:Gold value:30
+
+MERCHANT
+WEAPON attackModifier:5 damageModifier:4 equipped:False maxRange:2 minRange:2 name:Axe slotsNeeded:2 value:50
+WEAPON attackModifier:4 damageModifier:2 equipped:False maxRange:1 minRange:1 name:Dagger slotsNeeded:1 value:20
+WEAPON attackModifier:2 damageModifier:2 equipped:False maxRange:1 minRange:1 name:Stilletto slotsNeeded:1 value:20
+MISCELLANEOUS name:Really Expensive Thing value:1000000
+GOLD amount:500 equipped:False name:Gold value:500
+
+Goblin2
+MISCELLANEOUS name:Shiny Rock value:8
+GOLD amount:5
+
+Hermit
+
+Barrels
+
+Crates1
+
+Crates2
+
+Crates3
+
+Well
+
+GoblinGuardhouse
+
+AbandonedGuardhouse
+
+Goblin
+
+Guard1
+
+Guard2
+
+Guard3
+
+Guard4
+
+Guard5
+
+Guard6
+
+Fred
+
+Jared
+
+Benjamin
+
+Logan
+
+Tim
+

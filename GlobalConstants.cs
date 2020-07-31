@@ -6,18 +6,62 @@ namespace RPGGame
 {
     internal static class GlobalConstants
     {
-        //Never altered during runtime
+        //These are globally useful, but never altered during runtime
 
-        public static List<string> Types => types;
+        //These are the types of items available to be made, as strings
+        public static List<string> Types => types;                              
+        private static readonly List<string> types = new List<string>()
+            {
+                "WEAPON",
+                "POTION",
+                "GOLD",
+                "AMMUNITION",
+                "ARMOUR",
+                "RING",
+                "MISCELLANEOUS",
+        };
+
+
+        //This Regex command is used to scrape attribute data from saved strings
         public static string AttFinder => attFinder;
-        public static Dictionary<string, Action> Commands => commands;
-        public static List<string> TestCommandList => testCommandList;
+        private const string attFinder = "(\\S+:[\\w\\s]+)(?=\\s|$)";
 
+        //These map Regex strings to commands, to be executed anonymously during the gameloop.
+        public static Dictionary<string, Action> Commands => commands;
+        private static readonly Dictionary<string, Action> commands = new Dictionary<string, Action>()
+                {
+            { "^EXIT$", () => Exit() },
+                    { "^$", () => Empty() },
+                    { "^BUY\\b", () => Buy() },
+                    { "^SELL\\b", () => Sell() },
+                    { "^GIVE ME GOOD GRADES$", () => GrantSuper() },
+                    { "^LOOK\\b|^TALK\\b", () => Look() },
+                    { "\\bME\\b", () => LookAtMe() },
+                    { "^INTERACT\\b", () => Interact() },
+                    { "^EXAMINE\\b", () => Examine() },
+                    { "^RENAME\\b", () => Rename() },
+                    { "^EQUIP\\b", () => EquipByInput() },
+                    { "^UNEQUIP\\b", () => UnequipByInput() },
+                    { "^TAKE\\b", () => Take() },
+                    { "^MUTE$", () => MuteToggle() },
+                    { "^GO NORTH$|^[nN]$" , () => Move(NORTH) },
+                    { "^GO SOUTH$|^[sS]$" , () => Move(SOUTH) },
+                    { "^GO EAST$|^[eE]$" , () => Move(EAST) },
+                    { "^GO WEST$|^[wW]$" , () => Move(WEST) },
+                    { "^ADD\\b", () => Add() },
+                    { "^REMOVE\\b", () => Remove() },
+                    { "^SAVE$", () => Save() },
+                    { "^HELP$", () => Help() },
+                    { "^QUIT$", () => Quit() },
+                    { "^DEMO$", () => Demo() },
+                    { "", () => InvalidCommand() },
+        };
+
+        //These constant characters are used in gameboard rendering
+        #region Gameboard characters and values
         public const int padding = 15;
         public const int viewDistanceWidth = 5;
         public const int viewDistanceHeight = 5;
-        public const string UNDERLINE = "\x1B[4m";
-        public const string RESET = "\x1B[0m";
 
         public const char LeftTopCornerBorder = (char)9556;
         public const char HorizontalBorder = (char)9552;
@@ -49,61 +93,30 @@ namespace RPGGame
         public const char TeeU = (char)9524;
         public const char TeeD = (char)9516;
         public const char Cross = (char)9532;
+        #endregion
 
+        //These are used in some text processing to apply an underline effect
+        public const string UNDERLINE = "\x1B[4m";
+        public const string RESET = "\x1B[0m";
+
+        //This weapon is the default for someone at range 1 who has no other weapons available
         public static Weapon Fist = new Weapon("attackModifier:2 damageModifier:1 maxRange:1 minRange:1 slotsNeeded:1 value:0 name:Fist equipped:true");
 
-        private const string attFinder = "(\\S+:[\\w\\s]+)(?=\\s|$)";
-
+        //These seemed more useful as readonly ints than Enums, since enums have to be fully qualified in C#???
         public static readonly int MaxHealth = 0;
         public static readonly int CurrHealth = 1;
         public static readonly int BaseArmour = 2;
         public static readonly int Speed = 3;
         public static readonly int Distance = 4;
 
-        private static readonly Dictionary<string, Action> commands = new Dictionary<string, Action>()
-                {
-                    { "^EXIT$", () => Exit() },
-                    { "^$", () => Empty() },
-                    { "^BUY\\b", () => Buy() },
-                    { "^SELL\\b", () => Sell() },
-                    { "^GIVE ME GOOD GRADES$", () => GrantSuper() },
-                    { "^LOOK\\b|^TALK\\b", () => Look() },
-                    { "\\bME\\b", () => LookAtMe() },
-                    { "^INTERACT\\b", () => TradeView() },
-                    { "^EXAMINE\\b", () => Examine() },
-                    { "^RENAME\\b", () => Rename() },
-                    { "^EQUIP\\b", () => EquipByInput() },
-                    { "^UNEQUIP\\b", () => UnequipByInput() },
-                    { "^TAKE\\b", () => Take() },
-                    { "^MUTE$", () => MuteToggle() },
-                    { "^GO NORTH$|^[nN]$" , () => Move(NORTH) },
-                    { "^GO SOUTH$|^[sS]$" , () => Move(SOUTH) },
-                    { "^GO EAST$|^[eE]$" , () => Move(EAST) },
-                    { "^GO WEST$|^[wW]$" , () => Move(WEST) },
-                    { "^ADD\\b", () => Add() },
-                    { "^REMOVE\\b", () => Remove() },
-                    { "^SAVE$", () => Save() },
-                    { "^HELP$", () => Help() },
-                    { "^QUIT$", () => Quit() },
-                    { "^DEMO$", () => Demo() },
-                    { "", () => InvalidCommand() },
-                };
-        private static readonly List<string> types = new List<string>()
-            {
-                "WEAPON",
-                "POTION",
-                "GOLD",
-                "AMMUNITION",
-                "ARMOUR",
-                "RING",
-                "MISCELLANEOUS",
-            };
-
+        //These are used to make the movement control more readable within the code       
         public static readonly MoveCommand NORTH = new MoveCommand(0, -1);
         public static readonly MoveCommand SOUTH = new MoveCommand(0, 1);
         public static readonly MoveCommand EAST = new MoveCommand(1, 0);
         public static readonly MoveCommand WEST = new MoveCommand(-1, 0);
 
+        //This list controls the behaviour of the Demo() command inside the internal test environment. They are run through and executed in order.
+        public static List<string> TestCommandList => testCommandList;
         private static readonly List<string> testCommandList = new List<string>
             {
             "HELP",
@@ -163,7 +176,7 @@ namespace RPGGame
             "SAVE"
             };
 
-
+        //This is a random item list, used for generating random inventories
         public static readonly Item[] ItemTable = new Item[] {
             new Gold(1),
             new Gold(2),

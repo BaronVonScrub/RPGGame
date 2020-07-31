@@ -4,7 +4,7 @@ namespace RPGGame
 {
     internal class GlobalVariables
     {
-        //Dynamically change throughout the program, want easily accessible to whoever needs them.
+        //Dynamically change throughout the program, but want easily accessible to whoever needs them.
 
         public static Entity Player { get; set; } = null;                                   //Contains the entities that is the player
 
@@ -24,12 +24,14 @@ namespace RPGGame
 
         public static Queue<Line> TextQueue { get; set; } = new Queue<Line>();              //Contains a list of recent console input/output
 
-        public static bool Mute { get; set; } = false;                                   //Contains the mute state of the game
+        public static bool Mute { get; set; } = false;                                      //Contains the mute state of the game
 
-        public static bool InternalTesting { get; set; } = false;
+        public static bool InternalTesting { get; set; } = false;                           //Is the game currently in an internal testing (Demo) mode?
 
-        public static bool ExternalTesting { get; set; } = false;
+        public static bool ExternalTesting { get; set; } = false;                           //Is the game/method being run inside of MSTest
 
-        public static bool InventoryView { get; set; } = false;
+        public static bool InventoryView { get; set; } = false;                             //Toggles the inventory view vs the map view
+
+        public static bool MapDraw { get; set; } = false;                                   //If true, triggers a map draw on the news redraw call
     }
 }

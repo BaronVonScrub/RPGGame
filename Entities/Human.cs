@@ -4,6 +4,11 @@ namespace RPGGame
 {
     internal class Human : Entity
     {
+        //Override passive status to be false;
+        public override bool Passive { get; internal set; } = false;
+
+        //This dictionary both stores and limits the use of items of different types.
+        public override Dictionary<string, Item[]> Equiptory { get => equiptory; set => equiptory = value; }
         private Dictionary<string, Item[]> equiptory = new Dictionary<string, Item[]>()
         {
             { "Weapon",new Item[2]},
@@ -12,14 +17,7 @@ namespace RPGGame
             { "Miscellaneous", new Item[5] }
         };
 
-        public override Dictionary<string, Item[]> Equiptory { get => equiptory; set => equiptory = value; }
-
-        public Human(string name, Coordinate position, char icon, int drawPriority, Inventory inventory, int[] stats, string description) : base(name, position, icon, drawPriority, inventory, stats, description) => Passive = false;
-
-        /*public Human(String name, Coordinate position, char icon, int drawPriority, int[] stats, string description) :base(name,position,icon,drawPriority, stats,description) { Passive = false; }*/
-
-        public Human(string name, Coordinate position, char icon, Inventory inventory, int[] stats, string description) : base(name, position, icon, inventory, stats, description) => Passive = false;
-
-        /*public Human(String name, Coordinate position, char icon, int[] stats, string description) :base(name,position,icon,stats, description) { Passive = false; }*/
+        //Basic inherited constructor
+        public Human(string name, Coordinate position, char icon, int drawPriority, Inventory inventory, int[] stats, string description) : base(name, position, icon, drawPriority, inventory, stats, description) { }
     }
 }

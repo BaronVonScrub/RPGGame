@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("UnitTesting")]
 
 namespace RPGGame
@@ -7,13 +8,14 @@ namespace RPGGame
     {
         private static void Main()
         {
+            //All managers that require initialization recieve it, in an order respectful of dependency
             MusicPlayer.Initialize();
             ConsoleManager.Initialize();
             TextManager.Initialize();
             ParseManager.Initialize();
             InventoryManager.Initialize();
             EntityManager.Initialize();
-            GameLoop.Run();
+            GameLoop.Run();                             //This initiates the interactive portion of the game.
         }
     }
 }

@@ -2,19 +2,23 @@
 {
     internal class Wall : Entity
     {
-        private static new int[] stats = new int[] { 100, 100, 0, 0, 0, 0 };
-        public Wall(char icon, Coordinate position, string description) : base("Wall", position, icon, null, Stats1, description)
+        //Custom stats the same for all walls
+        public static new int[] Stats { get; set; } = new int[] { 100, 100, 0, 0, 0, 0 };
+
+        //Shorthand constructor
+        public Wall(char icon, Coordinate position, string description) : base("Wall", position, icon, null, Stats, description)
         {
             Passable = false;
             Passive = false;
         }
 
-        public Wall(string nameJunk, Coordinate position, char icon, int drawPriorityJunk, Inventory inventoryJunk, int[] stats, string description) : base("Wall", position, icon, null, stats, description)
+        //Long form constructor if needed
+        public Wall( Coordinate position, char icon, int drawPriorityJunk, Inventory inventoryJunk, int[] stats, string description) : base("Wall", position, icon, null, stats, description)
         {
             Passable = false;
             Passive = false;
         }
 
-        public static int[] Stats1 { get => stats; set => stats = value; }
+
     }
 }

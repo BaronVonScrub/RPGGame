@@ -2,14 +2,13 @@
 {
     internal abstract class Enemy : Entity
     {
+        //Overrides the default aggressive stance to be true
         public override bool Aggressive { get; internal set; } = true;
 
-        public Enemy(string name, Coordinate position, char icon, int drawPriority, Inventory inventory, int[] stats, string description) : base(name, position, icon, drawPriority, inventory, stats, description) => Passive = false;
+        //Overrides the default passive inventory stance to be true (But you'll only get the chance to access it when it's already dead!)
+        public override bool Passive { get; internal set; } = true;
 
-        /*public Enemy(String name, Coordinate position, char icon, int drawPriority, int[] stats, string description) : base(name, position, icon, drawPriority, stats, description) { Passive = false; }*/
-
-        public Enemy(string name, Coordinate position, char icon, Inventory inventory, int[] stats, string description) : base(name, position, icon, inventory, stats, description) => Passive = false;
-
-        /*public Enemy(String name, Coordinate position, char icon, int[] stats, string description) : base(name, position, icon, stats, description) { Passive = false; }*/
+        //Basic inherited constructor
+        public Enemy(string name, Coordinate position, char icon, int drawPriority, Inventory inventory, int[] stats, string description) : base(name, position, icon, drawPriority, inventory, stats, description) { }
     }
 }

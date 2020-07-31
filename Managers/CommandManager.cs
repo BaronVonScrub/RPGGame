@@ -16,64 +16,83 @@ namespace RPGGame
 {
     internal class CommandManager
     {
+        //This class handles all methods run by player commands - none of which take inputs.
 
+        //Displays description of the listed entity
         public static void Look()
         {
-            InventoryView = false;
-            Target = GetTarget();
-            WriteLine(Target.Description);
+            InventoryView = false;          //Disable inventory view
+            Target = GetTarget();           //Get the target from input
+            WriteLine(Target.Description);  //Output description
         }
 
+        //Do nothing if the input is empty.
         public static void Empty()
         { }
 
+        //Toggle the mute function of the musicplayer
         public static void MuteToggle() => Mute = !Mute;
 
+        //Attempt to move the player
         public static void Move(MoveCommand direction)
         {
-            InventoryView = false;
+            InventoryView = false;          //Disable inventory view
+            MapDraw = true;                 //Request a fresh map draw
 
+            //Get a list of the entities at the goal position
             List<Entity> goalSquareEntities = MainBoard.GetFromBoard(new Coordinate(Player.position.x + direction.x, Player.position.y + direction.y));
+
+            //If there is something impassable there, fail the move
             if (goalSquareEntities != null && goalSquareEntities.Exists(x => x.Passable == false))
             {
                 WriteLine("Can't walk there!");
                 return;
             }
 
+            //If you fail a combat check (can't beat an aggressor in the square), fail the move.
             if (!CombatCheck(goalSquareEntities))
             {
                 return;
             }
 
+            //Remove the player from its current coordinates, update the position, readd it to the coordinate map.
             MainBoard.entityPos[Player.position].Remove(Player);
             Player.position.x += direction.x;
             Player.position.y += direction.y;
             MainBoard.AddToBoard(Player);
 
+            //Call a cleanup function to remove any dead entities and their inventories if the inventories are empty, and clear their
+            //coordinates from the map if there are no more entities there.
             CleanUp(MainBoard);
+
+            //Attempt to generate monsters, likelihood increases with distance from (0,0) (Bugged to not do it in the right way)
             MonsterGen(direction, Player.DistanceFromCenter());
 
+            //List the entities you see in your new square
             foreach (Entity ent in EntityManager.GetLocalEntities(Player, MainBoard).FindAll(x => (x.Name != "Player")))
                 WriteLine("You see a " + ent.Name + ent.Status + "\b");
-
         }
 
+        //Unequip by input defaults to removing by Player and Input
         public static void UnequipByInput() => UnequipFromTargetByName(Player, Input);
 
+        //Equip by input defaults to adding by Player and Input
         public static void EquipByInput() => EquipToTargetByName(Player, Input);
 
+        //Buy an item listed in input. Needs optimizing
         public static void Buy()
         {
-            Entity other = GetTarget();
+            Entity other = GetTarget();                 //Get the target from input
 
-            if (Trade(GetTarget(), Player))
-                WriteLine("Item bought!");
+            if (Trade(GetTarget(), Player))             //If you successfully trade the target item from input target entity to the player
+                WriteLine("Item bought!");              //State it
             else
-                WriteLine("Purchase failed!");
+                WriteLine("Purchase failed!");          //Otherwise list failure
 
-            Target = other;
+            Target = other;                             //Default current target to the other
         }
 
+        //Basically just buying in reverse!
         public static void Sell()
         {
             Entity other = GetTarget();
@@ -86,72 +105,19 @@ namespace RPGGame
             Target = other;
         }
 
-        public static void ViewInventory(Entity ent)
-        {
-            Target = ent;
-            if (!InventoryIsAccessible(Target))
-            {
-                WriteLine("Target inventory is not visible.");
-                return;
-            }
-
-            InventoryView = true;
-
-            GetCurrentInventoryList(Target).Sort(AlphabeticalByName);
-
-            if (!ExternalTesting)
-                Console.Clear();
-
-
-            WriteLine(UNDERLINE + Target.Name.ToUpper() + RESET);
-            if (Target == Player)
-                Player.StatDisplay();
-            GoldDisplay();
-
-            int count = 0;
-
-            foreach (Item item in GetCurrentInventoryList(Target).FindAll(x => (x.GetType().Name != "Gold")))
-            {
-                count += 1;
-                if (!ExternalTesting)
-                    if (count % (Console.BufferHeight - 5) == 0)
-                    {
-                        Console.WriteLine("Press enter for more...");
-                        if (InternalTestMode())
-                            Console.ReadKey();
-                        else
-                            System.Threading.Thread.Sleep(3000);
-                        Console.Clear();
-                    }
-
-                if (item.itemData.ContainsKey("amount"))
-                {
-                    WriteLine(item.itemData["amount"] + " " + item.Look());
-                }
-                else
-                    WriteLine(item.Look());
-            }
-            WriteLine(UNDERLINE + "______________________________________________________" + RESET);
-            Console.WriteLine("Press enter to continue.");
-            if (!ExternalTesting && !InternalTestMode())
-                Console.ReadKey();
-            else
-                System.Threading.Thread.Sleep(3000);
-            do
-            { TextQueue.Dequeue(); }
-            while (TextQueue.Count != 0);
-        }
-
-        public static void TradeView()
+        //Interact views the inventory of the target specified in input
+        public static void Interact()
         {
             ViewInventory(GetTarget());
         }
 
+        //LookAtMe views the player inventory
         public static void LookAtMe()
         {
             ViewInventory(Player);
         }
 
+        //Exit manually leaves the inventory view
         public static void Exit()
         {
             if (InventoryView)
@@ -160,6 +126,7 @@ namespace RPGGame
                 WriteLine("Only usable when viewing an inventory!");
         }
 
+        //Manual save
         public static void Save()
         {
             if (InternalTesting == true)
@@ -173,19 +140,22 @@ namespace RPGGame
             WriteLine("Gamestate saved!");
         }
 
+        //Examine the item listed in the input
         public static void Examine()
         {
-            string data = Strip(Input);
-            if (GetCurrentInventoryList(Target) == null)
+            string data = Strip(Input);                     //Get non-command input
+            if (GetCurrentInventoryList(Target) == null)    //If the target has no inventory
             {
-                WriteLine("Inventory not found!");
-                return;
+                WriteLine("Inventory not found!");          //Say so
+                return;                                     //End
             }
 
-            Item item = GetCurrentInventoryList(Target).Find(x => ((data == x.Name) && (x.Equipped == false)));
+            //Find the item in the inventory, prioritising unequipped ones
+            Item item = GetCurrentInventoryList(Target).Find(x => ((data.ToUpper() == x.Name.ToUpper()) && (x.Equipped == false)));
             if (item == null)
                 item = GetCurrentInventoryList(Target).Find(x => (data == x.Name));
 
+            //Escapes
             if (item == null)
             {
                 WriteLine("Item not found!");
@@ -197,34 +167,39 @@ namespace RPGGame
                 WriteLine("Can't examine while someone else has it equipped!");
                 return;
             }
-
-            item.Examine();
+            //
+            item.Examine();                                 //Run the item's Examine method
         }
 
+        //Rename an item provided by input to something new
         public static void Rename()
         {
-            Target = GetTarget();
-            string data = Strip(Input);
-            if (GetCurrentInventoryList(Target) == null)
+            Target = GetTarget();                           //Get the target inventory (You can change other peoples' to make dealing with duplicates easier)
+            string data = Strip(Input);                     //Get the non-command input
+            if (GetCurrentInventoryList(Target) == null)    //If there is no inventory
             {
-                WriteLine("Inventory not found!");
-                return;
+                WriteLine("Inventory not found!");          //Say so
+                return;                                     //End
             }
-            Item item = GetCurrentInventoryList(Target).Find(x => data.Contains(x.Name));
-            if (item != null)
+
+            Item item = GetCurrentInventoryList(Target).Find(x => data.Contains(x.Name));   //Find the item such that its name is stored in the input
+            if (item != null)                                                               //If you find something
             {
-                data = data.Replace(item.Name + " ", "");
-                data = Regex.Replace(data, "^[\\s]+|[\\s]+$", "");
-                item.Name = data;
+                data = data.Replace(item.Name + " ", "");                                   //Remove the original name from input
+                data = Regex.Replace(data, "^[\\s]+|[\\s]+$", "");                          //Strip whitespace
+                item.Name = data;                                                           //Use the remaining input (No commands, no old name)
                 WriteLine("Item renamed!");
             }
             else
                 WriteLine("Item not found!");
         }
 
+        //Take an item for free (Only works with passive inventories)
         public static void Take()
         {
-            Target = GetTarget();
+            Target = GetTarget();       //Get target
+
+            #region Escapes
             if (Target == null)
             {
                 WriteLine("Target not found!");
@@ -236,19 +211,21 @@ namespace RPGGame
                 WriteLine("They won't let you just take it!");
                 return;
             }
+            #endregion
 
-            Item moveItem = Grab(Target, Player);
+            Item moveItem = Grab(Target, Player);       //Store the item and remove it from the initial inventory
 
-            if (moveItem == null)
+            if (moveItem == null)                       //End if you found nothing
                 return;
 
-            WriteLine(moveItem.Name + " taken!");
-            Player.inventory.inventData.Add(moveItem);
+            WriteLine(moveItem.Name + " taken!");       //Else list it
+            Player.Inventory.inventData.Add(moveItem);  //And add it to your inventory
 
-            CleanUp(MainBoard);
+            CleanUp(MainBoard);                         //Clean up in case of empty inventories
 
         }
 
+        //Grants super access
         public static void GrantSuper()
         {
             if (SuperStatus == false)
@@ -264,37 +241,40 @@ namespace RPGGame
             }
         }
 
+        //Adds an item by input
         public static void Add()
         {
-            if (SuperStatus)
+            if (!SuperStatus)                                                       //Limited to super access
             {
-                Target = GetTarget();
-                Item newItem = ItemCreate();
-                if (newItem != null)
-                {
-                    GetCurrentInventoryList(Target).Add(newItem);
-                    WriteLine("Item added!");
-                }
-                else
-                    WriteLine("Please include an item type, Target inventory and additional data!");
-            }
-            else
                 WriteLine("You do not have super access!");
+                return;
+            }
 
+                Target = GetTarget();                                               //Get target inventory
+                Item newItem = ItemCreate();                                        //Create the item from input
+            if (newItem == null)                                                    //If it's invalid
+            {
+                WriteLine("Please include an item type, Target inventory and additional data!");
+                return;
+            }
+            GetCurrentInventoryList(Target).Add(newItem);                           //Add it to the inventory
+            WriteLine("Item added!");
         }
 
+        //Removes an item by input
         public static Item Remove()
         {
-            Item temp = RemoveNoLog(false);
-            if (temp == null)
+            Item temp = RemoveNoLog(false);                                         //RemoveNoLog is limited by super, input is a bypass that this doesn't get.
+            if (temp == null)                                                       //If you failed the no-log, you fail this.
             {
                 WriteLine("Item not found!");
                 return null;
             }
             WriteLine(temp.Name + " removed!");
-            return temp;
+            return temp;                                                            //Return the removed item.
         }
 
+        //Lists a helpful output.
         public static void Help()
         {
             WriteLine("  The commands available to you are BUY, SELL, LOOK,");
@@ -303,18 +283,22 @@ namespace RPGGame
             WriteLine("                   EXIT, HELP, QUIT");
         }
 
+        //Loads and runs a demo version of the game, then reloads this current game.
         public static void Demo()
         {
-            if (!SuperStatus)
+            if (!SuperStatus)                                   //Limited to super
             {
                 WriteLine("You do not have super status!");
                 return;
             }
 
-            InternalTesting = true;
+            #region Saving game, loading demo environment
+            InternalTesting = true;                             //List that there's internal testing going on
 
-            Save();
+            Save();                                             //Save
 
+            //Note that garbage collection will take everything, since the whole stored heirarchy is gone.
+            #region Reinitialize globals (Other than InternalTesting)
             Player = null;
             MainBoard = null;
             Input = "";
@@ -324,51 +308,58 @@ namespace RPGGame
             Inventories = new List<Inventory>();
             TextQueue = new Queue<Line>();
             Mute = false;
+            #endregion
 
+            //Reinitalize these
             TextManager.Initialize();
             InventoryManager.TestInitialize();
             EntityManager.TestInitialize();
 
             WriteLine(" While testing, please ignore requests for user input.");
             WriteLine("");
-            Redraw();
-
-            string testCommand = "";
+            Redraw();                                                               //Redraw the fresh map
 
             if (!ExternalTesting)
             {
                 System.Threading.Thread.Sleep(3000);
             }
-            ConsoleManager.Redraw();
-            foreach (string test in TestCommandList)
+            Redraw();
+            #endregion
+
+            //Note that you have to redraw before each sleep, lest it look wonky during the wait.
+            #region Test commands execution
+            string testCommand = "";                                                //Test command storage
+            foreach (string test in TestCommandList)                                //For each command in the list
             {
-                Input = test;
-                WriteLine(Input);
-                ConsoleManager.Redraw(); ;
+                Input = test;                                                       //Input it
+                WriteLine(Input);                                                   //Write it
+                Redraw();                                                           //Draw a fresh map
                 if (!ExternalTesting)
                 {
-                    Redraw();
-                    System.Threading.Thread.Sleep(400);
+                    System.Threading.Thread.Sleep(400);                             //Give time for user to view
                 }
 
-                if (Input!="")
-                    testCommand = ProcessInput(test);
+                if (Input!="")                                                      //Update command if the testcommand wasn't blank
+                    testCommand = ProcessInput(test);                               //Process it
 
                 WriteLine("");
-                Commands[testCommand]();
+                Commands[testCommand]();                                            //Run it
                 WriteLine("");
-                ConsoleManager.Redraw();
+                ConsoleManager.Redraw();                                            //Redraw
                 if (!ExternalTesting)
-                    System.Threading.Thread.Sleep(1000);
+                    System.Threading.Thread.Sleep(1000);                            //Give time for user to view
             }
 
             WriteLine("Demo complete! Please wait while your game is reloaded!");
 
             Redraw();
-            System.Threading.Thread.Sleep(3000);
+            if (!ExternalTesting)
+                System.Threading.Thread.Sleep(3000);
+            #endregion
 
-            InternalTesting = false;
+            InternalTesting = false;                                                //Disable test trigger
 
+            //Reload everything from before.
             MusicPlayer.Initialize();
             ConsoleManager.Initialize();
             TextManager.Initialize();
@@ -377,15 +368,11 @@ namespace RPGGame
             EntityManager.Initialize();
         }
 
+        //Runs a quit dialogue
         public static void Quit()
         {
             WriteLine("Warning! Progress will be lost if you quit without saving! Type \"YES\" to confirm!");
-            if (ExternalTesting)
-            {
-                StopMusic();
-                System.Environment.Exit(0);
-            }
-            else
+            if (!ExternalTesting)
                 if (ReadLine() == "YES")
             {
                 StopMusic();
@@ -393,10 +380,10 @@ namespace RPGGame
             }
         }
 
+        //Notes that there was an invalid command
         public static void InvalidCommand()
         {
             WriteLine("Invalid Command!");
-            WriteLine("");
         }
     }
 }

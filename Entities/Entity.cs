@@ -10,11 +10,95 @@ namespace RPGGame
 {
     internal class Entity
     {
-        public Coordinate position = new Coordinate();
-        public Inventory inventory;
-        public char icon = (char)32;
-        public int drawPriority = 0;
+        #region Properties
+        public Coordinate position = new Coordinate();                                                                  //Coordinate on the gameboard
+        protected int[] stats = new int[] { 0, 0, 0, 0, 0 };                                                            //The stats
 
+        public Inventory Inventory { get; set; }                                                                        //The inventory
+        public char Icon { get; set; } = (char)32;                                                                      //The representative character
+        public int DrawPriority { get; set; } = 0;                                                                      //The drawing priority when multiple entities are in one place
+        public int[] Stats { get; set; }                                                                                //The stats
+        public virtual Dictionary<string, Item[]> Equiptory { get; set; }                                               //Matches a string (storing Item type) to an array of items, storing and limiting the slots 
+        public string Description { get; internal set; } = "NO DESCRIPTION SET";                                        //Description for ingame use
+        public string Name { get; set; }                                                                                //Name for easy reference in game and in code
+        public bool Dead { get; internal set; } = false;                                                                //Bool recording if the entity is dead
+        public virtual bool Passive { get; internal set; }                                                              //Can you freely take things from the inventory of the entity?
+        public virtual bool Passable { get; internal set; }                                                             //Can you enter a square with the entity?
+        public virtual bool Aggressive { get; internal set; } = false;                                                  //Do you enter combat if you move into a square with this entity
+        public string Status { get; set; } = "";                                                                        //String storing status effect, appended to name in "LOOK" command
+#endregion
+
+        #region Constructors
+        public Entity() { }
+
+        //Please note that while inherited constructors may have no references in code, they ARE used as they are called by reflection.
+        //Full constructor
+        public Entity(string name, Coordinate position, char icon, int drawPriority, Inventory inventory, int[] stats, string description)
+        {
+            Name = name;
+            this.position = position;
+            this.Inventory = inventory;
+            this.Icon = icon;
+            this.DrawPriority = drawPriority;
+            Stats = stats;
+            Description = description;
+            Passive = true;
+            Passable = true;
+            if (inventory != null)
+                if (!Inventories.Contains(inventory))
+                    Inventories.Add(inventory);
+            Description = description;
+            EquipUpdate();
+        }
+
+        //Shorthand constructor for use by the wall class
+        public Entity(string name, Coordinate position, char icon, Inventory inventory, int[] stats, string description)
+        {
+            Name = name;
+            this.position = position;
+            this.Inventory = inventory;
+            DrawPriority = 1;
+            this.Icon = icon;
+            Stats = stats;
+            Description = description;
+            Passive = true;
+            Passable = true;
+            if (inventory != null)
+                if (!Inventories.Contains(inventory))
+                    Inventories.Add(inventory);
+            EquipUpdate();
+        }
+        #endregion
+
+        #region Map and interaction
+        //This displays the stats of the entity, for use in inventory viewing.
+        internal void StatDisplay()
+        {
+            WriteLine("Health : " + Stats[CurrHealth].ToString() + "/" + Stats[MaxHealth].ToString());
+            WriteLine("Def : " + GetDefence().ToString() + "   Arm : " + GetArmour().ToString());
+            WriteLine("Att : " + GetAttack().ToString() + "   Dam : " + GetDamage().ToString());
+            WriteLine("Speed : " + GetSpeed().ToString());
+        }
+
+        //Just pythagoras, returns the entity's position from the center. Used for scaling monster frequency (And possibly level in the future?)
+        internal int DistanceFromCenter() => (int)Math.Round(Math.Sqrt((position.x * position.x) + (position.y * position.y)));
+
+
+        //Gets the view from the entity's POV
+        public View GetView() => new View(
+                new Coordinate(
+                    position.x - viewDistanceWidth,
+                    position.y - viewDistanceHeight
+                    ),
+                new Coordinate(
+                    position.x + viewDistanceWidth,
+                    position.y + viewDistanceHeight
+                    )
+                );
+        #endregion
+
+        #region Combat
+        //Gets the maximum range of all the items equipped by the entity. This determines the starting range of combat.
         internal int GetMaxRange()
         {
             int temp = 1;
@@ -32,6 +116,7 @@ namespace RPGGame
             return temp;
         }
 
+        //Gets the minimum range of all items equipped by the entity. If this is larger than 1, an entity defaults to fists at range 1
         internal int GetMinRange()
         {
             int temp = 1;
@@ -49,6 +134,7 @@ namespace RPGGame
             return temp;
         }
 
+        //Gets a list of all equipped weapons, defaulting to fists if there are none.
         internal List<Weapon> GetEquippedWeapons()
         {
             var tempList = new List<Weapon>() { Fist };
@@ -59,14 +145,8 @@ namespace RPGGame
                     tempList.Add(currWeapon);
             return tempList;
         }
-
-        private Dictionary<string, Item[]> equiptory = new Dictionary<string, Item[]>();
-        protected int[] stats = new int[] { 0, 0, 0, 0, 0 };
-
-        public string Name { get; set; }
-        public bool Passive { get; set; }
-        public bool Passable { get; set; }
-
+        
+        //Returns the total defence stat of the entity based on armour
         internal int GetDefence()
         {
             int def = 0;
@@ -78,8 +158,10 @@ namespace RPGGame
             return def;
         }
 
+        //Returns the speed stat of the entity
         internal int GetSpeed() => Stats[Speed];
 
+        //Returns the total armour stat of the entity based on base armour + armour
         internal int GetArmour()
         {
             int ar = Stats[BaseArmour];
@@ -91,9 +173,10 @@ namespace RPGGame
             return ar;
         }
 
+        //Returns the attack of all weapons (Misleading as you cannot always use them all in combat)
         internal int GetAttack()
         {
-            List<Weapon> alreadyCounted = new List<Weapon>();
+            List<Weapon> alreadyCounted = new List<Weapon>();                                           //This list stores items as they are read, to stop multi-slot-filling items from being included more than once
             int att = 1;
             if (!Equiptory.ContainsKey("Weapon"))
                 return att;
@@ -109,9 +192,10 @@ namespace RPGGame
             return att;
         }
 
+        //Returns the damager of all weapons (Misleading as you cannot always use them all in combat)
         internal int GetDamage()
         {
-            List<Weapon> alreadyCounted = new List<Weapon>();
+            List<Weapon> alreadyCounted = new List<Weapon>();                                           //This list stores items as they are read, to stop multi-slot-filling items from being included more than once
             int dam = 1;
             if (!Equiptory.ContainsKey("Weapon"))
                 return dam;
@@ -127,11 +211,26 @@ namespace RPGGame
             return dam;
         }
 
-        internal int DistanceFromCenter() => (int)Math.Round(Math.Sqrt((position.x * position.x) + (position.y * position.y)));
+        //This sets the health inside of the stats array
+        internal void SetHealth(int inHealth) => Stats[CurrHealth] = inHealth;
 
+        //Death routine for entities.
+        internal void Die()
+        {
+            Dead = true;
+            Passive = true;
+            Aggressive = false;
+            Status = " (Dead)";
+            Icon = (char)9604;
+        }
+        #endregion
+
+        #region Equipment
+        //Unequip an item by the item itself
         public bool UnequipByItem(Item item)
         {
-            if (!inventory.inventData.Exists(x => x == item))
+            #region Escape conditions
+            if (!Inventory.inventData.Exists(x => x == item))
             {
                 WriteLine("Item not found!");
                 return false;
@@ -150,159 +249,53 @@ namespace RPGGame
                 item.Equipped = false;
                 return true;
             }
+            #endregion
 
             int slotsRequired = 1;
             if (itemType == "Weapon")
-                slotsRequired = (item as Weapon).slotsRequired;
+                slotsRequired = (item as Weapon).slotsRequired;                                 //Note that only weapons can currently require multiple slots
 
-            if (Equiptory[itemType].ToList().FindAll(x => x == item).Count < slotsRequired)
+
+            if (Equiptory[itemType].ToList().FindAll(x => x == item).Count < slotsRequired)     //If the item is somehow equipped despite lacking the slots for it
             {
-                WriteLine("That shouldn't be equippable! Naughty.");
+                WriteLine("That shouldn't be equippable! Naughty.");                            //Remove the item from the slots and mark it as unequipped.
                 for (int j = 0; j < slotsRequired; j++)
                     for (int i = 0; i < Equiptory[itemType].Length; i++)
                         if (Equiptory[item.GetType().Name][i] == item)
                         {
                             Equiptory[item.GetType().Name][i] = null;
-                            break;
+                            break;                                                              //
                         }
-                item.Equipped = false;
-                return true;
+                item.Equipped = false;                                                          
+                return true;                                                                    //Returns the unequip as successful
             }
 
-            item.Equipped = false;
+            item.Equipped = false;                                                              //Mark the item as unequipped
 
-            for (int j = 0; j < slotsRequired; j++)
+            for (int j = 0; j < slotsRequired; j++)                                             //Remove the item from the slots
                 for (int i = 0; i < Equiptory[item.GetType().Name].Length; i++)
                     if (Equiptory[item.GetType().Name][i] == item)
                     {
                         Equiptory[item.GetType().Name][i] = null;
-                        break;
+                        break;                                                                  //
                     }
-            return true;
+            return true;                                                                        //Return the unequip as successful
         }
 
-        internal void Die()
-        {
-            Dead = true;
-            Passive = true;
-            Aggressive = false;
-            Status = " (Dead)";
-            icon = (char)9604;
-        }
-
-        public int[] Stats { get => stats; set => stats = value; }
-        public virtual Dictionary<string, Item[]> Equiptory { get => equiptory; set => equiptory = value; }
-        public virtual bool Aggressive { get; internal set; } = false;
-        public bool Dead { get; set; } = false;
-        public string Status { get; internal set; } = "";
-        public string Description { get; internal set; } = "NO DESCRIPTION SET";
-
-        #region Constructors
-        public Entity() { }
-
-        public Entity(string name, Coordinate position, char icon, int drawPriority, Inventory inventory, int[] stats, string description)
-        {
-            Name = name;
-            this.position = position;
-            this.inventory = inventory;
-            this.icon = icon;
-            this.drawPriority = drawPriority;
-            Stats = stats;
-            Description = description;
-            Passive = true;
-            Passable = true;
-            if (inventory != null)
-                if (!Inventories.Contains(inventory))
-                    Inventories.Add(inventory);
-            Description = description;
-            EquipUpdate();
-        }
-
-        internal void StatDisplay()
-        {
-            WriteLine("Health : " + Stats[CurrHealth].ToString() + "/" + Stats[MaxHealth].ToString());
-            WriteLine("Def : " + GetDefence().ToString() + "   Arm : " + GetArmour().ToString());
-            WriteLine("Att : " + GetAttack().ToString() + "   Dam : " + GetDamage().ToString());
-            WriteLine("Speed : " + GetSpeed().ToString());
-        }
-
-        internal void SetHealth(int inHealth) => Stats[CurrHealth] = inHealth;
-
-        /*public Entity(String name, Coordinate position, char icon, int drawPriority, int[] stats, string description)
-                {
-                    this.Name = name;
-                    this.position = position;
-                    this.icon = icon;
-                    this.drawPriority = drawPriority;
-                    this.inventory = new Inventory(name);
-                    this.Stats = stats;
-                    this.Description = description;
-                    Passive = true;
-                    Passable = true;
-                    if (inventory != null)
-                        if (!Inventories.Contains(inventory))
-                            Inventories.Add(inventory);
-                    EquipUpdate();
-                }*/
-
-        public Entity(string name, Coordinate position, char icon, Inventory inventory, int[] stats, string description)
-        {
-            Name = name;
-            this.position = position;
-            this.inventory = inventory;
-            drawPriority = 1;
-            this.icon = icon;
-            Stats = stats;
-            Description = description;
-            Passive = true;
-            Passable = true;
-            if (inventory != null)
-                if (!Inventories.Contains(inventory))
-                    Inventories.Add(inventory);
-            EquipUpdate();
-        }
-
-        /*public Entity(String name, Coordinate position, char icon, int[] stats, string description)
-        {
-            this.Name = name;
-            this.position = position;
-            this.icon = icon;
-            this.drawPriority = 0;
-            this.inventory = new Inventory(name);
-            this.Stats = stats;
-            this.Description = description;
-            Passive = true;
-            Passable = true;
-            if (inventory != null)
-                if (!Inventories.Contains(inventory))
-                    Inventories.Add(inventory);
-            EquipUpdate();
-        }*/
-        #endregion
-
-        public View GetView() => new View(
-                new Coordinate(
-                    position.x - viewDistanceWidth,
-                    position.y - viewDistanceHeight
-                    ),
-                new Coordinate(
-                    position.x + viewDistanceWidth,
-                    position.y + viewDistanceHeight
-                    )
-                );
-
+        //Updates the equip status and slots of all items
         public void EquipUpdate()
         {
-            if (inventory == null)
+            if (Inventory == null)
                 return;
-            if (inventory.inventData.Count == 0)
+            if (Inventory.inventData.Count == 0)
                 return;
 
-            foreach (Item item in inventory.inventData.FindAll(x => x.Equipped == true))
+            foreach (Item item in Inventory.inventData.FindAll(x => x.Equipped == true))
             {
                 item.Equipped = false;
                 EquipToTargetByItem(this, item);
             }
         }
+        #endregion
     }
 }

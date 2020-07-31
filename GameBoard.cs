@@ -9,11 +9,12 @@ namespace RPGGame
 {
     internal class GameBoard
     {
-        private View currentView;
-        public Dictionary<Coordinate, List<Entity>> entityPos = new Dictionary<Coordinate, List<Entity>>();
+        private View currentView;                                                                                   //Stores the current view in mapspace of the board
+        public Dictionary<Coordinate, List<Entity>> entityPos = new Dictionary<Coordinate, List<Entity>>();         //Stores all of the entities in each space by coordinate. This lets the map be bound
+                                                                                                                                        //only by the integer limit.
+        public GameBoard() { MapDraw = true; }                                                                      //Constructor calls for an inital mapdraw.
 
-        public GameBoard() { }
-
+        //This method draws the board to the console.
         public void RenderBoard()
         {
             currentView = Player.GetView();
@@ -33,76 +34,79 @@ namespace RPGGame
             #endregion
 
             #region Draw side borders and map
-            for (int yy = currentView.topLeft.y; yy < currentView.bottomRight.y + 1; yy++)
+            for (int yy = currentView.topLeft.y; yy < currentView.bottomRight.y + 1; yy++)                          //Setting up vertical array to draw borders and coordinates.
             {
-                Pad();
-                Draw(VerticalBorder);
-                for (int xx = currentView.topLeft.x; xx < currentView.bottomRight.x + 1; xx++)
+                Pad();                                                                                              //Adds an amount of spacing, to center the map on the screen.
+                Draw(VerticalBorder);                                                                               //Draws the vertical border character on the left
+                for (int xx = currentView.topLeft.x; xx < currentView.bottomRight.x + 1; xx++)                      //Sets up the horizontal array to draw borders and coordinates
                 {
+                    //This region corrects the offset made by the previous character if it were a wall or path, since they are connected accross the horizontal spacing squares
+                    #region Wall buffering
                     if (wallBuffer == false)
                         Draw((char)32);
                     else
                         wallBuffer = false;
+                    #endregion
 
-                    char toDraw = GetHighestDrawPriority(GetFromBoard(new Coordinate(xx, yy)));
-                    Draw(toDraw);
+                    char toDraw = GetHighestDrawPriority(GetFromBoard(new Coordinate(xx, yy)));                     //Get the character of the entity with the highest draw priority from the coordinate
+                    Draw(toDraw);                                                                                   //Draws that character
 
-                    if (toDraw == Hor)
+                    //This region connects wall and path characters accross the normal horizontal spacing
+                    #region Spacing connect
+                    switch (toDraw)
                     {
-                        Write("\b\b" + Hor + Hor + Hor);
-                        wallBuffer = true;
+                        #region Walls
+                        case Hor:
+                        case TeeU:
+                        case TeeD:
+                        case Cross:
+                            Write("\b\b" + Hor + Hor + Hor);
+                            wallBuffer = true;
+                            break;
+                        case TopL:
+                        case BotL:
+                            wallBuffer = true;
+                            Draw(Hor);
+                            break;
+                        case TopR:
+                        case BotR:
+                            Write("\b\b" + Hor + toDraw);
+                            break;
+                        #endregion
+
+                        #region Paths
+                        case HPath:
+                        case TTPath:
+                        case TBPath:
+                        case XPath:
+                            Write("\b\b" + HPath + toDraw + HPath);
+                            wallBuffer = true;
+                            break;
+                        case LTPath:
+                        case LBPath:
+                            wallBuffer = true;
+                            Draw(HPath);
+                            break;
+                        case RTPath:
+                        case RBPath:
+                            Write("\b\b" + HPath + RTPath);
+                            break;
+                        default:
+                            break;
+                            #endregion
                     }
-                    if (toDraw == TopL)
-                    {
-                        wallBuffer = true;
-                        Draw(Hor);
-                    }
-                    if (toDraw == TopR)
-                    {
-                        Write("\b\b" + Hor + TopR);
-                    }
-                    if (toDraw == BotL)
-                    {
-                        wallBuffer = true;
-                        Draw(Hor);
-                    }
-                    if (toDraw == BotR)
-                    {
-                        Write("\b\b" + Hor + BotR);
-                    }
-                    //
-                    if (toDraw == HPath || toDraw == TTPath || toDraw == TBPath || toDraw == XPath)
-                    {
-                        Write("\b\b" + HPath + toDraw + HPath);
-                        wallBuffer = true;
-                    }
-                    if (toDraw == LTPath)
-                    {
-                        wallBuffer = true;
-                        Draw(HPath);
-                    }
-                    if (toDraw == RTPath)
-                    {
-                        Write("\b\b" + HPath + RTPath);
-                    }
-                    if (toDraw == LBPath)
-                    {
-                        wallBuffer = true;
-                        Draw(Hor);
-                    }
-                    if (toDraw == RBPath)
-                    {
-                        Write("\b\b" + HPath + RBPath);
-                    }
+                    #endregion
                 }
-                Draw((char)32);
-                if (wallBuffer == true)
-                {
-                    Write("\b");
+
+                #region More Wall buffering
+                if (wallBuffer == false)
+                    Draw((char)32);
+                else
                     wallBuffer = false;
-                }
-                Draw(VerticalBorder);
-                Console.WriteLine();
+                #endregion
+
+                Draw(VerticalBorder);                                                                               //Draw the vertical border character on the right
+                Console.WriteLine();                                                                                //Next line
             }
             #endregion
 
@@ -119,22 +123,25 @@ namespace RPGGame
             Console.WriteLine();
             #endregion
 
-            string positionReadOut = "(" + Player.position.x + "," + Player.position.y + ")";
-            if (!ExternalTesting)
-                Console.SetCursorPosition(Console.BufferWidth / 2 - positionReadOut.Length / 2, Console.CursorTop);
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(positionReadOut);
-            Console.ForegroundColor = ConsoleColor.White;
+            string positionReadOut = "(" + Player.position.x + "," + Player.position.y + ")";                       //Set up a coordinate string
+            if (!ExternalTesting)                                                                                   //Ignore if external testing (crashes due to no console)
+                Console.SetCursorPosition(Console.BufferWidth / 2 - positionReadOut.Length / 2, Console.CursorTop); //Position the cursor in the center
+            Console.ForegroundColor = ConsoleColor.Green;                                                           //Color the text green
+            Console.WriteLine(positionReadOut);                                                                     //Write the coordinate string
+            Console.ForegroundColor = ConsoleColor.White;                                                           //Restore the text to white
         }
 
+        //This method applies the necessary offset to a line of the map
         public static void Pad()
         {
             if (!ExternalTesting)
                 Console.SetCursorPosition(padding, Console.CursorTop);
         }
 
+        //Writes the given character (in green!)
         private void Draw(char ch) => Write(ch + "");
 
+        //Adds the provided entity to the dictionary, providing a new coordinate reference if it lacks one.
         public void AddToBoard(Entity toAdd)
         {
             if (!entityPos.ContainsKey(toAdd.position))
@@ -142,6 +149,7 @@ namespace RPGGame
             entityPos[toAdd.position].Add(toAdd);
         }
 
+        //Provides the list of entities at a given coordinate, if any.
         public List<Entity> GetFromBoard(Coordinate pos)
         {
             if (entityPos.ContainsKey(pos))
@@ -150,16 +158,17 @@ namespace RPGGame
                 return null;
         }
 
+        //Gets the highest draw priority character from entities in a given list, defaulting to a character
         public char GetHighestDrawPriority(List<Entity> inList)
         {
             int highest = 0;
-            char ic = (char)1622;
+            char ic = (char)1622;                                                                                   //This is the default character
             if (inList != null)
                 foreach (Entity ent in inList)
-                    if (ent.drawPriority > highest)
+                    if (ent.DrawPriority > highest)
                     {
-                        highest = ent.drawPriority;
-                        ic = ent.icon;
+                        highest = ent.DrawPriority;
+                        ic = ent.Icon;
                     }
             return ic;
         }

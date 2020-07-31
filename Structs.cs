@@ -2,17 +2,20 @@
 
 namespace RPGGame
 {
+    //Coordinate for use on the map
     internal struct Coordinate
     {
         public int x;
         public int y;
 
+        //Constructor with values
         public Coordinate(int x, int y)
         {
             this.x = x;
             this.y = y;
         }
 
+        //Constructor with string in form "X Y"
         public Coordinate(string[] inp)
         {
             x = int.Parse(inp[0]);
@@ -20,6 +23,7 @@ namespace RPGGame
         }
     }
 
+    //Stores a view for the gameboard to render
     internal struct View
     {
         public Coordinate topLeft;
@@ -32,6 +36,7 @@ namespace RPGGame
         }
     }
 
+    //Stores a string associated with a colour, to be drawn in that colour by the text renderer
     internal struct Line
     {
         public string lineData;
@@ -44,8 +49,10 @@ namespace RPGGame
         }
     }
 
+    //This struct takes in from a string array and parses all the information required to make an entity
     internal struct EntityData
     {
+        #region Fields
         public string type;
         public string name;
         public char icon;
@@ -54,9 +61,11 @@ namespace RPGGame
         public Inventory inventory;
         public int[] stats;
         public string description;
+        #endregion
 
         public EntityData(string[] data)
         {
+            #region Parsing
             type = data[1];
             name = data[0];
             icon = (char)int.Parse(data[2]);
@@ -73,9 +82,11 @@ namespace RPGGame
                 stats[i] = int.Parse(tempStats[i]);
 
             description = data[7];
+            #endregion
         }
     }
 
+    //This struct parses and stores a type and the attribute data needed to make an item
     internal struct ItemData
     {
         public string type;
@@ -87,6 +98,7 @@ namespace RPGGame
         }
     }
 
+    //This struct sessentially is a vector2, used for making movement code more readable
     internal struct MoveCommand
     {
         public int x;

@@ -1,12 +1,210 @@
-PLAYER
-ARMOUR defenceModifier:2 armourModifier:1 equipped:True name:Leather Armour value:50
-WEAPON attackModifier:4 damageModifier:4 maxRange:4 minRange:2 slotsNeeded:2 equipped:True name:Bow value:60
-GOLD amount:30
+TestInventory
 
-MERCHANT
-WEAPON attackModifier:5 damageModifier:4 maxRange:2 minRange:2 slotsNeeded:2 equipped:False name:Axe value:50
-WEAPON attackModifier:4 damageModifier:2 maxRange:1 minRange:1 slotsNeeded:1 equipped:False name:Dagger value:20
-WEAPON attackModifier:2 damageModifier:2 maxRange:1 minRange:1 slotsNeeded:1 equipped:False name:Stilletto value:20
-GOLD amount:500
+PlayerInv
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
 
-CHEST
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+PlayerInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+
+MerchantInv
+WEAPON attackModifier:4 damageModifier:4 equipped:False maxRange:4 minRange:2 name:TestItem slotsNeeded:2 type:Weapon value:15
+GOLD amount:500 equipped:False name:Gold type:Gold value:500
+

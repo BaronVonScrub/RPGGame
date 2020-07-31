@@ -11,19 +11,19 @@ namespace RPGGame
     {
         public static void Run()
         {
-            do
+            do                                                  //Repeatedly
             {
-                Redraw();
+                Redraw();                                       //Render the console
 
-                Input = ReadLine();
+                Input = GetInput();                             //Receive the input
                 
-                if (Input!="")
-                    CurrentCommand = ProcessInput(Input);
+                if (Input!="")                                  //If the input is blank, don't update command, thus repeating previous command.
+                    CurrentCommand = ProcessInput(Input);       //Process the input to parse out the command
 
-                Commands[CurrentCommand]();
-                WriteLine("");
+                Commands[CurrentCommand]();                     //Execute the command
+                WriteLine("");                                  //Add a space
             }
-            while (true);
+            while (true);                                       //No break condition, as quitting is handled internally.
         }
     }
 }

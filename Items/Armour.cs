@@ -2,8 +2,9 @@
 {
     internal class Armour : Item
     {
-        public Armour(string inputData) : base(inputData) { }
-
+        //Sets MustHaves (See Item)
         public override string[] MustHave { get; set; } = new string[] { "defenceModifier", "armourModifier", "value", "name", "equipped" };
+
+        public Armour(string inputData) : base(inputData) { }
     }
 }
