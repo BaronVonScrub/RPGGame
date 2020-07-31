@@ -74,10 +74,11 @@ namespace RPGGame
         //This displays the stats of the entity, for use in inventory viewing.
         internal void StatDisplay()
         {
-            WriteLine("Health : " + Stats[CurrHealth].ToString() + "/" + Stats[MaxHealth].ToString());
-            WriteLine("Def : " + GetDefence().ToString() + "   Arm : " + GetArmour().ToString());
-            WriteLine("Att : " + GetAttack().ToString() + "   Dam : " + GetDamage().ToString());
-            WriteLine("Speed : " + GetSpeed().ToString());
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Health : " + Stats[CurrHealth].ToString() + "/" + Stats[MaxHealth].ToString());
+            Console.WriteLine("Def : " + GetDefence().ToString() + "   Arm : " + GetArmour().ToString());
+            Console.WriteLine("Att : " + GetAttack().ToString() + "   Dam : " + GetDamage().ToString());
+            Console.WriteLine("Speed : " + GetSpeed().ToString());
         }
 
         //Just pythagoras, returns the entity's position from the center. Used for scaling monster frequency (And possibly level in the future?)

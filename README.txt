@@ -10,8 +10,9 @@ README UPDATED: 31/07/2020
 README: This project was made by Aidan Sakovits for assessment by the Academy of Interactive Entertainment.
 It demonstrates an inventory and trading system as would be found in an RPG style console game.
 
-BUILD: Open the solution in Visual Studio 2019, and create a release build with x64 CPU configuration. All
-necessary files and should be handled automatically.
+BUILD: Open the solution in Visual Studio 2019, and create a release build with "Any CPU" configuration. All
+necessary files and should be handled automatically. Please note that a rebuild will replace all saved
+inventory and entity data with the default.
 
 EXECUTION: After build, execution is performed simply by running the RPGGame.exe file.
 

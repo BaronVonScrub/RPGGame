@@ -53,10 +53,18 @@ namespace RPGGame
         //Custom Writeline function that manually buffers the strings, plus their colour.
         public static void WriteLine(string inp)
         {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write(inp);
-            Console.ForegroundColor = ConsoleColor.White;
-            TextQueue.Enqueue(new Line(inp, ConsoleColor.Green));
+            int count = 0;
+            string partial = "";
+            do
+            {
+                if (count + Console.WindowWidth < inp.Length)
+                    partial = inp.Substring(count, Console.WindowWidth);
+                else
+                    partial = inp.Substring(count);
+                count += Console.WindowWidth;
+                TextQueue.Enqueue(new Line(partial, ConsoleColor.Green));
+            }
+            while (count < inp.Length);
             if (TextQueue.Count > 14)                                   //Limit string buffer to 14
                 TextQueue.Dequeue();
         }
@@ -90,8 +98,15 @@ namespace RPGGame
         {
             for (int i = 0; i < TextQueue.Count; i++)                   //For each line in the queue
             {
+                if (TextQueue.Count>15)
+                    do
+                    {
+                        TextQueue.Dequeue();                                //Ensure Textqueue fits
+                    }
+                    while (TextQueue.Count > 15);
+
                 if (!ExternalTesting)
-                    Console.SetCursorPosition(0,15+i);                  //Set the cursor position to the start of the appropriate line
+                    Console.SetCursorPosition(0,14+i);                  //Set the cursor position to the start of the appropriate line
                 if (!ExternalTesting)
                     ClearCurrentConsoleLine();
                 Line line = TextQueue.Dequeue();                        //Get the stored line
@@ -111,6 +126,7 @@ namespace RPGGame
         //made sense.
         public static string GetInput()
         {
+            Console.ForegroundColor = ConsoleColor.White;
             string inp = "";
             if (ExternalTesting)                                                    //User input is skipped if you're testing.
                 return inp;
@@ -139,7 +155,7 @@ namespace RPGGame
                 nextChar = Console.ReadKey().Key;                                   //Then get a new key!
             }
             while (nextChar != ConsoleKey.Enter);                                   //When there is an Enter press
-
+            Console.ForegroundColor = ConsoleColor.Green;
             return inp;                                                             //Return the stored string
         }
 
@@ -154,8 +170,9 @@ namespace RPGGame
         //Displays a header for the InventoryView that shows the gold the target has.
         public static void GoldDisplay()
         {
-            WriteLine("GOLD : " + GetGold(Target));
-            WriteLine(UNDERLINE + "______________________________________________________" + RESET);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("GOLD : " + GetGold(Target));
+            Console.WriteLine(UNDERLINE + "______________________________________________________" + RESET);
         }
     }
 }

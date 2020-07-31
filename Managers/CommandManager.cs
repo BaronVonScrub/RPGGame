@@ -121,7 +121,11 @@ namespace RPGGame
         public static void Exit()
         {
             if (InventoryView)
+            {
                 InventoryView = false;
+                MapDraw = true;
+                Redraw();
+            }
             else
                 WriteLine("Only usable when viewing an inventory!");
         }
@@ -308,6 +312,7 @@ namespace RPGGame
             Inventories = new List<Inventory>();
             TextQueue = new Queue<Line>();
             Mute = false;
+            MapDraw = true;
             #endregion
 
             //Reinitalize these
@@ -332,15 +337,13 @@ namespace RPGGame
             foreach (string test in TestCommandList)                                //For each command in the list
             {
                 Input = test;                                                       //Input it
-                WriteLine(Input);                                                   //Write it
+                if (Input != "")                                                    //Update command if the testcommand wasn't blank
+                    testCommand = ProcessInput(test);                               //Process it
                 Redraw();                                                           //Draw a fresh map
                 if (!ExternalTesting)
                 {
                     System.Threading.Thread.Sleep(400);                             //Give time for user to view
                 }
-
-                if (Input!="")                                                      //Update command if the testcommand wasn't blank
-                    testCommand = ProcessInput(test);                               //Process it
 
                 WriteLine("");
                 Commands[testCommand]();                                            //Run it
@@ -359,11 +362,21 @@ namespace RPGGame
 
             InternalTesting = false;                                                //Disable test trigger
 
+            #region Reinitialize globals (Other than InternalTesting)
+            Player = null;
+            MainBoard = null;
+            Input = "";
+            SuperStatus = false;
+            CurrentCommand = "";
+            Target = null;
+            Inventories = new List<Inventory>();
+            TextQueue = new Queue<Line>();
+            Mute = false;
+            MapDraw = true;
+            #endregion
+
             //Reload everything from before.
-            MusicPlayer.Initialize();
-            ConsoleManager.Initialize();
             TextManager.Initialize();
-            ParseManager.Initialize();
             InventoryManager.Initialize();
             EntityManager.Initialize();
         }

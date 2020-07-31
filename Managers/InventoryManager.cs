@@ -5,6 +5,7 @@ using static RPGGame.GlobalVariables;
 using static RPGGame.ImportExportManager;
 using static RPGGame.ParseManager;
 using static RPGGame.TextManager;
+using static RPGGame.ConsoleManager;
 
 namespace RPGGame
 {
@@ -33,20 +34,20 @@ namespace RPGGame
             if (!ExternalTesting)                                       //Clear the console if not external testing
                 Console.Clear();
 
-            WriteLine(UNDERLINE + Target.Name.ToUpper() + RESET);       //Write the entity name
+            Console.WriteLine(UNDERLINE + Target.Name.ToUpper() + RESET);       //Write the entity name
             if (Target == Player)
                 Player.StatDisplay();                                   //Display stats if it's the player
             GoldDisplay();                                              //Display the gold
 
-            int count = 0;                                              //Counter to allow buffer overflow
-
+            Console.ForegroundColor = ConsoleColor.Green;
             foreach (Item item in GetCurrentInventoryList(Target).FindAll(x => (x.GetType().Name != "Gold")))   //List each non-gold item
             {
-                count += 1;                                             //Increment the counter
                 if (!ExternalTesting)                                   //Skip the buffer overflow if external testing
-                    if (count % (Console.BufferHeight - 5) == 0)
+                    if (Console.CursorTop==13)
                     {
-                        Console.Write("Press enter for more...");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.Write("Press any key for more...");
+                        Console.ForegroundColor = ConsoleColor.Green;
                         if (!InternalTesting)
                             Console.ReadKey();
                         else
@@ -56,17 +57,16 @@ namespace RPGGame
 
                 if (item.itemData.ContainsKey("amount"))                //If the item has an amount, list it, then the item
                 {
-                    WriteLine(item.itemData["amount"] + " " + item.Look());
+                    Console.WriteLine(item.itemData["amount"] + " " + item.Look());
                 }
                 else
-                    WriteLine(item.Look());                             //Otherwise just list the item
+                    Console.WriteLine(item.Look());                             //Otherwise just list the item
             }
             WriteLine(UNDERLINE + "______________________________________________________" + RESET);
-            Console.Write("Type EXIT to leave this view.");
-            if (!ExternalTesting && !InternalTesting)
-                Console.ReadKey();
-            else
-                if (!ExternalTesting)
+            Console.ForegroundColor=ConsoleColor.White;
+            Console.WriteLine("Type EXIT to leave this view.");
+            Console.ForegroundColor = ConsoleColor.Green;
+            if (InternalTesting)
                 System.Threading.Thread.Sleep(3000);
             do
             { TextQueue.Dequeue(); }                                    //Purge the text buffer when done in the inventory
