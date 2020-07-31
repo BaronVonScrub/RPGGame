@@ -13,12 +13,12 @@ namespace RPGGame
         #region Properties
         public Coordinate position = new Coordinate();                                                                  //Coordinate on the gameboard
         protected int[] stats = new int[] { 0, 0, 0, 0, 0 };                                                            //The stats
-
+       
         public Inventory Inventory { get; set; }                                                                        //The inventory
         public char Icon { get; set; } = (char)32;                                                                      //The representative character
         public int DrawPriority { get; set; } = 0;                                                                      //The drawing priority when multiple entities are in one place
         public int[] Stats { get; set; }                                                                                //The stats
-        public virtual Dictionary<string, Item[]> Equiptory { get; set; }                                               //Matches a string (storing Item type) to an array of items, storing and limiting the slots 
+        public virtual Dictionary<string, Item[]> Equiptory { get; set; } = new Dictionary<string, Item[]>();          //Matches a string (storing Item type) to an array of items, storing and limiting the slots 
         public string Description { get; internal set; } = "NO DESCRIPTION SET";                                        //Description for ingame use
         public string Name { get; set; }                                                                                //Name for easy reference in game and in code
         public bool Dead { get; internal set; } = false;                                                                //Bool recording if the entity is dead
