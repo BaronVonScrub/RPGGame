@@ -146,6 +146,8 @@ FILE MANIFEST:
 LICENSING: GNU General Public License
 https://www.gnu.org/licenses/gpl-3.0.en.html
 
+The music used is a modifier MIDI from Musescore. It is public domain: G.Ph.Telemann's Fantasy Nr 1
+
 REQUIREMENTS: Windows 10 (insider) build 1826 or higher
 Support not guaranteed on other platforms or earlier builds
 

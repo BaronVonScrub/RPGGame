@@ -13,12 +13,10 @@
         }
 
         //Long form constructor if needed
-        public Wall( Coordinate position, char icon, int drawPriorityJunk, Inventory inventoryJunk, int[] stats, string description) : base("Wall", position, icon, null, stats, description)
+        public Wall(string nameJunk, Coordinate position, char icon, int drawPriorityJunk, Inventory inventoryJunk, int[] stats, string description) : base("Wall", position, icon, null, stats, description)
         {
             Passable = false;
             Passive = false;
         }
-
-
     }
 }
