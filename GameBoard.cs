@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using static RPGGame.ConsoleManager;
-using static RPGGame.ConstantVariables;
+using static RPGGame.GlobalConstants;
 using static RPGGame.GlobalVariables;
 using static RPGGame.TextManager;
 
@@ -120,7 +120,7 @@ namespace RPGGame
             #endregion
 
             string positionReadOut = "(" + Player.position.x + "," + Player.position.y + ")";
-            if (!IsTestMode())
+            if (!ExternalTesting)
                 Console.SetCursorPosition(Console.BufferWidth / 2 - positionReadOut.Length / 2, Console.CursorTop);
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(positionReadOut);
@@ -129,7 +129,7 @@ namespace RPGGame
 
         public static void Pad()
         {
-            if (!IsTestMode())
+            if (!ExternalTesting)
                 Console.SetCursorPosition(padding, Console.CursorTop);
         }
 

@@ -1,6 +1,6 @@
 ﻿using System;
 using static RPGGame.ConsoleManager;
-using static RPGGame.ConstantVariables;
+using static RPGGame.GlobalConstants;
 using static RPGGame.GlobalVariables;
 using static RPGGame.ParseManager;
 using static RPGGame.TextManager;
@@ -16,26 +16,14 @@ namespace RPGGame
                 Redraw();
 
                 Input = ReadLine();
-                CurrentCommand = ProcessInput(Input);
+                
+                if (Input!="")
+                    CurrentCommand = ProcessInput(Input);
 
-                if (CurrentCommand == "")
-                {
-                    WriteLine("");
-                    WriteLine("Invalid Command!");
-                    WriteLine("");
-                }
-                else
-                {
-                    WriteLine("");
-                    Commands[CurrentCommand]();
-                }
-
+                Commands[CurrentCommand]();
+                WriteLine("");
             }
-            while (CurrentCommand != "^QUIT$" && CurrentCommand != "^TEST$");
-            WriteLine("Gave saved! Press any key to continue...");
-            Redraw();
-            if (!IsTestMode())
-                Console.ReadKey();
+            while (true);
         }
     }
 }

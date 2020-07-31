@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using static RPGGame.CombatManager;
 using static RPGGame.ConsoleManager;
-using static RPGGame.ConstantVariables;
+using static RPGGame.GlobalConstants;
 using static RPGGame.EntityManager;
 using static RPGGame.GlobalVariables;
 using static RPGGame.ImportExportManager;
@@ -19,6 +19,7 @@ namespace RPGGame
 
         public static void Look()
         {
+            InventoryView = false;
             Target = GetTarget();
             WriteLine(Target.Description);
         }
@@ -30,6 +31,8 @@ namespace RPGGame
 
         public static void Move(MoveCommand direction)
         {
+            InventoryView = false;
+
             List<Entity> goalSquareEntities = MainBoard.GetFromBoard(new Coordinate(Player.position.x + direction.x, Player.position.y + direction.y));
             if (goalSquareEntities != null && goalSquareEntities.Exists(x => x.Passable == false))
             {
@@ -82,22 +85,27 @@ namespace RPGGame
 
             Target = other;
         }
-        public static void TradeWith()
+
+        public static void ViewInventory(Entity ent)
         {
-            Target = GetTarget();
+            Target = ent;
             if (!InventoryIsAccessible(Target))
             {
                 WriteLine("Target inventory is not visible.");
                 return;
             }
 
+            InventoryView = true;
+
             GetCurrentInventoryList(Target).Sort(AlphabeticalByName);
 
-            if (!IsTestMode())
+            if (!ExternalTesting)
                 Console.Clear();
 
 
             WriteLine(UNDERLINE + Target.Name.ToUpper() + RESET);
+            if (Target == Player)
+                Player.StatDisplay();
             GoldDisplay();
 
             int count = 0;
@@ -105,11 +113,14 @@ namespace RPGGame
             foreach (Item item in GetCurrentInventoryList(Target).FindAll(x => (x.GetType().Name != "Gold")))
             {
                 count += 1;
-                if (!IsTestMode())
+                if (!ExternalTesting)
                     if (count % (Console.BufferHeight - 5) == 0)
                     {
                         Console.WriteLine("Press enter for more...");
-                        Console.ReadKey();
+                        if (InternalTestMode())
+                            Console.ReadKey();
+                        else
+                            System.Threading.Thread.Sleep(3000);
                         Console.Clear();
                     }
 
@@ -122,53 +133,44 @@ namespace RPGGame
             }
             WriteLine(UNDERLINE + "______________________________________________________" + RESET);
             Console.WriteLine("Press enter to continue.");
-            if (!IsTestMode())
+            if (!ExternalTesting && !InternalTestMode())
                 Console.ReadKey();
+            else
+                System.Threading.Thread.Sleep(3000);
             do
             { TextQueue.Dequeue(); }
             while (TextQueue.Count != 0);
         }
 
+        public static void TradeView()
+        {
+            ViewInventory(GetTarget());
+        }
+
         public static void LookAtMe()
         {
-            Target = Player;
+            ViewInventory(Player);
+        }
 
-            GetCurrentInventoryList(Player).Sort(AlphabeticalByName);
+        public static void Exit()
+        {
+            if (InventoryView)
+                InventoryView = false;
+            else
+                WriteLine("Only usable when viewing an inventory!");
+        }
 
-            if (!IsTestMode())
-                Console.Clear();
-
-            WriteLine(UNDERLINE + Player.Name.ToUpper() + RESET);
-            Player.StatDisplay();
-            GoldDisplay();
-
-            int count = 0;
-
-            foreach (Item item in GetCurrentInventoryList(Player).FindAll(x => (x.GetType().Name != "Gold")))
+        public static void Save()
+        {
+            if (InternalTesting == true)
             {
-                count += 1;
-                if (!IsTestMode())
-                    if (count % (Console.BufferHeight - 5) == 0)
-                    {
-                        Console.WriteLine("Press enter for more...");
-                        Console.ReadKey();
-                        Console.Clear();
-                    }
-
-                if (item.itemData.ContainsKey("amount"))
-                {
-                    WriteLine(item.itemData["amount"] + " " + item.Look());
-                }
-                else
-                    WriteLine(item.Look());
+                WriteLine("Save disabled during testing!");
+                return;
             }
-            WriteLine(UNDERLINE + "______________________________________________________" + RESET);
-            Console.WriteLine("Press enter to continue.");
-            if (!IsTestMode())
-                Console.ReadKey();
-            do
-            { TextQueue.Dequeue(); }
-            while (TextQueue.Count != 0);
+
+            ExportInventories();
+            ExportEntities();
+            WriteLine("Gamestate saved!");
         }
 
         public static void Examine()
@@ -218,7 +220,6 @@ namespace RPGGame
             }
             else
                 WriteLine("Item not found!");
-
         }
 
         public static void Take()
@@ -250,9 +251,17 @@ namespace RPGGame
 
         public static void GrantSuper()
         {
-            SuperStatus = true;
-            WriteLine("SuperStatus access granted!");
-            WriteLine("The SuperStatus commands are ADD and REMOVE");
+            if (SuperStatus == false)
+            {
+                SuperStatus = true;
+                WriteLine("SuperStatus access granted!");
+                WriteLine("The SuperStatus commands are ADD, REMOVE and DEMO");
+            }
+            else
+            {
+                SuperStatus = false;
+                WriteLine("SuperStatus access removed!");
+            }
         }
 
         public static void Add()
@@ -289,53 +298,105 @@ namespace RPGGame
         public static void Help()
         {
             WriteLine("  The commands available to you are BUY, SELL, LOOK,");
-            WriteLine("  TALK, ME, TRADE, EXAMINE, RENAME, EQUIP, UNEQUIP,");
+            WriteLine("  TALK, ME, INTERACT, EXAMINE, RENAME, EQUIP, UNEQUIP,");
             WriteLine("   TAKE, MUTE GO NORTH, GO SOUTH, GO EAST, GO WEST,");
-            WriteLine("                      HELP, QUIT");
-
+            WriteLine("                   EXIT, HELP, QUIT");
         }
 
-        public static void Test()
+        public static void Demo()
         {
-            if (!IsTestMode())
-                System.Threading.Thread.Sleep(1000);
+            if (!SuperStatus)
+            {
+                WriteLine("You do not have super status!");
+                return;
+            }
+
+            InternalTesting = true;
+
+            Save();
+
+            Player = null;
+            MainBoard = null;
+            Input = "";
+            SuperStatus = false;
+            CurrentCommand = "";
+            Target = null;
+            Inventories = new List<Inventory>();
+            TextQueue = new Queue<Line>();
+            Mute = false;
+
+            TextManager.Initialize();
+            InventoryManager.TestInitialize();
+            EntityManager.TestInitialize();
+
+            WriteLine(" While testing, please ignore requests for user input.");
+            WriteLine("");
+            Redraw();
+
+            string testCommand = "";
+
+            if (!ExternalTesting)
+            {
+                System.Threading.Thread.Sleep(3000);
+            }
             ConsoleManager.Redraw();
             foreach (string test in TestCommandList)
             {
                 Input = test;
                 WriteLine(Input);
                 ConsoleManager.Redraw(); ;
-                if (!IsTestMode())
-                    System.Threading.Thread.Sleep(500);
-                string testCommand = ProcessInput(test);
+                if (!ExternalTesting)
+                {
+                    Redraw();
+                    System.Threading.Thread.Sleep(400);
+                }
+
+                if (Input!="")
+                    testCommand = ProcessInput(test);
 
                 WriteLine("");
                 Commands[testCommand]();
                 WriteLine("");
                 ConsoleManager.Redraw();
-                if (!IsTestMode())
-                    System.Threading.Thread.Sleep(2000);
-
+                if (!ExternalTesting)
+                    System.Threading.Thread.Sleep(1000);
             }
+
+            WriteLine("Demo complete! Please wait while your game is reloaded!");
+
+            Redraw();
+            System.Threading.Thread.Sleep(3000);
+
+            InternalTesting = false;
+
+            MusicPlayer.Initialize();
+            ConsoleManager.Initialize();
+            TextManager.Initialize();
+            ParseManager.Initialize();
+            InventoryManager.Initialize();
+            EntityManager.Initialize();
         }
 
         public static void Quit()
         {
-            ExportInventories();
-            ExportEntities();
-            StopMusic();
+            WriteLine("Warning! Progress will be lost if you quit without saving! Type \"YES\" to confirm!");
+            if (ExternalTesting)
+            {
+                StopMusic();
+                System.Environment.Exit(0);
+            }
+            else
+                if (ReadLine() == "YES")
+            {
+                StopMusic();
+                System.Environment.Exit(0);
+            }
         }
-    }
 
-    internal struct MoveCommand
-    {
-        public int x;
-        public int y;
-
-        public MoveCommand(int x, int y)
+        public static void InvalidCommand()
         {
-            this.x = x;
-            this.y = y;
+            WriteLine("Invalid Command!");
+            WriteLine("");
         }
     }
 }

@@ -13,15 +13,10 @@ namespace RPGGame
     internal static class EntityManager
     {
         private static int EntityNum { get; set; } = 0;
-        public static void Initialize()
-        {
-            MainBoard = new GameBoard();
-            ImportEntities();
-            Player = GetEntity("Player");
 
-            foreach (Entity ent in EntityManager.GetLocalEntities(Player, MainBoard).FindAll(x => (x.Name != "Player")))
-                WriteLine("You see a " + ent.Name + ent.Status + "\b");
-        }
+        public static void Initialize() => ImportEntities("Entities.dat");
+
+        public static void TestInitialize() => ImportEntities("TestEntities.dat");
 
         public static bool UnequipFromTargetByName(Entity target, string inp)
         {
@@ -98,7 +93,7 @@ namespace RPGGame
             return false;
         }
 
-        private static Entity GetEntity(string entName)
+        public static Entity GetEntity(string entName)
         {
             Entity ent = null;
             foreach (List<Entity> entListCand in MainBoard.entityPos.Values.ToList())

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using static RPGGame.ConsoleManager;
-using static RPGGame.ConstantVariables;
+using static RPGGame.GlobalConstants;
 using static RPGGame.GlobalVariables;
 using static RPGGame.TextManager;
 
@@ -46,7 +46,6 @@ namespace RPGGame
 
             int enemyMinRange = enemy.GetMinRange();
 
-
             int distance = Math.Max(playerMaxRange, enemyMaxRange) + 1;
 
             WriteLine("Do you ADVANCE, RETREAT, HOLD or FLEE ?");
@@ -82,7 +81,6 @@ namespace RPGGame
                         WriteLine("You did no damage to " + enemy.Name);
                 }
 
-
                 //EnemyAttack
                 alreadyAttacked = new List<Weapon>();
                 damage = 0;
@@ -110,13 +108,49 @@ namespace RPGGame
                         WriteLine(enemy.Name + " did no damage to you!");
                 }
 
-                //MovePhase
-                WriteLine("The " + enemy.Name + " is " + distance.ToString() + " units away.");
+                if (!(playerHealth > 0))
+                {
+                    if (InternalTesting || ExternalTesting)
+                    {
+                        WriteLine("Can't due during a test!");
+                    }
+                    else
+                    {
+                        WriteLine("You die...");
+                        WriteLine("Press any key to exit!");
+                        ReadLine();
+                        if (!ExternalTesting)
+                            System.Environment.Exit(0);
+                        return false;
+                    }
+                }
+
+                    if (!(enemyHealth > 0))
+                {
+                    WriteLine("You defeated " + enemy.Name + "!");
+                    enemy.Die();
+                    break;
+                }
+
+
+
+                    //MovePhase
+                    WriteLine("The " + enemy.Name + " is " + distance.ToString() + " units away.");
 
                 Redraw();
 
                 int dist;
-                switch (ReadLine())
+                string inCommand;
+                if (InternalTesting || ExternalTesting)
+                {
+                    inCommand = "";
+                    WriteLine("HOLD");
+                    System.Threading.Thread.Sleep(500);
+                }
+                else
+                    inCommand = ReadLine();
+
+                switch (inCommand)
                 {
                     case var someVal
                     when new Regex("ADVANCE \\d").IsMatch(someVal):
@@ -149,7 +183,7 @@ namespace RPGGame
                         break;
                     case "QUIT":
                         WriteLine("Warning! Progress will be lost if you quit during combat! Type \"YES\" to confirm!");
-                        if (IsTestMode())
+                        if (ExternalTesting)
                             playerHealth = 0;
                         else
                             if (ReadLine() == "YES")
@@ -178,22 +212,10 @@ namespace RPGGame
             }
             while (playerHealth > 0 && enemyHealth > 0);
 
-            if (playerHealth == 0)
-            {
-                WriteLine("You die...");
-                WriteLine("Press any key to exit!");
-                ReadLine();
-                if (!IsTestMode())
-                    System.Environment.Exit(0);
-                return false;
-            }
-
             Player.SetHealth(playerHealth);
             enemy.SetHealth(enemyHealth);
 
-            WriteLine("You defeated " + enemy.Name + "!");
             WriteLine("");
-            enemy.Die();
             return true;
         }
 

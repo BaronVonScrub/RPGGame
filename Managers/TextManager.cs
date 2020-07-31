@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 using static RPGGame.ConsoleManager;
-using static RPGGame.ConstantVariables;
+using static RPGGame.GlobalConstants;
 using static RPGGame.GlobalVariables;
 using static RPGGame.InventoryManager;
 
@@ -63,7 +63,7 @@ namespace RPGGame
         {
             Console.ForegroundColor = ConsoleColor.White;
             string line = "";
-            if (!IsTestMode())
+            if (!ExternalTesting)
                 line = Console.ReadLine();
             TextQueue.Enqueue(new Line(line, ConsoleColor.White));
             if (TextQueue.Count > 15)

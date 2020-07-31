@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using static RPGGame.ConstantVariables;
+using static RPGGame.GlobalConstants;
 using static RPGGame.GlobalVariables;
 using static RPGGame.ImportExportManager;
 using static RPGGame.ParseManager;
@@ -12,7 +12,9 @@ namespace RPGGame
     {
         public static int InventoryNum { get; set; } = 0;
 
-        public static void Initialize() => ImportInventories();
+        public static void Initialize() => ImportInventories("Inventories.dat");
+
+        public static void TestInitialize() => ImportInventories("TestInventories.dat");
 
         public static Inventory GenerateInv()
         {

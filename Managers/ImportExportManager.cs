@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using static RPGGame.ConstantVariables;
+using static RPGGame.GlobalConstants;
 using static RPGGame.EntityManager;
 using static RPGGame.GlobalVariables;
 using static RPGGame.ParseManager;
@@ -11,9 +11,9 @@ namespace RPGGame
 {
     internal class ImportExportManager
     {
-        public static void ImportInventories()
+        public static void ImportInventories(string filename)
         {
-            string storageFile = Directory.GetCurrentDirectory() + "\\Inventories.dat";
+            string storageFile = Directory.GetCurrentDirectory() + "\\"+filename;
             string[] lines = File.ReadAllLines(storageFile);
             Inventory inv = null;
             foreach (string data in lines)
@@ -57,9 +57,11 @@ namespace RPGGame
             sw.Close();
         }
 
-        public static void ImportEntities()
+        public static void ImportEntities(string filename)
         {
-            string storageFile = Directory.GetCurrentDirectory() + "\\Entities.dat";
+            MainBoard = new GameBoard();
+
+            string storageFile = Directory.GetCurrentDirectory() + "\\"+filename;
             string[] lines = File.ReadAllLines(storageFile);
 
             for (int lineNum = 0; lineNum < lines.Length - 1; lineNum += 9)
@@ -68,6 +70,8 @@ namespace RPGGame
                 Array.Copy(lines, lineNum, entData, 0, 8);
                 MainBoard.AddToBoard(EntityCreate(new EntityData(entData)));
             }
+
+            Player = GetEntity("Player");
         }
 
         public static void ExportEntities()

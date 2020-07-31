@@ -25,5 +25,11 @@ namespace RPGGame
         public static Queue<Line> TextQueue { get; set; } = new Queue<Line>();              //Contains a list of recent console input/output
 
         public static bool Mute { get; set; } = false;                                   //Contains the mute state of the game
+
+        public static bool InternalTesting { get; set; } = false;
+
+        public static bool ExternalTesting { get; set; } = false;
+
+        public static bool InventoryView { get; set; } = false;
     }
 }

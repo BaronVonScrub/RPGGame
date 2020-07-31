@@ -4,7 +4,7 @@ using static RPGGame.CommandManager;
 
 namespace RPGGame
 {
-    internal static class ConstantVariables
+    internal static class GlobalConstants
     {
         //Never altered during runtime
 
@@ -62,13 +62,14 @@ namespace RPGGame
 
         private static readonly Dictionary<string, Action> commands = new Dictionary<string, Action>()
                 {
+                    { "^EXIT$", () => Exit() },
                     { "^$", () => Empty() },
                     { "^BUY\\b", () => Buy() },
                     { "^SELL\\b", () => Sell() },
                     { "^GIVE ME GOOD GRADES$", () => GrantSuper() },
                     { "^LOOK\\b|^TALK\\b", () => Look() },
                     { "\\bME\\b", () => LookAtMe() },
-                    { "^TRADE\\b", () => TradeWith() },
+                    { "^INTERACT\\b", () => TradeView() },
                     { "^EXAMINE\\b", () => Examine() },
                     { "^RENAME\\b", () => Rename() },
                     { "^EQUIP\\b", () => EquipByInput() },
@@ -81,9 +82,11 @@ namespace RPGGame
                     { "^GO WEST$|^[wW]$" , () => Move(WEST) },
                     { "^ADD\\b", () => Add() },
                     { "^REMOVE\\b", () => Remove() },
+                    { "^SAVE$", () => Save() },
                     { "^HELP$", () => Help() },
                     { "^QUIT$", () => Quit() },
-                    { "^TEST$", () => Test() }
+                    { "^DEMO$", () => Demo() },
+                    { "", () => InvalidCommand() },
                 };
         private static readonly List<string> types = new List<string>()
             {
@@ -105,29 +108,59 @@ namespace RPGGame
             {
             "HELP",
             "LOOK Player",
+            "ME",
+            "MUTE",
+            "GO NORTH",
+            "GO WEST",
+            "GO SOUTH",
             "GO EAST",
-            "GO EAST",
-            "E",
+            "",
+            "",
+            "",
+            "MUTE", 
             "LOOK Merchant",
-            "EXAMINE Axe",
-            "BUY Axe",
-            "LOOK Player",
-            "LOOK Merchant",
-            "SELL Axe",
-            "LOOK Player",
-            "LOOK Merchant",
-            "RENAME Player Bow Longbow",
-            "LOOK Player",
-            "EXAMINE Longbow",
-            "EXAMINE Bow",
-            "EXAMINE Player Axe",
+            "INTERACT Merchant",
+            "EXAMINE Dagger",
+            "BUY Dagger",
+            "EXAMINE Really Expensive Thing",
+            "BUY Really Expensive Thing",
+            "INTERACT Merchant",
+            "ME",
+            "EXAMINE Dagger",
+            "EXAMINE Blade",
+            "RENAME Dagger Blade",
+            "ME",
+            "EXAMINE Dagger",
+            "EXAMINE Blade",
+            "RENAME Blade Dagger",
+            "EQUIP Dagger",
+            "UNEQUIP Bow",
+            "EQUIP Dagger",
+            "ME",
+            "UNEQUIP Dagger",
+            "EQUIP Bow",
+            "INTERACT Merchant",
+            "SELL Dagger",
+            "INTERACT Merchant",
+            "ME",
+            "ADD WEAPON name:Rapier equipped:false value:150 slotsNeeded:1 minRange:2 maxRange:3 damageModifier:5 attackModifier:2",
             "GIVE ME GOOD GRADES",
-            "ADD Merchant WEAPON name:Rapier attackModifier:5 value:35",
-            "LOOK Merchant",
+            "ADD WEAPON name:Rapier equipped:false value:150 slotsNeeded:1 minRange:2 maxRange:3 damageModifier:5 attackModifier:2",
+            "ME",
             "EXAMINE Rapier",
             "REMOVE Rapier",
-            "LOOK Merchant",
-            "QUIT"
+            "ME",
+            "W",
+            "",
+            "",
+            "",
+            "LOOK Statue",
+            "W",
+            "INTERACT Goblin",
+            "TAKE Gold",
+            "TAKE Shiny Rock",
+            "GIVE ME GOOD GRADES",
+            "SAVE"
             };
 
 

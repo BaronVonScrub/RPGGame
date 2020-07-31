@@ -71,15 +71,16 @@ namespace RPGGame
 
         public static void Initialize()
         {
+            ExternalTesting = IsExternalTestMode();
             SetUpConsole();
-            if (!IsTestMode())
+            if (!ExternalTesting)
                 SetCurrentFont("Courier New", 25);
             CenterScreen(GetVirtualDisplaySize());
             Console.WriteLine();
             double minSize = 0;
-            if (!IsTestMode())
+            if (!ExternalTesting)
                 minSize = Console.WindowLeft + Console.WindowWidth;
-            if (!IsTestMode())
+            if (!ExternalTesting)
                 Console.SetBufferSize((int)Math.Ceiling(minSize), 30);
             Console.Title = "RPG GAME";
 
@@ -94,18 +95,23 @@ namespace RPGGame
 
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             Console.ForegroundColor = ConsoleColor.White;
-            if (!IsTestMode())
+            if (!ExternalTesting)
                 Console.CursorVisible = false;
         }
 
-        public static bool IsTestMode() => AppDomain.CurrentDomain.GetAssemblies().Any(
+        public static bool IsExternalTestMode() => AppDomain.CurrentDomain.GetAssemblies().Any(
                 a => a.FullName.ToLowerInvariant().StartsWith("unittesting"));
+
+        public static bool InternalTestMode() => InternalTesting;
 
         public static void Redraw()
         {
-            if (!IsTestMode())
-                Console.Clear();
-            MainBoard.RenderBoard();
+            if (!InventoryView)
+            {
+                if (!ExternalTesting)
+                    Console.Clear();
+                MainBoard.RenderBoard();
+            }
             RenderText();
         }
 
@@ -115,7 +121,7 @@ namespace RPGGame
             if (!ConsoleManager.GetConsoleMode(iStdOut, out uint outConsoleMode))
             {
                 Console.WriteLine("failed to get output console mode");
-                if (!IsTestMode())
+                if (!ExternalTesting&& !InternalTestMode())
                     Console.ReadKey();
                 return;
             }
@@ -124,7 +130,7 @@ namespace RPGGame
             if (!ConsoleManager.SetConsoleMode(iStdOut, outConsoleMode))
             {
                 Console.WriteLine($"failed to set output console mode, error code: {ConsoleManager.GetLastError()}");
-                if (!IsTestMode())
+                if (!ExternalTesting && !InternalTestMode())
                     Console.ReadKey();
                 return;
             }

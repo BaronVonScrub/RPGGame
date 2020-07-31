@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using static RPGGame.ConstantVariables;
+using static RPGGame.GlobalConstants;
 using static RPGGame.EntityManager;
 using static RPGGame.GlobalVariables;
 using static RPGGame.TextManager;
@@ -73,7 +73,7 @@ namespace RPGGame
             if (!Equiptory.ContainsKey("Armour"))
                 return def;
             if (Equiptory["Armour"].ToList().Exists(x => x != null))
-                foreach (Armour arm in Equiptory["Armour"])
+                foreach (Armour arm in Equiptory["Armour"].ToList().FindAll(x => x != null))
                     def += arm.Get("defenceModifier");
             return def;
         }
@@ -86,9 +86,45 @@ namespace RPGGame
             if (!Equiptory.ContainsKey("Armour"))
                 return ar;
             if (Equiptory["Armour"].ToList().Exists(x => x != null))
-                foreach (Armour arm in Equiptory["Armour"])
+                foreach (Armour arm in Equiptory["Armour"].ToList().FindAll(x => x != null))
                     ar += arm.Get("armourModifier");
             return ar;
+        }
+
+        internal int GetAttack()
+        {
+            List<Weapon> alreadyCounted = new List<Weapon>();
+            int att = 1;
+            if (!Equiptory.ContainsKey("Weapon"))
+                return att;
+            if (Equiptory["Weapon"].ToList().Exists(x => x != null))
+                foreach (Weapon weap in Equiptory["Weapon"].ToList().FindAll(x => x != null))
+                {
+                    if (!alreadyCounted.Contains(weap))
+                    {
+                        att += weap.Get("attackModifier");
+                        alreadyCounted.Add(weap);
+                    }
+                }
+            return att;
+        }
+
+        internal int GetDamage()
+        {
+            List<Weapon> alreadyCounted = new List<Weapon>();
+            int dam = 1;
+            if (!Equiptory.ContainsKey("Weapon"))
+                return dam;
+            if (Equiptory["Weapon"].ToList().Exists(x => x != null))
+                foreach (Weapon weap in Equiptory["Weapon"].ToList().FindAll(x => x != null))
+                {
+                    if (!alreadyCounted.Contains(weap))
+                    {
+                        dam += weap.Get("damageModifier");
+                        alreadyCounted.Add(weap);
+                    }
+                }
+            return dam;
         }
 
         internal int DistanceFromCenter() => (int)Math.Round(Math.Sqrt((position.x * position.x) + (position.y * position.y)));
@@ -186,6 +222,7 @@ namespace RPGGame
         {
             WriteLine("Health : " + Stats[CurrHealth].ToString() + "/" + Stats[MaxHealth].ToString());
             WriteLine("Def : " + GetDefence().ToString() + "   Arm : " + GetArmour().ToString());
+            WriteLine("Att : " + GetAttack().ToString() + "   Dam : " + GetDamage().ToString());
             WriteLine("Speed : " + GetSpeed().ToString());
         }
 

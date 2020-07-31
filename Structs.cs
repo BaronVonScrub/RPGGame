@@ -86,4 +86,16 @@ namespace RPGGame
             data = ParseManager.Strip(inData);
         }
     }
+
+    internal struct MoveCommand
+    {
+        public int x;
+        public int y;
+
+        public MoveCommand(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+    }
 }
