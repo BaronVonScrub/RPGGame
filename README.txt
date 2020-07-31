@@ -158,6 +158,9 @@ Use of keywords in item names causes problems.
 When adding/renaming, dummy words and particles should be avoided.
 Lines that overflow may cause the map to go offscreen.
 Spawning does not occur as expected.
+Some flickering, usually on map respawn, due to console limitations.
+The music can slow down/distort if a thread is working too hard.
+The music notes have audible (annoying) clicks, due to console.beep limitations.
 
 UNIT TESTING:
 For unit testing, the Inventories.dat, TestInventories.dat, Entities.dat, TestEntities.dat and Tune.csv
