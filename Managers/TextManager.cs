@@ -53,15 +53,16 @@ namespace RPGGame
         //Custom Writeline function that manually buffers the strings, plus their colour.
         public static void WriteLine(string inp)
         {
+            int width = ExternalTesting ? 55 : Console.WindowWidth;
             int count = 0;
             string partial = "";
             do
             {
-                if (count + Console.WindowWidth < inp.Length)
-                    partial = inp.Substring(count, Console.WindowWidth);
+                if (count + width < inp.Length)
+                    partial = inp.Substring(count, width);
                 else
                     partial = inp.Substring(count);
-                count += Console.WindowWidth;
+                count += width;
                 TextQueue.Enqueue(new Line(partial, ConsoleColor.Green));
             }
             while (count < inp.Length);

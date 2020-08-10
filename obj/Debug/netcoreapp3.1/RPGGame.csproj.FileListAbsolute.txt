@@ -16,3 +16,4 @@ C:\Users\ASako\Desktop\Project\RPGGame\obj\Debug\netcoreapp3.1\RPGGame.csproj.Co
 C:\Users\ASako\Desktop\Project\RPGGame\obj\Debug\netcoreapp3.1\RPGGame.dll
 C:\Users\ASako\Desktop\Project\RPGGame\obj\Debug\netcoreapp3.1\RPGGame.pdb
 C:\Users\ASako\Desktop\Project\RPGGame\obj\Debug\netcoreapp3.1\RPGGame.genruntimeconfig.cache
+C:\Users\ASako\Desktop\Project\RPGGame\obj\Debug\netcoreapp3.1\RPGGame.csprojAssemblyReference.cache
